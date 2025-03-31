@@ -1,11 +1,27 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, User, Search, Menu } from 'lucide-react';
+import { BookOpen, User, Search, Menu, LogOut } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate('/');
+  };
+
   return (
     <header className="border-b border-border bg-card sticky top-0 z-50">
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
@@ -34,10 +50,37 @@ const Navbar = () => {
             <Search className="h-4 w-4 mr-2" />
             Search
           </Button>
-          <Button variant="default" size="sm" className="bg-scholarly-blue hover:bg-scholarly-accent">
-            <User className="h-4 w-4 mr-2" />
-            Sign In
-          </Button>
+          
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="default" size="sm" className="bg-scholarly-blue hover:bg-scholarly-accent">
+                  <User className="h-4 w-4 mr-2" />
+                  Profile
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem disabled className="font-medium">
+                  {user.email}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleSignOut} className="text-red-500 cursor-pointer">
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <Button 
+              variant="default" 
+              size="sm" 
+              className="bg-scholarly-blue hover:bg-scholarly-accent"
+              onClick={() => navigate('/auth')}
+            >
+              <User className="h-4 w-4 mr-2" />
+              Sign In
+            </Button>
+          )}
         </div>
         
         <Sheet>
@@ -66,10 +109,32 @@ const Navbar = () => {
                 <Search className="h-4 w-4 mr-2" />
                 Search
               </Button>
-              <Button variant="default" size="sm" className="bg-scholarly-blue hover:bg-scholarly-accent">
-                <User className="h-4 w-4 mr-2" />
-                Sign In
-              </Button>
+              {user ? (
+                <>
+                  <Button disabled size="sm" className="justify-start font-normal text-sm">
+                    {user.email}
+                  </Button>
+                  <Button 
+                    variant="default" 
+                    size="sm" 
+                    className="flex items-center justify-center bg-red-500 hover:bg-red-600"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="h-4 w-4 mr-2" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <Button 
+                  variant="default" 
+                  size="sm" 
+                  className="flex items-center justify-center bg-scholarly-blue hover:bg-scholarly-accent"
+                  onClick={() => navigate('/auth')}
+                >
+                  <User className="h-4 w-4 mr-2" />
+                  Sign In
+                </Button>
+              )}
             </nav>
           </SheetContent>
         </Sheet>
