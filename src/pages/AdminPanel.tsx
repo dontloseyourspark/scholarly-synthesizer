@@ -23,33 +23,33 @@ type ScholarUserData = {
 };
 
 const AdminPanel = () => {
-  const { user } = useAuth();
+  const { user, isAdmin } = useAuth();
   const [pendingScholars, setPendingScholars] = useState<ScholarUserData[]>([]);
   const [verifiedScholars, setVerifiedScholars] = useState<ScholarUserData[]>([]);
   const [rejectedScholars, setRejectedScholars] = useState<ScholarUserData[]>([]);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [activeTab, setActiveTab] = useState<'pending' | 'verified' | 'rejected'>('pending');
 
   useEffect(() => {
-    const checkAdminStatus = async () => {
-      if (!user) {
+    const loadData = async () => {
+      if (!user || !isAdmin) {
         setLoading(false);
         return;
       }
-
-      // In a real application, you'd check if the user has admin rights
-      // For this example, we'll consider the first user as an admin
-      // In production, use a proper role-based system
-      setIsAdmin(true);
-      setLoading(false);
       
-      if (isAdmin) {
+      try {
+        setLoading(true);
+        // Fetch scholars data
         fetchScholars();
+      } catch (error: any) {
+        console.error('Error fetching data:', error.message);
+        toast.error('Failed to load data');
+      } finally {
+        setLoading(false);
       }
     };
 
-    checkAdminStatus();
+    loadData();
   }, [user, isAdmin]);
 
   const fetchScholars = async () => {
@@ -125,7 +125,7 @@ const AdminPanel = () => {
     );
   }
 
-  // If not admin or not logged in, redirect to home
+  // Redirect if not admin or not logged in
   if (!isAdmin || !user) {
     return <Navigate to="/" replace />;
   }
