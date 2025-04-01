@@ -25,12 +25,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     // Handle auth hash params from URL (for email confirmations, password resets, etc)
     const handleHashParams = async () => {
+      // Check if we have hash parameters in the URL
       const hasHashParams = window.location.hash && window.location.hash.length > 1;
       
       if (hasHashParams) {
         try {
           setLoading(true);
-          const { data, error } = await supabase.auth.getSessionFromUrl();
+          
+          // In newer Supabase versions, we need to call getSession() after the redirect happens
+          const { data, error } = await supabase.auth.getSession();
           
           if (error) {
             toast.error(error.message || 'Error processing authentication');
