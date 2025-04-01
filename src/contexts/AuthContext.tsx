@@ -23,6 +23,39 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    // Handle auth hash params from URL (for email confirmations, password resets, etc)
+    const handleHashParams = async () => {
+      const hasHashParams = window.location.hash && window.location.hash.length > 1;
+      
+      if (hasHashParams) {
+        try {
+          setLoading(true);
+          const { data, error } = await supabase.auth.getSessionFromUrl();
+          
+          if (error) {
+            toast.error(error.message || 'Error processing authentication');
+            console.error('Auth error:', error);
+          } else if (data?.session) {
+            // Successfully authenticated
+            setSession(data.session);
+            setUser(data.session.user);
+            toast.success('Authentication successful!');
+            
+            // Remove the hash to clean up the URL
+            window.location.hash = '';
+          }
+        } catch (error: any) {
+          console.error('Error handling auth redirect:', error);
+          toast.error(error.message || 'An unexpected error occurred');
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+    
+    // Run hash params handler on initial load
+    handleHashParams();
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
@@ -30,11 +63,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user ?? null);
         
         // Check if user is an admin
-        // In a real app, you'd check for admin role in user metadata or database
-        // This is a simplified example
         if (session?.user) {
-          // For demo purposes, we'll check email to determine admin
-          // In a real app, use a proper role-based system
           checkAdminStatus(session.user);
         } else {
           setIsAdmin(false);
@@ -62,8 +91,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkAdminStatus = (user: User) => {
     // For this example, we'll consider all authenticated users as potential admins
     // In a real app, you would check a proper role system
-    // For example, check if user.email matches a predefined admin email
-    // or if user has an admin role in their metadata or in a separate database table
     setIsAdmin(true);
   };
 
