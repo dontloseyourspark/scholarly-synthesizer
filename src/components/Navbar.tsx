@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, User, Search, Menu, LogOut } from 'lucide-react';
+import { BookOpen, User, Search, Menu, LogOut, ShieldCheck } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, isAdmin } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -43,6 +43,12 @@ const Navbar = () => {
           <Link to="/about" className="text-foreground hover:text-scholarly-blue transition-colors">
             About
           </Link>
+          {isAdmin && (
+            <Link to="/admin" className="text-foreground hover:text-scholarly-blue transition-colors flex items-center">
+              <ShieldCheck className="h-4 w-4 mr-1" />
+              Admin
+            </Link>
+          )}
         </div>
         
         <div className="hidden md:flex items-center space-x-4">
@@ -63,6 +69,15 @@ const Navbar = () => {
                 <DropdownMenuItem disabled className="font-medium">
                   {user.email}
                 </DropdownMenuItem>
+                {isAdmin && (
+                  <>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/admin')} className="cursor-pointer">
+                      <ShieldCheck className="h-4 w-4 mr-2" />
+                      Admin Panel
+                    </DropdownMenuItem>
+                  </>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleSignOut} className="text-red-500 cursor-pointer">
                   <LogOut className="h-4 w-4 mr-2" />
@@ -104,6 +119,12 @@ const Navbar = () => {
               <Link to="/about" className="text-foreground hover:text-scholarly-blue transition-colors">
                 About
               </Link>
+              {isAdmin && (
+                <Link to="/admin" className="text-foreground hover:text-scholarly-blue transition-colors flex items-center">
+                  <ShieldCheck className="h-4 w-4 mr-1" />
+                  Admin Panel
+                </Link>
+              )}
               <hr className="border-border" />
               <Button variant="outline" size="sm" className="flex items-center justify-center">
                 <Search className="h-4 w-4 mr-2" />
