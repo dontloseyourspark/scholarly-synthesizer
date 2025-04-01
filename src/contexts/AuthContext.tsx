@@ -16,6 +16,9 @@ type AuthContextType = {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// Define admin email
+const ADMIN_EMAIL = 'dontloseyourspark8@gmail.com';
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
@@ -92,9 +95,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const checkAdminStatus = (user: User) => {
-    // For this example, we'll consider all authenticated users as potential admins
-    // In a real app, you would check a proper role system
-    setIsAdmin(true);
+    // Only the specified email is admin
+    const userEmail = user.email?.toLowerCase() || '';
+    setIsAdmin(userEmail === ADMIN_EMAIL);
   };
 
   const signIn = async (email: string, password: string) => {
