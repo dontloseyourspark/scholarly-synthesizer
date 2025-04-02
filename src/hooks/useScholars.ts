@@ -1,4 +1,3 @@
-
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -23,7 +22,6 @@ export const useScholars = () => {
   const [rejectedScholars, setRejectedScholars] = useState<ScholarUserData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   
-  // Add state for filters and sorting
   const [filter, setFilter] = useState<string>('');
   const [sortField, setSortField] = useState<SortField>('created_at');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
@@ -36,27 +34,22 @@ export const useScholars = () => {
     try {
       setLoading(true);
       
-      // Fetch from profiles table where verification_status is not null 
-      // (this means they are or were a scholar)
       let query = supabase
         .from('profiles')
         .select('*')
         .not('verification_status', 'is', null);
       
-      // Apply filtering if filter value is provided
       if (filterValue) {
         const lowercaseFilter = filterValue.toLowerCase();
         query.or(`username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
       }
       
-      // Apply sorting
       query.order(sortBy, { ascending: sortDir === 'asc' });
       
       const { data, error } = await query;
       
       if (error) throw error;
       
-      // Transform data to match ScholarUserData format
       const scholarUsers: ScholarUserData[] = (data || []).map(profile => ({
         id: profile.id,
         email: profile.email || '',
@@ -68,12 +61,10 @@ export const useScholars = () => {
         created_at: new Date(profile.created_at).toLocaleDateString(),
       }));
       
-      // Separate scholars by verification status
       setPendingScholars(scholarUsers.filter(scholar => scholar.verification_status === 'pending'));
       setVerifiedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'verified'));
       setRejectedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'rejected'));
       
-      // Update state for filters and sorting
       setFilter(filterValue);
       setSortField(sortBy);
       setSortDirection(sortDir);
@@ -100,7 +91,7 @@ export const useScholars = () => {
       if (error) throw error;
       
       toast.success(`Scholar ${approved ? 'verified' : 'rejected'} successfully`);
-      await fetchScholars(); // Refresh the list with current filters and sorting
+      await fetchScholars();
     } catch (error: any) {
       console.error('Error updating user:', error.message);
       toast.error('Failed to update scholar verification status');
@@ -114,7 +105,6 @@ export const useScholars = () => {
     loading,
     fetchScholars,
     handleVerify,
-    // Expose filtering and sorting methods
     filter,
     sortField,
     sortDirection,
