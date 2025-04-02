@@ -132,11 +132,16 @@ export function DataTable<TData, TValue>({
         <Pagination>
           <PaginationContent>
             <PaginationItem>
-              <PaginationPrevious 
-                onClick={() => table.previousPage()} 
-                disabled={!table.getCanPreviousPage()}
-                className={!table.getCanPreviousPage() ? "cursor-not-allowed opacity-50" : ""}
-              />
+              {!table.getCanPreviousPage() ? (
+                <PaginationLink 
+                  onClick={() => {}} 
+                  className="cursor-not-allowed opacity-50"
+                >
+                  <span>Previous</span>
+                </PaginationLink>
+              ) : (
+                <PaginationPrevious onClick={() => table.previousPage()} />
+              )}
             </PaginationItem>
             {Array.from({ length: table.getPageCount() }, (_, i) => i + 1).map((page) => (
               <PaginationItem key={page}>
@@ -149,11 +154,16 @@ export function DataTable<TData, TValue>({
               </PaginationItem>
             ))}
             <PaginationItem>
-              <PaginationNext 
-                onClick={() => table.nextPage()} 
-                disabled={!table.getCanNextPage()}
-                className={!table.getCanNextPage() ? "cursor-not-allowed opacity-50" : ""}
-              />
+              {!table.getCanNextPage() ? (
+                <PaginationLink 
+                  onClick={() => {}} 
+                  className="cursor-not-allowed opacity-50"
+                >
+                  <span>Next</span>
+                </PaginationLink>
+              ) : (
+                <PaginationNext onClick={() => table.nextPage()} />
+              )}
             </PaginationItem>
           </PaginationContent>
         </Pagination>
