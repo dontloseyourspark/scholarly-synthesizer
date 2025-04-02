@@ -67,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUserProfile(profile);
           
           // Handle profile creation/updates on sign in or sign up
-          if (event === 'SIGNED_IN' || event === 'SIGNED_UP') {
+          if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
             try {
               // Check if the user already has a profile
               if (!profile) {

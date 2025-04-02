@@ -15,33 +15,45 @@ export type Database = {
           avatar_url: string | null
           bio: string | null
           created_at: string
+          email: string | null
           field_of_study: string | null
           id: string
           institution: string | null
+          is_scholar: boolean | null
           updated_at: string
           username: string | null
+          verification_status: string | null
+          verified_at: string | null
         }
         Insert: {
           academic_title?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email?: string | null
           field_of_study?: string | null
           id: string
           institution?: string | null
+          is_scholar?: boolean | null
           updated_at?: string
           username?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
         }
         Update: {
           academic_title?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
+          email?: string | null
           field_of_study?: string | null
           id?: string
           institution?: string | null
+          is_scholar?: boolean | null
           updated_at?: string
           username?: string | null
+          verification_status?: string | null
+          verified_at?: string | null
         }
         Relationships: []
       }

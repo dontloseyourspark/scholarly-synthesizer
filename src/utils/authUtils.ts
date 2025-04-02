@@ -36,7 +36,7 @@ export const fetchUserProfile = async (userId: string, userEmail: string | null)
         institution: data.institution,
         field_of_study: data.field_of_study,
         bio: data.bio,
-        is_scholar: !!data.academic_title, // Determine scholar status based on academic title
+        is_scholar: !!data.is_scholar || !!data.academic_title, // Determine scholar status based on is_scholar field or academic title
         verification_status: data.verification_status
       };
       
