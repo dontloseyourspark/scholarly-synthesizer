@@ -1,7 +1,6 @@
 
 import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { User } from '@supabase/supabase-js';
 import { toast } from 'sonner';
 
 export type ScholarUserData = {
@@ -35,50 +34,36 @@ export const useScholars = () => {
   ) => {
     try {
       setLoading(true);
-      const { data: users, error } = await supabase.auth.admin.listUsers();
       
-      if (error) throw error;
-      
-      // Process users to filter scholars and organize by verification status
-      let scholarUsers: ScholarUserData[] = [];
-      
-      users.users.forEach((user: User) => {
-        const userData = user.user_metadata;
-        if (userData && userData.is_scholar) {
-          scholarUsers.push({
-            id: user.id,
-            email: user.email || '',
-            academic_title: userData.academic_title || '',
-            institution: userData.institution || '',
-            field_of_study: userData.field_of_study || '',
-            verification_status: userData.verification_status || 'pending',
-            created_at: new Date(user.created_at).toLocaleDateString(),
-          });
-        }
-      });
+      // Fetch from profiles table with scholar metadata
+      const query = supabase
+        .from('profiles')
+        .select('*')
+        .eq('is_scholar', true);
       
       // Apply filtering if filter value is provided
       if (filterValue) {
         const lowercaseFilter = filterValue.toLowerCase();
-        scholarUsers = scholarUsers.filter(scholar => 
-          scholar.email.toLowerCase().includes(lowercaseFilter) ||
-          scholar.academic_title.toLowerCase().includes(lowercaseFilter) ||
-          scholar.institution.toLowerCase().includes(lowercaseFilter) ||
-          scholar.field_of_study.toLowerCase().includes(lowercaseFilter)
-        );
+        query.or(`email.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
       }
       
       // Apply sorting
-      scholarUsers.sort((a, b) => {
-        const valueA = a[sortBy].toLowerCase();
-        const valueB = b[sortBy].toLowerCase();
-        
-        if (sortDir === 'asc') {
-          return valueA.localeCompare(valueB);
-        } else {
-          return valueB.localeCompare(valueA);
-        }
-      });
+      query.order(sortBy, { ascending: sortDir === 'asc' });
+      
+      const { data, error } = await query;
+      
+      if (error) throw error;
+      
+      // Transform data to match ScholarUserData format
+      const scholarUsers: ScholarUserData[] = (data || []).map(profile => ({
+        id: profile.id,
+        email: profile.email || '',
+        academic_title: profile.academic_title || '',
+        institution: profile.institution || '',
+        field_of_study: profile.field_of_study || '',
+        verification_status: profile.verification_status || 'pending',
+        created_at: new Date(profile.created_at).toLocaleDateString(),
+      }));
       
       // Separate scholars by verification status
       setPendingScholars(scholarUsers.filter(scholar => scholar.verification_status === 'pending'));
@@ -90,7 +75,7 @@ export const useScholars = () => {
       setSortField(sortBy);
       setSortDirection(sortDir);
     } catch (error: any) {
-      console.error('Error fetching users:', error.message);
+      console.error('Error fetching scholars:', error.message);
       toast.error('Failed to load scholar data');
     } finally {
       setLoading(false);
@@ -101,15 +86,13 @@ export const useScholars = () => {
     try {
       const status = approved ? 'verified' : 'rejected';
       
-      const { data, error } = await supabase.auth.admin.updateUserById(
-        userId,
-        { 
-          user_metadata: { 
-            verification_status: status,
-            verified_at: approved ? new Date().toISOString() : null
-          } 
-        }
-      );
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          verification_status: status,
+          verified_at: approved ? new Date().toISOString() : null
+        })
+        .eq('id', userId);
       
       if (error) throw error;
       

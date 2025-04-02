@@ -64,13 +64,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
         // Check if user is an admin
         if (session?.user) {
           checkAdminStatus(session.user);
+          
+          // If we have a user session and they just signed up, update their profile
+          if (event === 'SIGNED_IN' || event === 'SIGNED_UP') {
+            try {
+              // Check if the user already has a profile
+              const { data, error } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+                
+              if (error && error.code !== 'PGRST116') { // PGRST116 is "row not found" error
+                console.error('Error checking for existing profile:', error);
+              }
+              
+              // If profile doesn't exist, create it with user metadata
+              if (!data) {
+                const metadata = session.user.user_metadata;
+                await supabase.from('profiles').insert({
+                  id: session.user.id,
+                  email: session.user.email,
+                  is_scholar: metadata?.is_scholar || false,
+                  academic_title: metadata?.academic_title || null,
+                  institution: metadata?.institution || null,
+                  field_of_study: metadata?.field_of_study || null,
+                  verification_status: metadata?.is_scholar ? 'pending' : null
+                });
+              }
+            } catch (error) {
+              console.error('Error setting up user profile:', error);
+            }
+          }
         } else {
           setIsAdmin(false);
         }
