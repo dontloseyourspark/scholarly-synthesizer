@@ -6,14 +6,15 @@ import { toast } from 'sonner';
 export type ScholarUserData = {
   id: string;
   email: string;
-  academic_title: string;
-  institution: string;
-  field_of_study: string;
-  verification_status: string;
+  username: string | null;
+  academic_title: string | null;
+  institution: string | null;
+  field_of_study: string | null;
+  verification_status: string | null;
   created_at: string;
 };
 
-export type SortField = 'email' | 'academic_title' | 'institution' | 'field_of_study' | 'created_at';
+export type SortField = 'email' | 'username' | 'academic_title' | 'institution' | 'field_of_study' | 'created_at';
 export type SortDirection = 'asc' | 'desc';
 
 export const useScholars = () => {
@@ -35,16 +36,17 @@ export const useScholars = () => {
     try {
       setLoading(true);
       
-      // Fetch from profiles table with scholar metadata
+      // Fetch from profiles table where verification_status is not null 
+      // (this means they are or were a scholar)
       const query = supabase
         .from('profiles')
         .select('*')
-        .eq('is_scholar', true);
+        .not('verification_status', 'is', null);
       
       // Apply filtering if filter value is provided
       if (filterValue) {
         const lowercaseFilter = filterValue.toLowerCase();
-        query.or(`email.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
+        query.or(`username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
       }
       
       // Apply sorting
@@ -58,6 +60,7 @@ export const useScholars = () => {
       const scholarUsers: ScholarUserData[] = (data || []).map(profile => ({
         id: profile.id,
         email: profile.email || '',
+        username: profile.username,
         academic_title: profile.academic_title || '',
         institution: profile.institution || '',
         field_of_study: profile.field_of_study || '',

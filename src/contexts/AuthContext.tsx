@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -12,6 +11,21 @@ type AuthContextType = {
   signOut: () => Promise<void>;
   loading: boolean;
   isAdmin: boolean;
+  userProfile: UserProfile | null;
+  updateProfile: (profile: Partial<UserProfile>) => Promise<void>;
+};
+
+export type UserProfile = {
+  id: string;
+  email: string | null;
+  username: string | null;
+  avatar_url: string | null;
+  academic_title: string | null;
+  institution: string | null;
+  field_of_study: string | null;
+  bio: string | null;
+  is_scholar: boolean;
+  verification_status: string | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -24,6 +38,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  // Function to fetch user profile
+  const fetchUserProfile = async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single();
+        
+      if (error) {
+        console.error('Error fetching user profile:', error);
+        return null;
+      }
+      
+      if (data) {
+        // Map the database profile to our UserProfile type
+        const profile: UserProfile = {
+          id: data.id,
+          email: user?.email || null,
+          username: data.username,
+          avatar_url: data.avatar_url,
+          academic_title: data.academic_title,
+          institution: data.institution,
+          field_of_study: data.field_of_study,
+          bio: data.bio,
+          is_scholar: !!data.academic_title, // Determine scholar status based on academic title
+          verification_status: data.verification_status || null
+        };
+        
+        setUserProfile(profile);
+        return profile;
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      return null;
+    }
+  };
 
   useEffect(() => {
     // Handle auth hash params from URL (for email confirmations, password resets, etc)
@@ -72,25 +127,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (session?.user) {
           checkAdminStatus(session.user);
           
-          // If we have a user session and they just signed up, update their profile
+          // If we have a user session, fetch their profile
+          const profile = await fetchUserProfile(session.user.id);
+          
+          // Handle profile creation/updates on sign in or sign up
           if (event === 'SIGNED_IN' || event === 'SIGNED_UP') {
             try {
               // Check if the user already has a profile
-              const { data, error } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', session.user.id)
-                .single();
-                
-              if (error && error.code !== 'PGRST116') { // PGRST116 is "row not found" error
-                console.error('Error checking for existing profile:', error);
-              }
-              
-              // If profile doesn't exist, create it with user metadata
-              if (!data) {
+              if (!profile) {
+                // Create a new profile with user metadata
                 const metadata = session.user.user_metadata;
                 await supabase.from('profiles').insert({
                   id: session.user.id,
+                  username: metadata?.username || session.user.email?.split('@')[0],
                   email: session.user.email,
                   is_scholar: metadata?.is_scholar || false,
                   academic_title: metadata?.academic_title || null,
@@ -98,6 +147,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                   field_of_study: metadata?.field_of_study || null,
                   verification_status: metadata?.is_scholar ? 'pending' : null
                 });
+                
+                // Fetch the profile again after creating it
+                await fetchUserProfile(session.user.id);
               }
             } catch (error) {
               console.error('Error setting up user profile:', error);
@@ -105,6 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           }
         } else {
           setIsAdmin(false);
+          setUserProfile(null);
         }
         
         setLoading(false);
@@ -112,12 +165,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
 
     // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       
       if (session?.user) {
         checkAdminStatus(session.user);
+        await fetchUserProfile(session.user.id);
       }
       
       setLoading(false);
@@ -177,8 +231,60 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Add a function to update user profile
+  const updateProfile = async (profileData: Partial<UserProfile>) => {
+    if (!user) {
+      toast.error('You must be logged in to update your profile');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Only include fields that are allowed to be updated
+      const updates = {
+        username: profileData.username,
+        bio: profileData.bio,
+        avatar_url: profileData.avatar_url,
+        // Keep scholar fields if the user is already a scholar
+        ...(userProfile?.is_scholar ? {
+          academic_title: profileData.academic_title,
+          institution: profileData.institution,
+          field_of_study: profileData.field_of_study,
+        } : {})
+      };
+
+      const { error } = await supabase
+        .from('profiles')
+        .update(updates)
+        .eq('id', user.id);
+
+      if (error) throw error;
+      
+      // Refresh the profile data
+      await fetchUserProfile(user.id);
+      
+      toast.success('Profile updated successfully');
+    } catch (error: any) {
+      console.error('Error updating profile:', error);
+      toast.error(error.message || 'Error updating profile');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ session, user, signIn, signUp, signOut, loading, isAdmin }}>
+    <AuthContext.Provider value={{ 
+      session, 
+      user, 
+      signIn, 
+      signUp, 
+      signOut, 
+      loading, 
+      isAdmin,
+      userProfile,
+      updateProfile
+    }}>
       {children}
     </AuthContext.Provider>
   );

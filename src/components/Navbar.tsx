@@ -2,7 +2,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, User, Search, Menu, LogOut, ShieldCheck } from 'lucide-react';
+import { BookOpen, User, Search, Menu, LogOut, ShieldCheck, UserCircle } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -12,9 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const Navbar = () => {
-  const { user, signOut, isAdmin } = useAuth();
+  const { user, signOut, isAdmin, userProfile } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -61,13 +62,27 @@ const Navbar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="default" size="sm" className="bg-scholarly-blue hover:bg-scholarly-accent">
-                  <User className="h-4 w-4 mr-2" />
+                  {userProfile?.avatar_url ? (
+                    <Avatar className="h-5 w-5 mr-2">
+                      <AvatarImage src={userProfile.avatar_url} alt={userProfile.username || user.email || 'User'} />
+                      <AvatarFallback>
+                        {userProfile.username ? userProfile.username[0].toUpperCase() : user.email?.[0].toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <User className="h-4 w-4 mr-2" />
+                  )}
                   Profile
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuItem disabled className="font-medium">
-                  {user.email}
+                  {userProfile?.username || user.email}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer">
+                  <UserCircle className="h-4 w-4 mr-2" />
+                  Edit Profile
                 </DropdownMenuItem>
                 {isAdmin && (
                   <>
@@ -119,6 +134,12 @@ const Navbar = () => {
               <Link to="/about" className="text-foreground hover:text-scholarly-blue transition-colors">
                 About
               </Link>
+              {user && (
+                <Link to="/profile" className="text-foreground hover:text-scholarly-blue transition-colors flex items-center">
+                  <UserCircle className="h-4 w-4 mr-1" />
+                  Edit Profile
+                </Link>
+              )}
               {isAdmin && (
                 <Link to="/admin" className="text-foreground hover:text-scholarly-blue transition-colors flex items-center">
                   <ShieldCheck className="h-4 w-4 mr-1" />
@@ -133,7 +154,7 @@ const Navbar = () => {
               {user ? (
                 <>
                   <Button disabled size="sm" className="justify-start font-normal text-sm">
-                    {user.email}
+                    {userProfile?.username || user.email}
                   </Button>
                   <Button 
                     variant="default" 
