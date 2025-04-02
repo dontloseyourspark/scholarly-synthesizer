@@ -38,7 +38,7 @@ export const useScholars = () => {
       
       // Fetch from profiles table where verification_status is not null 
       // (this means they are or were a scholar)
-      const query = supabase
+      let query = supabase
         .from('profiles')
         .select('*')
         .not('verification_status', 'is', null);
