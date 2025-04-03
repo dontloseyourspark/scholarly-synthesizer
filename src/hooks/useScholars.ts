@@ -31,76 +31,77 @@ export const useScholars = () => {
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const fetchScholars = useCallback(async (
-    filterValue: string = filter,
-    sortBy: SortField = sortField,
-    sortDir: SortDirection = sortDirection
-  ) => {
-    // Reset error state
-    setError(null);
-    
-    // Don't attempt to fetch if user is not admin
-    if (!user || !isAdmin) {
-      setLoading(false);
-      return;
-    }
+  filterValue: string = filter,
+  sortBy: SortField = sortField,
+  sortDir: SortDirection = sortDirection
+) => {
+  setError(null);
+  
+  if (!user || !isAdmin) {
+    setLoading(false);
+    return;
+  }
 
-    try {
-      setLoading(true);
-      
-      let query = supabase
+  try {
+    setLoading(true);
+
+    // Build the query with filters and sorting
+    let query = supabase
       .from('profiles')
       .select('*')
-      .eq('is_scholar', true); // Filter only scholars with is_scholar = true
-  
-      if (error) throw error;
-      
-      if (filterValue) {
-        // Use .ilike with string concatenation for improved text search
-        const lowercaseFilter = filterValue.toLowerCase();
-        query = query.or(`email.ilike.%${lowercaseFilter}%,username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
-      }
-      
-      query = query.order(sortBy, { ascending: sortDir === 'asc' });
-      
-      const { data, error } = await query;
-      
-      if (error) {
-        console.error('Supabase query error:', error);
-        throw error;
-      }
+      .eq('is_scholar', true); // Ensure we only fetch scholars with is_scholar = true
+    
+    console.log('Supabase query:', query.toString()); // Debug log for query
 
-      if (!data) {
-        throw new Error('No data returned from query');
-      }
-
-      // Transform data for display
-      const scholarUsers: ScholarUserData[] = data.map(profile => ({
-        id: profile.id,
-        email: profile.email || '',
-        username: profile.username || '',
-        academic_title: profile.academic_title || '',
-        institution: profile.institution || '',
-        field_of_study: profile.field_of_study || '',
-        verification_status: profile.verification_status || 'pending',
-        created_at: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown',
-      }));
-      
-      // Categorize scholars by verification status
-      setPendingScholars(scholarUsers.filter(scholar => scholar.verification_status === 'pending'));
-      setVerifiedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'verified'));
-      setRejectedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'rejected'));
-      
-      // Update filter and sort state
-      setFilter(filterValue);
-      setSortField(sortBy);
-      setSortDirection(sortDir);
-    } catch (error: any) {
-      console.error('Error fetching scholars:', error);
-      setError(error.message || 'Failed to load scholar data');
-    } finally {
-      setLoading(false);
+    // Apply filter if there’s any search term
+    if (filterValue) {
+      const lowercaseFilter = filterValue.toLowerCase();
+      query = query.or(`email.ilike.%${lowercaseFilter}%,username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
     }
-  }, [filter, sortField, sortDirection, user, isAdmin]);
+    
+    query = query.order(sortBy, { ascending: sortDir === 'asc' });
+
+    // Fetch data
+    const { data, error } = await query;
+    
+    if (error) {
+      console.error('Supabase query error:', error);
+      throw error;
+    }
+
+    if (!data) {
+      throw new Error('No data returned from query');
+    }
+
+    // Map the data to the ScholarUserData type
+    const scholarUsers: ScholarUserData[] = data.map(profile => ({
+      id: profile.id,
+      email: profile.email || '',
+      username: profile.username || '',
+      academic_title: profile.academic_title || '',
+      institution: profile.institution || '',
+      field_of_study: profile.field_of_study || '',
+      verification_status: profile.verification_status || 'pending',
+      created_at: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown',
+    }));
+
+    // Categorize scholars by verification status
+    setPendingScholars(scholarUsers.filter(scholar => scholar.verification_status === 'pending'));
+    setVerifiedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'verified'));
+    setRejectedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'rejected'));
+
+    // Update filter and sort state
+    setFilter(filterValue);
+    setSortField(sortBy);
+    setSortDirection(sortDir);
+  } catch (error) {
+    console.error('Error fetching scholars:', error);
+    setError(error.message || 'Failed to load scholar data');
+  } finally {
+    setLoading(false);
+  }
+}, [filter, sortField, sortDirection, user, isAdmin]);
+
 
   const handleVerify = async (userId: string, approved: boolean) => {
     if (!user || !isAdmin) {
