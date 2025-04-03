@@ -45,6 +45,10 @@ export const getColumns = (
     {
       accessorKey: 'created_at',
       header: 'Created',
+      cell: ({ row }) => {
+        const date = row.getValue('created_at') || 'Unknown';
+        return <div>{date}</div>;
+      }
     },
   ];
 

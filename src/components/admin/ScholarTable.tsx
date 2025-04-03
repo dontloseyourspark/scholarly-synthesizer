@@ -3,18 +3,33 @@ import React from 'react';
 import { DataTable } from './scholars/data-table';
 import { getColumns } from './scholars/columns';
 import { ScholarUserData } from '@/hooks/useScholars';
+import { Skeleton } from '@/components/ui/skeleton';
 
 interface ScholarTableProps {
   scholars: ScholarUserData[];
+  loading?: boolean;
   showActions?: boolean;
   onVerify?: (userId: string, approved: boolean) => Promise<void>;
 }
 
 const ScholarTable: React.FC<ScholarTableProps> = ({ 
   scholars, 
+  loading = false,
   showActions = false,
   onVerify
 }) => {
+  // Handle loading state with skeleton UI
+  if (loading) {
+    return (
+      <div className="space-y-3">
+        <Skeleton className="h-8 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full" />
+        <Skeleton className="h-24 w-full" />
+      </div>
+    );
+  }
+  
   // Ensure we have valid data before rendering
   const validScholars = Array.isArray(scholars) ? scholars : [];
   

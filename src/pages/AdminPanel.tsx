@@ -3,13 +3,14 @@ import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserCheck } from 'lucide-react';
+import { UserCheck, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ScholarTable from '@/components/admin/ScholarTable';
 import TabNavigation from '@/components/admin/TabNavigation';
 import { useScholars } from '@/hooks/useScholars';
+import { Button } from '@/components/ui/button';
 
 const AdminPanel = () => {
   const { user, isAdmin, loading: authLoading } = useAuth();
@@ -19,36 +20,52 @@ const AdminPanel = () => {
     verifiedScholars, 
     rejectedScholars, 
     loading: scholarsLoading, 
+    error: scholarsError,
     fetchScholars,
     handleVerify 
   } = useScholars();
 
+  // Load data when component mounts and auth is ready
   useEffect(() => {
-    const loadData = async () => {
-      if (!user || !isAdmin) {
-        return;
-      }
-      
-      try {
-        await fetchScholars();
-      } catch (error: any) {
-        console.error('Error fetching data:', error.message);
+    if (!authLoading && user && isAdmin) {
+      fetchScholars().catch(err => {
+        console.error('Error fetching data:', err);
         toast.error('Failed to load scholar data');
-      }
-    };
-
-    if (!authLoading) {
-      loadData();
+      });
     }
   }, [user, isAdmin, fetchScholars, authLoading]);
 
-  // Display loading state while auth or data is loading
-  if (authLoading || scholarsLoading) {
+  // Handle error state
+  if (scholarsError) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
         <main className="flex-grow flex items-center justify-center">
-          <p>Loading...</p>
+          <Card className="w-full max-w-md">
+            <CardHeader>
+              <CardTitle className="font-serif text-xl flex items-center text-red-600">
+                <AlertTriangle className="h-6 w-6 mr-2" />
+                Error Loading Data
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="mb-4">{scholarsError}</p>
+              <Button onClick={() => fetchScholars()}>Try Again</Button>
+            </CardContent>
+          </Card>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Display loading state while auth is loading
+  if (authLoading) {
+    return (
+      <div className="flex flex-col min-h-screen">
+        <Navbar />
+        <main className="flex-grow flex items-center justify-center">
+          <p>Checking authentication...</p>
         </main>
         <Footer />
       </div>
@@ -57,7 +74,7 @@ const AdminPanel = () => {
 
   // Redirect if not admin or not logged in
   if (!isAdmin || !user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/auth" replace />;
   }
 
   return (
@@ -88,15 +105,22 @@ const AdminPanel = () => {
               {activeTab === 'pending' && (
                 <ScholarTable 
                   scholars={pendingScholars} 
+                  loading={scholarsLoading}
                   showActions={true}
                   onVerify={handleVerify}
                 />
               )}
               {activeTab === 'verified' && (
-                <ScholarTable scholars={verifiedScholars} />
+                <ScholarTable 
+                  scholars={verifiedScholars} 
+                  loading={scholarsLoading}
+                />
               )}
               {activeTab === 'rejected' && (
-                <ScholarTable scholars={rejectedScholars} />
+                <ScholarTable 
+                  scholars={rejectedScholars} 
+                  loading={scholarsLoading}
+                />
               )}
             </CardContent>
           </Card>

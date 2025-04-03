@@ -24,6 +24,7 @@ export const useScholars = () => {
   const [verifiedScholars, setVerifiedScholars] = useState<ScholarUserData[]>([]);
   const [rejectedScholars, setRejectedScholars] = useState<ScholarUserData[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   
   const [filter, setFilter] = useState<string>('');
   const [sortField, setSortField] = useState<SortField>('created_at');
@@ -34,6 +35,9 @@ export const useScholars = () => {
     sortBy: SortField = sortField,
     sortDir: SortDirection = sortDirection
   ) => {
+    // Reset error state
+    setError(null);
+    
     // Don't attempt to fetch if user is not admin
     if (!user || !isAdmin) {
       setLoading(false);
@@ -45,13 +49,12 @@ export const useScholars = () => {
       
       let query = supabase
         .from('profiles')
-        .select('*')
-        .not('verification_status', 'is', null);
+        .select('*');
       
       if (filterValue) {
         // Use .ilike with string concatenation for improved text search
         const lowercaseFilter = filterValue.toLowerCase();
-        query = query.or(`username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
+        query = query.or(`email.ilike.%${lowercaseFilter}%,username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
       }
       
       query = query.order(sortBy, { ascending: sortDir === 'asc' });
@@ -63,16 +66,20 @@ export const useScholars = () => {
         throw error;
       }
 
+      if (!data) {
+        throw new Error('No data returned from query');
+      }
+
       // Transform data for display
-      const scholarUsers: ScholarUserData[] = (data || []).map(profile => ({
+      const scholarUsers: ScholarUserData[] = data.map(profile => ({
         id: profile.id,
         email: profile.email || '',
-        username: profile.username,
+        username: profile.username || '',
         academic_title: profile.academic_title || '',
         institution: profile.institution || '',
         field_of_study: profile.field_of_study || '',
         verification_status: profile.verification_status || 'pending',
-        created_at: new Date(profile.created_at).toLocaleDateString(),
+        created_at: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown',
       }));
       
       // Categorize scholars by verification status
@@ -85,19 +92,12 @@ export const useScholars = () => {
       setSortField(sortBy);
       setSortDirection(sortDir);
     } catch (error: any) {
-      console.error('Error fetching scholars:', error.message);
-      toast.error('Failed to load scholar data: ' + (error.message || 'Unknown error'));
+      console.error('Error fetching scholars:', error);
+      setError(error.message || 'Failed to load scholar data');
     } finally {
       setLoading(false);
     }
   }, [filter, sortField, sortDirection, user, isAdmin]);
-
-  // Auto-fetch on mount and when user/admin status changes
-  useEffect(() => {
-    if (user && isAdmin) {
-      fetchScholars();
-    }
-  }, [user, isAdmin, fetchScholars]);
 
   const handleVerify = async (userId: string, approved: boolean) => {
     if (!user || !isAdmin) {
@@ -137,6 +137,7 @@ export const useScholars = () => {
     verifiedScholars,
     rejectedScholars,
     loading,
+    error,
     fetchScholars,
     handleVerify,
     filter,
