@@ -77,24 +77,23 @@ export const useScholars = () => {
     // Debugging: Log raw fetched data
     console.log('Raw fetched data:', data);
     
-    // Manually filter out non-scholar users if Supabase isn't applying the filter correctly
-    const scholarUsers = data.filter(profile => profile.is_scholar === true);
-    
-    // Debugging: Check filtered data
-    console.log('Filtered scholars:', scholarUsers);
+    // Ensure only scholar users are included
+const scholarUsers: ScholarUserData[] = data
+  .filter(profile => profile.is_scholar) // Filter scholars
+  .map(profile => ({
+    id: profile.id,
+    email: profile.email || '',
+    username: profile.username || '',
+    academic_title: profile.academic_title || '',
+    institution: profile.institution || '',
+    field_of_study: profile.field_of_study || '',
+    verification_status: profile.verification_status || 'pending',
+    created_at: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown',
+    is_scholar: !!profile.is_scholar, // Ensure boolean value
+  }));
 
-    // Map the data to the ScholarUserData type
-    const scholarUsers: ScholarUserData[] = data.map(profile => ({
-      id: profile.id,
-      email: profile.email || '',
-      username: profile.username || '',
-      academic_title: profile.academic_title || '',
-      institution: profile.institution || '',
-      field_of_study: profile.field_of_study || '',
-      verification_status: profile.verification_status || 'pending',
-      created_at: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown',
-      is_scholar: profile.is_scholar || false,
-    }));
+// Debugging: Check filtered scholars
+console.log('Processed scholars:', scholarUsers);
 
     // Categorize scholars by verification status
     setPendingScholars(scholarUsers.filter(scholar => scholar.verification_status === 'pending'));
