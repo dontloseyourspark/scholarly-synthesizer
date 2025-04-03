@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, BookOpen, Calendar } from 'lucide-react';
+import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import ConsensusIndicator, { ConsensusLevel } from './ConsensusIndicator';
+import { getInsightsForTopic } from '@/data/insightsData';
 
 export type Topic = {
   id: string;
@@ -20,6 +22,14 @@ export type Topic = {
 };
 
 const TopicCard = ({ topic }: { topic: Topic }) => {
+  // Get insights for this topic to access sources
+  const topicInsights = getInsightsForTopic(topic.id);
+  
+  // Extract unique sources from all insights
+  const sources = Array.from(
+    new Set(topicInsights.flatMap(insight => insight.sources))
+  ).slice(0, 3); // Limit to 3 sources for preview
+  
   return (
     <Card className="h-full flex flex-col transition-all hover:shadow-md">
       <CardHeader className="pb-2">
@@ -51,10 +61,50 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
           <Users className="h-3.5 w-3.5 mr-1" />
           <span>{topic.contributorsCount} contributors</span>
         </div>
-        <div className="flex items-center">
-          <BookOpen className="h-3.5 w-3.5 mr-1" />
-          <span>{topic.sourcesCount} sources</span>
-        </div>
+        <HoverCard>
+          <HoverCardTrigger asChild>
+            <div className="flex items-center cursor-pointer hover:text-scholarly-blue transition-colors">
+              <BookOpen className="h-3.5 w-3.5 mr-1" />
+              <span>{topic.sourcesCount} sources</span>
+            </div>
+          </HoverCardTrigger>
+          <HoverCardContent className="w-80 p-0 overflow-hidden">
+            <div className="bg-scholarly-blue p-3 text-white">
+              <h4 className="font-medium">Key Sources</h4>
+            </div>
+            <div className="p-4 space-y-3">
+              {sources.length > 0 ? (
+                sources.map((source, index) => (
+                  <div key={index} className="text-xs">
+                    <a 
+                      href={source.url} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="font-medium text-scholarly-blue hover:underline"
+                    >
+                      {source.title}
+                    </a>
+                    <p className="text-muted-foreground mt-0.5">
+                      {source.authors}, {source.year}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No sources available for preview</p>
+              )}
+              {topicInsights.length > 0 && sources.length > 0 && (
+                <div className="pt-2 text-center">
+                  <Link 
+                    to={`/topics/${topic.slug}`} 
+                    className="text-xs text-scholarly-blue hover:underline"
+                  >
+                    View all {topic.sourcesCount} sources
+                  </Link>
+                </div>
+              )}
+            </div>
+          </HoverCardContent>
+        </HoverCard>
         <div className="flex items-center">
           <Calendar className="h-3.5 w-3.5 mr-1" />
           <span>Updated {new Date(topic.updatedAt).toLocaleDateString()}</span>
