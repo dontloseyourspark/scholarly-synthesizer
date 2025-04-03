@@ -13,6 +13,7 @@ export type ScholarUserData = {
   field_of_study: string | null;
   verification_status: string | null;
   created_at: string;
+  is_scholar: boolean | false;
 };
 
 export type SortField = 'email' | 'username' | 'academic_title' | 'institution' | 'field_of_study' | 'created_at';
@@ -92,6 +93,7 @@ export const useScholars = () => {
       field_of_study: profile.field_of_study || '',
       verification_status: profile.verification_status || 'pending',
       created_at: profile.created_at ? new Date(profile.created_at).toLocaleDateString() : 'Unknown',
+      is_scholar: profile.is_scholar || false,
     }));
 
     // Categorize scholars by verification status
