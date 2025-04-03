@@ -12,13 +12,13 @@ import TabNavigation from '@/components/admin/TabNavigation';
 import { useScholars } from '@/hooks/useScholars';
 
 const AdminPanel = () => {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState<'pending' | 'verified' | 'rejected'>('pending');
   const { 
     pendingScholars, 
     verifiedScholars, 
     rejectedScholars, 
-    loading, 
+    loading: scholarsLoading, 
     fetchScholars,
     handleVerify 
   } = useScholars();
@@ -33,14 +33,17 @@ const AdminPanel = () => {
         await fetchScholars();
       } catch (error: any) {
         console.error('Error fetching data:', error.message);
-        toast.error('Failed to load data');
+        toast.error('Failed to load scholar data');
       }
     };
 
-    loadData();
-  }, [user, isAdmin, fetchScholars]);
+    if (!authLoading) {
+      loadData();
+    }
+  }, [user, isAdmin, fetchScholars, authLoading]);
 
-  if (loading) {
+  // Display loading state while auth or data is loading
+  if (authLoading || scholarsLoading) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />

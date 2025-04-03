@@ -13,18 +13,34 @@ export const getColumns = (
     {
       accessorKey: 'email',
       header: 'Email',
+      cell: ({ row }) => {
+        const email = row.getValue('email') || 'No email';
+        return <div>{email}</div>;
+      }
     },
     {
       accessorKey: 'academic_title',
       header: 'Academic Title',
+      cell: ({ row }) => {
+        const title = row.getValue('academic_title') || 'Not specified';
+        return <div>{title}</div>;
+      }
     },
     {
       accessorKey: 'institution',
       header: 'Institution',
+      cell: ({ row }) => {
+        const institution = row.getValue('institution') || 'Not specified';
+        return <div>{institution}</div>;
+      }
     },
     {
       accessorKey: 'field_of_study',
       header: 'Field of Study',
+      cell: ({ row }) => {
+        const field = row.getValue('field_of_study') || 'Not specified';
+        return <div>{field}</div>;
+      }
     },
     {
       accessorKey: 'created_at',

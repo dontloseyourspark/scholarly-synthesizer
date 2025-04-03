@@ -15,12 +15,19 @@ const ScholarTable: React.FC<ScholarTableProps> = ({
   showActions = false,
   onVerify
 }) => {
-  const columns = getColumns(showActions, onVerify);
+  // Ensure we have valid data before rendering
+  const validScholars = Array.isArray(scholars) ? scholars : [];
+  
+  // Ensure we have a valid onVerify function if showActions is true
+  const columns = getColumns(
+    showActions, 
+    showActions && typeof onVerify === 'function' ? onVerify : undefined
+  );
   
   return (
     <DataTable 
       columns={columns} 
-      data={scholars} 
+      data={validScholars} 
     />
   );
 };

@@ -1,7 +1,8 @@
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { useAuth } from '@/contexts/AuthContext';
 
 export type ScholarUserData = {
   id: string;
@@ -18,6 +19,7 @@ export type SortField = 'email' | 'username' | 'academic_title' | 'institution' 
 export type SortDirection = 'asc' | 'desc';
 
 export const useScholars = () => {
+  const { user, isAdmin } = useAuth();
   const [pendingScholars, setPendingScholars] = useState<ScholarUserData[]>([]);
   const [verifiedScholars, setVerifiedScholars] = useState<ScholarUserData[]>([]);
   const [rejectedScholars, setRejectedScholars] = useState<ScholarUserData[]>([]);
@@ -32,6 +34,12 @@ export const useScholars = () => {
     sortBy: SortField = sortField,
     sortDir: SortDirection = sortDirection
   ) => {
+    // Don't attempt to fetch if user is not admin
+    if (!user || !isAdmin) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       
@@ -41,16 +49,21 @@ export const useScholars = () => {
         .not('verification_status', 'is', null);
       
       if (filterValue) {
+        // Use .ilike with string concatenation for improved text search
         const lowercaseFilter = filterValue.toLowerCase();
-        query.or(`username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
+        query = query.or(`username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
       }
       
-      query.order(sortBy, { ascending: sortDir === 'asc' });
+      query = query.order(sortBy, { ascending: sortDir === 'asc' });
       
       const { data, error } = await query;
       
-      if (error) throw error;
-      
+      if (error) {
+        console.error('Supabase query error:', error);
+        throw error;
+      }
+
+      // Transform data for display
       const scholarUsers: ScholarUserData[] = (data || []).map(profile => ({
         id: profile.id,
         email: profile.email || '',
@@ -62,40 +75,60 @@ export const useScholars = () => {
         created_at: new Date(profile.created_at).toLocaleDateString(),
       }));
       
+      // Categorize scholars by verification status
       setPendingScholars(scholarUsers.filter(scholar => scholar.verification_status === 'pending'));
       setVerifiedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'verified'));
       setRejectedScholars(scholarUsers.filter(scholar => scholar.verification_status === 'rejected'));
       
+      // Update filter and sort state
       setFilter(filterValue);
       setSortField(sortBy);
       setSortDirection(sortDir);
     } catch (error: any) {
       console.error('Error fetching scholars:', error.message);
-      toast.error('Failed to load scholar data');
+      toast.error('Failed to load scholar data: ' + (error.message || 'Unknown error'));
     } finally {
       setLoading(false);
     }
-  }, [filter, sortField, sortDirection]);
+  }, [filter, sortField, sortDirection, user, isAdmin]);
+
+  // Auto-fetch on mount and when user/admin status changes
+  useEffect(() => {
+    if (user && isAdmin) {
+      fetchScholars();
+    }
+  }, [user, isAdmin, fetchScholars]);
 
   const handleVerify = async (userId: string, approved: boolean) => {
+    if (!user || !isAdmin) {
+      toast.error('You must be an admin to perform this action');
+      return;
+    }
+
     try {
       const status = approved ? 'verified' : 'rejected';
+      const timestamp = approved ? new Date().toISOString() : null;
       
       const { error } = await supabase
         .from('profiles')
         .update({ 
           verification_status: status,
-          verified_at: approved ? new Date().toISOString() : null
+          verified_at: timestamp
         })
         .eq('id', userId);
       
-      if (error) throw error;
+      if (error) {
+        console.error('Supabase update error:', error);
+        throw error;
+      }
       
       toast.success(`Scholar ${approved ? 'verified' : 'rejected'} successfully`);
+      
+      // Refresh scholar data
       await fetchScholars();
     } catch (error: any) {
       console.error('Error updating user:', error.message);
-      toast.error('Failed to update scholar verification status');
+      toast.error('Failed to update verification status: ' + (error.message || 'Unknown error'));
     }
   };
 
