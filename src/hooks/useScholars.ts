@@ -47,9 +47,13 @@ export const useScholars = () => {
     try {
       setLoading(true);
       
-      let query = supabase
+      try {
+      const { data, error } = await supabase
         .from('profiles')
-        .select('*');
+        .select('*')
+        .eq('is_scholar', true); // Only select scholars with is_scholar = true
+  
+      if (error) throw error;
       
       if (filterValue) {
         // Use .ilike with string concatenation for improved text search
