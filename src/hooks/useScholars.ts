@@ -52,6 +52,7 @@ export const useScholars = () => {
         .from('profiles')
         .select('*')
         .eq('is_scholar', true); // Only select scholars with is_scholar = true
+      }
   
       if (error) throw error;
       
