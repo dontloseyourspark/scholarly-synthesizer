@@ -63,15 +63,24 @@ export const useScholars = () => {
 
     // Fetch data
     const { data, error } = await query;
-    
+
     if (error) {
       console.error('Supabase query error:', error);
       throw error;
     }
-
+    
     if (!data) {
       throw new Error('No data returned from query');
     }
+    
+    // Debugging: Log raw fetched data
+    console.log('Raw fetched data:', data);
+    
+    // Manually filter out non-scholar users if Supabase isn't applying the filter correctly
+    const scholarUsers = data.filter(profile => profile.is_scholar === true);
+    
+    // Debugging: Check filtered data
+    console.log('Filtered scholars:', scholarUsers);
 
     // Map the data to the ScholarUserData type
     const scholarUsers: ScholarUserData[] = data.map(profile => ({
