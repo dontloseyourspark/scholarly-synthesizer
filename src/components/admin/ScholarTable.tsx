@@ -30,8 +30,8 @@ const ScholarTable: React.FC<ScholarTableProps> = ({
     );
   }
   
-  // Ensure we have valid data before rendering
-  const validScholars = Array.isArray(scholars) ? scholars : [];
+  // Ensure we have valid data before rendering and filter scholars
+  const validScholars = Array.isArray(scholars) ? scholars.filter(scholar => scholar.is_scholar === true) : [];
   
   // Ensure we have a valid onVerify function if showActions is true
   const columns = getColumns(
