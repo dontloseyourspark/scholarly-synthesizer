@@ -47,12 +47,10 @@ export const useScholars = () => {
     try {
       setLoading(true);
       
-      try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('is_scholar', true); // Only select scholars with is_scholar = true
-      }
+      let query = supabase
+      .from('profiles')
+      .select('*')
+      .eq('is_scholar', true); // Filter only scholars with is_scholar = true
   
       if (error) throw error;
       
