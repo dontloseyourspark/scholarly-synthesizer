@@ -32,10 +32,11 @@ const ProfilePage = () => {
 
   // Initialize form with profile data when available
   useEffect(() => {
-    if (userProfile && profileLoaded) {
+    if (userProfile && profileLoaded && !formData) {
       initializeForm(userProfile);
     }
-  }, [userProfile, profileLoaded, initializeForm]);
+  }, [userProfile, profileLoaded, initializeForm, formData]);
+  
 
   // Show loading state while authentication or profile data is loading
   if (authLoading || !profileLoaded) {

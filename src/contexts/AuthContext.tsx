@@ -1,9 +1,7 @@
-
-import React, { createContext, useContext } from 'react';
-import { Session, User } from '@supabase/supabase-js';
-import { AuthContextType, UserProfile } from '@/types/auth';
+import React, { createContext, useContext, useMemo } from 'react';
 import { useAuthOperations } from '@/hooks/useAuthOperations';
 import { useAuthState } from '@/hooks/useAuthState';
+import { AuthContextType, UserProfile } from '@/types/auth';
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -27,19 +25,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  // Memoize only the context value (avoid recomputing unnecessarily)
+  const contextValue = useMemo(() => ({
+    session,
+    user,
+    signIn,
+    signUp,
+    signOut,
+    loading: stateLoading || operationLoading,
+    isAdmin,
+    userProfile,
+    updateProfile: handleUpdateProfile,
+    profileLoaded,
+  }), [session, user, stateLoading, operationLoading, isAdmin, userProfile, profileLoaded]); // Only memoize essential state
+  
   return (
-    <AuthContext.Provider value={{ 
-      session, 
-      user, 
-      signIn, 
-      signUp, 
-      signOut, 
-      loading: stateLoading || operationLoading, 
-      isAdmin,
-      userProfile,
-      updateProfile: handleUpdateProfile,
-      profileLoaded
-    }}>
+    <AuthContext.Provider value={contextValue}>
       {children}
     </AuthContext.Provider>
   );
