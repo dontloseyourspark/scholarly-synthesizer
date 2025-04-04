@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress'; 
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/auth';
@@ -18,6 +19,7 @@ interface ProfileAvatarProps {
 const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvatarChange }) => {
   const [uploadLoading, setUploadLoading] = useState(false);
   const [sizeError, setSizeError] = useState<string | null>(null);
+  const [uploadProgress, setUploadProgress] = useState(0);
   
   const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
@@ -45,16 +47,31 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvat
     const filePath = `avatars/${fileName}`;
 
     setUploadLoading(true);
+    setUploadProgress(0);
 
     try {
+      // Set up simulated progress updates
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          // Don't go to 100% until upload is actually complete
+          const newProgress = prev + Math.random() * 15;
+          return newProgress >= 90 ? 90 : newProgress;
+        });
+      }, 300);
+
       // Upload the file to Supabase Storage
       const { error: uploadError } = await supabase.storage
         .from('avatars')
         .upload(filePath, file, { upsert: true });
 
+      clearInterval(progressInterval);
+
       if (uploadError) {
         throw uploadError;
       }
+
+      // Set to 100% when upload completes successfully
+      setUploadProgress(100);
 
       // Retrieve the public URL of the uploaded file
       const { data } = supabase.storage.from('avatars').getPublicUrl(filePath);
@@ -67,9 +84,15 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvat
       onAvatarChange(data.publicUrl);
 
       toast.success('Avatar uploaded successfully!');
+      
+      // Reset progress after a delay to provide visual feedback
+      setTimeout(() => {
+        setUploadProgress(0);
+      }, 1000);
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
       toast.error(error.message || 'Error uploading avatar');
+      setUploadProgress(0);
     } finally {
       setUploadLoading(false);
     }
@@ -89,6 +112,15 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvat
               : user?.email?.[0].toUpperCase()}
           </AvatarFallback>
         </Avatar>
+
+        {uploadProgress > 0 && (
+          <div className="w-full mb-4">
+            <Progress value={uploadProgress} className="h-2" />
+            <p className="text-xs text-center mt-1 text-muted-foreground">
+              {uploadProgress < 100 ? 'Uploading...' : 'Upload complete!'}
+            </p>
+          </div>
+        )}
 
         {sizeError && (
           <Alert variant="destructive" className="mb-4 w-full">
