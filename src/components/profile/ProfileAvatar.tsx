@@ -52,10 +52,13 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvat
         setAvatarUrl(data.publicUrl);
         onAvatarChange(data.publicUrl);
       }
-
+      const user = await supabase.auth.getUser();
+      console.log("Current User:", user.data.user);
       toast.success('Avatar uploaded successfully');
     } catch (error: any) {
       console.error('Error uploading avatar:', error);
+      const user = await supabase.auth.getUser();
+      console.log("Current User:", user.data.user);
       toast.error(error.message || 'Error uploading avatar');
     } finally {
       setUploadLoading(false);
