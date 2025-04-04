@@ -14,7 +14,7 @@ export const getColumns = (
       accessorKey: 'email',
       header: 'Email',
       cell: ({ row }) => {
-        const email = row.getValue('email') || 'No email';
+        const email = (row.getValue('email') as string) || 'No email';
         return <div>{email}</div>;
       }
     },
@@ -22,7 +22,7 @@ export const getColumns = (
       accessorKey: 'academic_title',
       header: 'Academic Title',
       cell: ({ row }) => {
-        const title = row.getValue('academic_title') || 'Not specified';
+        const title = (row.getValue('academic_title') as string) || 'Not specified';
         return <div>{title}</div>;
       }
     },
@@ -30,7 +30,7 @@ export const getColumns = (
       accessorKey: 'institution',
       header: 'Institution',
       cell: ({ row }) => {
-        const institution = row.getValue('institution') || 'Not specified';
+        const institution = (row.getValue('institution') as string) || 'Not specified';
         return <div>{institution}</div>;
       }
     },
@@ -38,7 +38,7 @@ export const getColumns = (
       accessorKey: 'field_of_study',
       header: 'Field of Study',
       cell: ({ row }) => {
-        const field = row.getValue('field_of_study') || 'Not specified';
+        const field = (row.getValue('field_of_study') as string) || 'Not specified';
         return <div>{field}</div>;
       }
     },
@@ -46,7 +46,7 @@ export const getColumns = (
       accessorKey: 'created_at',
       header: 'Created',
       cell: ({ row }) => {
-        const date = row.getValue('created_at') || 'Unknown';
+        const date = (row.getValue('created_at') as string) || 'Unknown';
         return <div>{date}</div>;
       }
     },
