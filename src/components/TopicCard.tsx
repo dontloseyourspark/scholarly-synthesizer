@@ -105,10 +105,10 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
             </div>
           </HoverCardContent>
         </HoverCard>
-        <div className="flex items-center">
+        <Link to={`/topics/${topic.slug}/contributions`} className="flex items-center hover:text-scholarly-blue transition-colors">
           <Calendar className="h-3.5 w-3.5 mr-1" />
           <span>Updated {new Date(topic.updatedAt).toLocaleDateString()}</span>
-        </div>
+        </Link>
       </CardFooter>
     </Card>
   );
