@@ -9,7 +9,15 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { signIn, signUp, signOut, updateProfile, loading: operationLoading } = useAuthOperations();
-  const { session, user, loading: stateLoading, isAdmin, userProfile, setUserProfile } = useAuthState();
+  const { 
+    session, 
+    user, 
+    loading: stateLoading, 
+    isAdmin, 
+    userProfile, 
+    setUserProfile,
+    profileLoaded 
+  } = useAuthState();
 
   const handleUpdateProfile = async (profile: Partial<UserProfile>) => {
     if (!user) return;
@@ -29,7 +37,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       loading: stateLoading || operationLoading, 
       isAdmin,
       userProfile,
-      updateProfile: handleUpdateProfile
+      updateProfile: handleUpdateProfile,
+      profileLoaded
     }}>
       {children}
     </AuthContext.Provider>

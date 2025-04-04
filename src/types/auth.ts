@@ -24,4 +24,5 @@ export type AuthContextType = {
   isAdmin: boolean;
   userProfile: UserProfile | null;
   updateProfile: (profile: Partial<UserProfile>) => Promise<void>;
+  profileLoaded: boolean;
 };

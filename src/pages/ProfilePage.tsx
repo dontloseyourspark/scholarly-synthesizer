@@ -10,7 +10,7 @@ import ProfileForm from '@/components/profile/ProfileForm';
 import { useProfileForm } from '@/hooks/useProfileForm';
 
 const ProfilePage = () => {
-  const { userProfile, loading: authLoading } = useAuth();
+  const { userProfile, loading: authLoading, profileLoaded } = useAuth();
   const navigate = useNavigate();
   
   const {
@@ -32,12 +32,13 @@ const ProfilePage = () => {
 
   // Initialize form with profile data when available
   useEffect(() => {
-    if (userProfile) {
+    if (userProfile && profileLoaded) {
       initializeForm(userProfile);
     }
-  }, [userProfile]);
+  }, [userProfile, profileLoaded, initializeForm]);
 
-  if (authLoading) {
+  // Show loading state while authentication or profile data is loading
+  if (authLoading || !profileLoaded) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />

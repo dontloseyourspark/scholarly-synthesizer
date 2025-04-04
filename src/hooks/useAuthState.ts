@@ -11,6 +11,7 @@ export const useAuthState = () => {
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
   useEffect(() => {
     // Handle auth hash params from URL (for email confirmations, password resets, etc)
@@ -57,15 +58,16 @@ export const useAuthState = () => {
           const isUserAdmin = checkAdminStatus(session.user);
           setIsAdmin(isUserAdmin);
           
-          // If we have a user session, fetch their profile
-          const profile = await fetchUserProfile(session.user.id, session.user.email);
-          setUserProfile(profile);
-          
-          // Handle profile creation/updates on sign in or sign up
-          if (event === 'SIGNED_IN' || event === 'USER_UPDATED') {
+          // Use a timeout to avoid potential blocking of the auth state change handler
+          setTimeout(async () => {
             try {
-              // Check if the user already has a profile
-              if (!profile) {
+              // If we have a user session, fetch their profile
+              const profile = await fetchUserProfile(session.user.id, session.user.email);
+              setUserProfile(profile);
+              setProfileLoaded(true);
+              
+              // Handle profile creation/updates on sign in or sign up
+              if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && !profile) {
                 // Create a new profile with user metadata
                 const metadata = session.user.user_metadata;
                 await createUserProfile(session.user.id, session.user.email, metadata);
@@ -75,12 +77,13 @@ export const useAuthState = () => {
                 setUserProfile(newProfile);
               }
             } catch (error) {
-              console.error('Error setting up user profile:', error);
+              console.error('Error fetching or creating user profile:', error);
             }
-          }
+          }, 0);
         } else {
           setIsAdmin(false);
           setUserProfile(null);
+          setProfileLoaded(true);
         }
         
         setLoading(false);
@@ -95,10 +98,23 @@ export const useAuthState = () => {
       if (session?.user) {
         const isUserAdmin = checkAdminStatus(session.user);
         setIsAdmin(isUserAdmin);
-        const profile = await fetchUserProfile(session.user.id, session.user.email);
-        setUserProfile(profile);
+        
+        try {
+          const profile = await fetchUserProfile(session.user.id, session.user.email);
+          setUserProfile(profile);
+        } catch (error) {
+          console.error('Error fetching profile:', error);
+        } finally {
+          setProfileLoaded(true);
+          setLoading(false);
+        }
+      } else {
+        setProfileLoaded(true);
+        setLoading(false);
       }
-      
+    }).catch(error => {
+      console.error('Error getting session:', error);
+      setProfileLoaded(true);
       setLoading(false);
     });
 
@@ -111,6 +127,7 @@ export const useAuthState = () => {
     loading, 
     isAdmin, 
     userProfile, 
-    setUserProfile 
+    setUserProfile,
+    profileLoaded
   };
 };

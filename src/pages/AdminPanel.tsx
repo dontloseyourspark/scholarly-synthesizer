@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -13,7 +12,7 @@ import { useScholars } from '@/hooks/useScholars';
 import { Button } from '@/components/ui/button';
 
 const AdminPanel = () => {
-  const { user, isAdmin, loading: authLoading } = useAuth();
+  const { user, isAdmin, loading: authLoading, profileLoaded } = useAuth();
   const [activeTab, setActiveTab] = useState<'pending' | 'verified' | 'rejected'>('pending');
   const { 
     pendingScholars, 
@@ -27,13 +26,13 @@ const AdminPanel = () => {
 
   // Load data when component mounts and auth is ready
   useEffect(() => {
-    if (!authLoading && user && isAdmin) {
+    if (!authLoading && profileLoaded && user && isAdmin) {
       fetchScholars().catch(err => {
         console.error('Error fetching data:', err);
         toast.error('Failed to load scholar data');
       });
     }
-  }, [user, isAdmin, fetchScholars, authLoading]);
+  }, [user, isAdmin, fetchScholars, authLoading, profileLoaded]);
 
   // Handle error state
   if (scholarsError) {
@@ -60,7 +59,7 @@ const AdminPanel = () => {
   }
 
   // Display loading state while auth is loading
-  if (authLoading) {
+  if (authLoading || !profileLoaded) {
     return (
       <div className="flex flex-col min-h-screen">
         <Navbar />
