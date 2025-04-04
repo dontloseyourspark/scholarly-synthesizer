@@ -1,8 +1,10 @@
+
 import React, { useState } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/auth';
@@ -15,6 +17,9 @@ interface ProfileAvatarProps {
 
 const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvatarChange }) => {
   const [uploadLoading, setUploadLoading] = useState(false);
+  const [sizeError, setSizeError] = useState<string | null>(null);
+  
+  const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB in bytes
 
   const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length === 0 || !user) {
@@ -23,6 +28,18 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvat
     }
 
     const file = e.target.files[0];
+    
+    // Check file size
+    if (file.size > MAX_FILE_SIZE) {
+      const errorMsg = `File size exceeds 2MB limit (${(file.size / (1024 * 1024)).toFixed(2)}MB)`;
+      setSizeError(errorMsg);
+      toast.error(errorMsg);
+      return;
+    }
+    
+    // Clear any previous errors
+    setSizeError(null);
+    
     const fileExt = file.name.split('.').pop();
     const fileName = `${user.id}-${Date.now()}.${fileExt}`;
     const filePath = `avatars/${fileName}`;
@@ -72,6 +89,12 @@ const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ userProfile, user, onAvat
               : user?.email?.[0].toUpperCase()}
           </AvatarFallback>
         </Avatar>
+
+        {sizeError && (
+          <Alert variant="destructive" className="mb-4 w-full">
+            <AlertDescription>{sizeError}</AlertDescription>
+          </Alert>
+        )}
 
         <Label
           htmlFor="avatar"

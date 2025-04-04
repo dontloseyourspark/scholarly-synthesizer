@@ -19,6 +19,7 @@ export type Database = {
           field_of_study: string | null
           id: string
           institution: string | null
+          is_admin: boolean
           is_scholar: boolean | null
           updated_at: string
           username: string | null
@@ -34,6 +35,7 @@ export type Database = {
           field_of_study?: string | null
           id: string
           institution?: string | null
+          is_admin?: boolean
           is_scholar?: boolean | null
           updated_at?: string
           username?: string | null
@@ -49,6 +51,7 @@ export type Database = {
           field_of_study?: string | null
           id?: string
           institution?: string | null
+          is_admin?: boolean
           is_scholar?: boolean | null
           updated_at?: string
           username?: string | null
