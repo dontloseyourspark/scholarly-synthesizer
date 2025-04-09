@@ -78,7 +78,7 @@ const HeroSection = ({ topic }: HeroSectionProps) => {
                         )}
                         <div className="pt-2 text-center">
                           <Link 
-                            to={`/topics/${topic.slug}/sources`} 
+                            to={`/topics/${topic.slug}/publications`}
                             className="text-xs text-scholarly-blue hover:underline"
                           >
                             View all {topic.sourcesCount} sources
