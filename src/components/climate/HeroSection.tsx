@@ -1,14 +1,14 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Earth } from 'lucide-react';
+import { Earth, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import ConsensusIndicator from '@/components/ConsensusIndicator';
-import { TopicType } from '@/data/topicsData';
+import { Topic } from '@/components/TopicCard';
 
 type HeroSectionProps = {
-  topic: TopicType;
+  topic: Topic;
 };
 
 const HeroSection = ({ topic }: HeroSectionProps) => {
