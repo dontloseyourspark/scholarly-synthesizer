@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
-import { Earth, ThermometerSun, Cloud, Wind, Tree, ExternalLink, BookOpen, Download } from 'lucide-react';
+import { Earth, ThermometerSun, Cloud, Wind, TreePine, ExternalLink, BookOpen, Download } from 'lucide-react';
 import ConsensusIndicator from '@/components/ConsensusIndicator';
 import { getTopic } from '@/data/topicsData';
 
@@ -71,7 +71,7 @@ const ClimateChange = () => {
     },
     {
       title: "Biodiversity Loss",
-      icon: <Tree className="h-8 w-8 text-green-600" />,
+      icon: <TreePine className="h-8 w-8 text-green-600" />,
       description: "An estimated one million plant and animal species are at risk of extinction due to climate change."
     }
   ];
@@ -280,7 +280,7 @@ const ClimateChange = () => {
                           <XAxis type="number" />
                           <YAxis type="category" dataKey="category" />
                           <Tooltip />
-                          <Bar dataKey="value" nameKey="category">
+                          <Bar dataKey="value">
                             {impactData.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={entry.fill} />
                             ))}
