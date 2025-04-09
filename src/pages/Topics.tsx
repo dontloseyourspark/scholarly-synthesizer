@@ -1,15 +1,17 @@
-
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import SearchBar from '@/components/SearchBar';
 import TopicCard, { Topic } from '@/components/TopicCard';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Earth } from 'lucide-react';
 import { searchTopics, topics } from '@/data/topicsData';
 
 const Topics = () => {
@@ -19,10 +21,8 @@ const Topics = () => {
   const [consensusFilter, setConsensusFilter] = useState<string>('all');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   
-  // Extract unique tags from all topics
   const allTags = Array.from(new Set(topics.flatMap(topic => topic.tags))).sort();
   
-  // Parse query from URL if any
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const q = queryParams.get('q');
@@ -31,16 +31,13 @@ const Topics = () => {
     }
   }, [location.search]);
   
-  // Apply filters when search query, consensus filter, or tags change
   useEffect(() => {
     let filtered = searchQuery ? searchTopics(searchQuery) : [...topics];
     
-    // Apply consensus filter
     if (consensusFilter !== 'all') {
       filtered = filtered.filter(topic => topic.consensusLevel === consensusFilter);
     }
     
-    // Apply tag filters if any are selected
     if (selectedTags.length > 0) {
       filtered = filtered.filter(topic => 
         topic.tags.some(tag => selectedTags.includes(tag))
@@ -63,7 +60,6 @@ const Topics = () => {
       <Navbar />
       
       <main className="flex-grow bg-scholarly-lightGray pb-16">
-        {/* Topics Header */}
         <section className="bg-scholarly-blue py-12 mb-8">
           <div className="container mx-auto px-4">
             <h1 className="text-3xl font-serif font-bold text-white mb-4">Browse Topics</h1>
@@ -75,7 +71,22 @@ const Topics = () => {
           </div>
         </section>
         
-        {/* Topics Content */}
+        <div className="container mx-auto px-4 mb-8">
+          <Alert className="bg-scholarly-blue/10 border-scholarly-blue">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <Earth className="h-5 w-5 text-scholarly-blue mr-2" />
+                <AlertDescription className="text-foreground">
+                  <strong>Featured Topic:</strong> Explore our detailed page on Climate Change
+                </AlertDescription>
+              </div>
+              <Button variant="outline" size="sm" className="text-scholarly-blue border-scholarly-blue hover:bg-scholarly-blue/10" asChild>
+                <Link to="/climate-change">View Climate Change Page</Link>
+              </Button>
+            </div>
+          </Alert>
+        </div>
+        
         <div className="container mx-auto px-4">
           <Tabs defaultValue="all" className="w-full">
             <TabsList className="mb-8">
@@ -86,7 +97,6 @@ const Topics = () => {
             </TabsList>
             
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Filters */}
               <div className="bg-white p-6 rounded-lg shadow-sm h-fit">
                 <h3 className="font-medium text-lg mb-4">Filters</h3>
                 
@@ -135,7 +145,6 @@ const Topics = () => {
                 </div>
               </div>
               
-              {/* Topics Grid */}
               <div className="lg:col-span-3">
                 {filteredTopics.length === 0 ? (
                   <div className="bg-white p-8 rounded-lg text-center">

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Toaster } from 'sonner';
@@ -10,6 +11,7 @@ import Contribute from '@/pages/Contribute';
 import AdminPanel from '@/pages/AdminPanel';
 import NotFound from '@/pages/NotFound';
 import ProfilePage from '@/pages/ProfilePage';
+import ClimateChange from '@/pages/ClimateChange';
 
 function App() {
   return (
@@ -19,13 +21,14 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/topics" element={<Topics />} />
         <Route path="/topics/:id" element={<TopicDetail />} />
+        <Route path="/climate-change" element={<ClimateChange />} />
         <Route path="/about" element={<About />} />
         <Route path="/contribute" element={<Contribute />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Toaster position="top-right" />
+      <Toaster position="top-right" closeButton />
     </BrowserRouter>
   )
 }
