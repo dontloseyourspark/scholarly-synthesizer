@@ -12,6 +12,7 @@ import AdminPanel from '@/pages/AdminPanel';
 import NotFound from '@/pages/NotFound';
 import ProfilePage from '@/pages/ProfilePage';
 import ClimateChange from '@/pages/ClimateChange';
+import TopicPublications from '@/pages/TopicPublications';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
         <Route path="/auth" element={<Auth />} />
         <Route path="/topics" element={<Topics />} />
         <Route path="/topics/:id" element={<TopicDetail />} />
+        <Route path="/topics/:id/publications" element={<TopicPublications />} />
         <Route path="/climate-change" element={<ClimateChange />} />
         <Route path="/about" element={<About />} />
         <Route path="/contribute" element={<Contribute />} />
