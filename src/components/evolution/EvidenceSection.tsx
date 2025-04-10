@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { DNA, Bone, Brain, ScrollText } from 'lucide-react';
+import { Dna, Bone, Brain, ScrollText } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const EvidenceSection = () => {
@@ -34,7 +33,7 @@ const EvidenceSection = () => {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="flex items-center">
-                <DNA className="h-6 w-6 mr-2 text-scholarly-blue" />
+                <Dna className="h-6 w-6 mr-2 text-scholarly-blue" />
                 Genetic Evidence
               </CardTitle>
             </CardHeader>
