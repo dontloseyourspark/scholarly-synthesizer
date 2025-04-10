@@ -13,6 +13,7 @@ import NotFound from '@/pages/NotFound';
 import ProfilePage from '@/pages/ProfilePage';
 import ClimateChange from '@/pages/ClimateChange';
 import TopicPublications from '@/pages/TopicPublications';
+import EvolutionOfHumans from '@/pages/EvolutionOfHumans';
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
         <Route path="/topics/:id" element={<TopicDetail />} />
         <Route path="/topics/:id/publications" element={<TopicPublications />} />
         <Route path="/climate-change" element={<ClimateChange />} />
+        <Route path="/evolution-of-humans" element={<EvolutionOfHumans />} />
         <Route path="/about" element={<About />} />
         <Route path="/contribute" element={<Contribute />} />
         <Route path="/admin" element={<AdminPanel />} />
