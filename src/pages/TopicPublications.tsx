@@ -9,8 +9,8 @@ import { getTopic } from '@/data/topicsData';
 import { keyPublications } from '@/data/climateChangeData';
 
 const TopicPublications = () => {
-  const { id } = useParams();
-  const topic = getTopic(id || '');
+  const { slug } = useParams();
+  const topic = getTopic(slug || '');
 
   useEffect(() => {
     // Scroll to top when component mounts
@@ -78,7 +78,6 @@ const TopicPublications = () => {
                     {publication.authors}, {publication.year}
                   </p>
                   <p className="text-sm">
-                    {/* In a real app, we would include an abstract or summary here */}
                     This is a peer-reviewed publication related to {topic.title.toLowerCase()}.
                   </p>
                 </CardContent>

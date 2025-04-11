@@ -22,8 +22,8 @@ function App() {
         <Route path="/" element={<Index />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/topics" element={<Topics />} />
-        <Route path="/topics/:id" element={<TopicDetail />} />
-        <Route path="/topics/:id/publications" element={<TopicPublications />} />
+        <Route path="/topics/:slug" element={<TopicDetail />} />
+        <Route path="/topics/:slug/publications" element={<TopicPublications />} />
         <Route path="/climate-change" element={<ClimateChange />} />
         <Route path="/evolution-of-humans" element={<EvolutionOfHumans />} />
         <Route path="/about" element={<About />} />

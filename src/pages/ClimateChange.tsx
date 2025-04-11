@@ -15,7 +15,7 @@ import VisualizationsSection from '@/components/climate/VisualizationsSection';
 import CallToActionSection from '@/components/climate/CallToActionSection';
 
 const ClimateChange = () => {
-  // Get the climate change topic data
+  // Get the climate change topic data - use the exact slug from the topicsData
   const climateChangeTopic = getTopic('climate-change');
   
   if (!climateChangeTopic) {

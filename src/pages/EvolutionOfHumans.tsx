@@ -12,7 +12,7 @@ import VisualizationsSection from '@/components/evolution/VisualizationsSection'
 import CallToActionSection from '@/components/evolution/CallToActionSection';
 
 const EvolutionOfHumans = () => {
-  // Get the evolution of humans topic data
+  // Get the evolution of humans topic data - use the exact slug from the topicsData
   const evolutionTopic = getTopic('evolution-of-humans');
   
   if (!evolutionTopic) {
