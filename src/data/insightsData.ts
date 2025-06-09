@@ -19,6 +19,7 @@ export type Insight = {
   sources: Source[];
   upvotes: number;
   downvotes: number;
+  votes: number;
   createdAt: string;
 };
 
@@ -71,6 +72,7 @@ export const insights: Insight[] = [
     sources: [sources[0]],
     upvotes: 243,
     downvotes: 12,
+    votes: 231,
     createdAt: '2023-07-12T08:30:00Z'
   }
 ];

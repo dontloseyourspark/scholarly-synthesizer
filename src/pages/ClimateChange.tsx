@@ -3,9 +3,7 @@ import { Link } from 'react-router-dom';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
-import { BookOpen } from 'lucide-react';
 import { getTopic } from '@/data/topicsData';
-import  InsightsSection from '@/components/climate/InsightsSection';
 import HeroSection from '@/components/climate/HeroSection';
 import DescriptionSection from '@/components/climate/DescriptionSection';
 import EffectsSection from '@/components/climate/EffectsSection';
@@ -13,15 +11,14 @@ import VisualizationsSection from '@/components/climate/VisualizationsSection';
 import CallToActionSection from '@/components/climate/CallToActionSection';
 import { TabsContent } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
-import { handleVote } from '@/utils/handleVote';
 import { Insight } from '@/data/insightsData';
+import InsightsContainer from '@/components/climate/InsightsContainer';
 
 // Assume this is defined elsewhere if not here
 
 
 const ClimateChange = () => {
-  const [insights, setInsights] = useState<Insight[]>([]);
-  const { toast } = useToast();
+
 
   const climateChangeTopic = getTopic('climate-change');
 
@@ -56,9 +53,7 @@ const ClimateChange = () => {
         <DescriptionSection description={climateChangeTopic.description} />
         <EffectsSection />
         <VisualizationsSection />
-        <TabsContent value="insights">
-          <InsightsSection insights={insights} onVote={handleVote} />
-        </TabsContent>
+        <InsightsContainer />
         <CallToActionSection topicSlug={climateChangeTopic.slug} />
       </main>
 
