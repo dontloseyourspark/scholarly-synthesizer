@@ -23,10 +23,10 @@ const About = () => {
                 We're building a platform to help people understand the state of scholarly 
                 consensus across important topics, combating misinformation and bridging 
                 the gap between academic research and public knowledge.
-              </p>
+              </p> {/* 
               <Button className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray">
                 Learn More About Our Mission <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+              </Button>*/}
             </div>
           </div>
         </section>
@@ -109,7 +109,7 @@ const About = () => {
           </div>
         </section>
         
-        {/* Stats */}
+        {/* Stats 
         <section className="py-16 bg-scholarly-lightGray">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-serif font-bold mb-12">ScholarSphere by the Numbers</h2>
@@ -149,9 +149,9 @@ const About = () => {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
         
-        {/* Team */}
+        {/* Team 
         <section className="py-16">
           <div className="container mx-auto px-4">
             <h2 className="text-3xl font-serif font-bold text-center mb-12">Our Team</h2>
@@ -188,7 +188,7 @@ const About = () => {
               </Button>
             </div>
           </div>
-        </section>
+        </section> */}
         
         {/* CTA */}
         <section className="bg-scholarly-blue text-white py-16">

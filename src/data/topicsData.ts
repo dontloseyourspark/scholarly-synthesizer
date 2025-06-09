@@ -10,7 +10,7 @@ export const topics: Topic[] = [
     description: 'The scientific consensus on anthropogenic climate change, its causes, effects, and potential mitigation strategies.',
     consensusLevel: 'high',
     consensusPercentage: 97,
-    contributorsCount: 872,
+    contributorsCount: 0,
     sourcesCount: 1243,
     updatedAt: '2023-08-15T14:22:30Z',
     tags: ['Climate', 'Environment', 'Earth Science']
@@ -22,7 +22,7 @@ export const topics: Topic[] = [
     description: 'The scientific consensus on the efficacy and safety of vaccines, including COVID-19 vaccines and traditional vaccines.',
     consensusLevel: 'high',
     consensusPercentage: 95,
-    contributorsCount: 634,
+    contributorsCount: 0,
     sourcesCount: 982,
     updatedAt: '2023-09-05T09:15:20Z',
     tags: ['Medicine', 'Public Health', 'Immunology']
@@ -34,7 +34,7 @@ export const topics: Topic[] = [
     description: 'The emerging consensus on AI safety, risks of advanced artificial intelligence, and regulatory approaches.',
     consensusLevel: 'medium',
     consensusPercentage: 68,
-    contributorsCount: 453,
+    contributorsCount: 0,
     sourcesCount: 615,
     updatedAt: '2023-10-12T16:45:10Z',
     tags: ['Technology', 'Computer Science', 'Ethics']
@@ -46,7 +46,7 @@ export const topics: Topic[] = [
     description: 'Scientific consensus on fundamental nutrition principles, dietary recommendations, and their evidence base.',
     consensusLevel: 'medium',
     consensusPercentage: 72,
-    contributorsCount: 389,
+    contributorsCount: 0,
     sourcesCount: 721,
     updatedAt: '2023-07-28T11:30:45Z',
     tags: ['Health', 'Food Science', 'Medicine']
@@ -58,7 +58,7 @@ export const topics: Topic[] = [
     description: 'Current scientific understanding of quantum computing principles, potential applications, and timeline expectations.',
     consensusLevel: 'high',
     consensusPercentage: 90,
-    contributorsCount: 287,
+    contributorsCount: 0,
     sourcesCount: 432,
     updatedAt: '2023-09-30T13:20:15Z',
     tags: ['Physics', 'Computer Science', 'Technology']
@@ -70,7 +70,7 @@ export const topics: Topic[] = [
     description: 'The scientific consensus on human evolution, genetic history, and relationship to other species.',
     consensusLevel: 'high',
     consensusPercentage: 99,
-    contributorsCount: 512,
+    contributorsCount: 0,
     sourcesCount: 876,
     updatedAt: '2023-06-22T10:15:30Z',
     tags: ['Biology', 'Anthropology', 'Genetics']
@@ -82,7 +82,7 @@ export const topics: Topic[] = [
     description: 'Scholarly consensus on the economic impacts of immigration on host countries and regions.',
     consensusLevel: 'medium',
     consensusPercentage: 65,
-    contributorsCount: 345,
+    contributorsCount: 0,
     sourcesCount: 519,
     updatedAt: '2023-08-05T15:45:22Z',
     tags: ['Economics', 'Social Science', 'Policy']
@@ -94,7 +94,7 @@ export const topics: Topic[] = [
     description: 'The scientific consensus on the effectiveness of different psychotherapy approaches for various mental health conditions.',
     consensusLevel: 'medium',
     consensusPercentage: 78,
-    contributorsCount: 421,
+    contributorsCount: 0,
     sourcesCount: 684,
     updatedAt: '2023-09-18T14:10:05Z',
     tags: ['Psychology', 'Mental Health', 'Medicine']

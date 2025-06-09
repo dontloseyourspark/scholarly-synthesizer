@@ -34,6 +34,41 @@ export const keyPublications = [
     authors: "World Meteorological Organization",
     year: 2022,
     url: "https://library.wmo.int/index.php?lvl=notice_display&id=22130"
+  },
+  {
+    id: 4,
+    title: "How climate change degrades child health: A systematic review and meta-analysis",
+    authors: "Various",
+    year: 2024,
+    url: "https://doi.org/10.1016/j.scitotenv.2024.170944"
+  },
+  {
+    id: 5,
+    title: "Climate change effects on water footprint of crop production: A meta-analysis",
+    authors: "Various",
+    year: 2024,
+    url: "https://doi.org/10.1016/j.envc.2024.101033"
+  },
+  {
+    id: 6,
+    title: "Climate change adaptation and mitigation in agriculture: a review of the evidence for synergies and tradeoffs",
+    authors: "Barbieri, Bittner, Wollenberg & Adair",
+    year: 2024,
+    url: "https://doi.org/10.1088/1748-9326/ad1629"
+  },
+  {
+    id: 7,
+    title: "A meta-analysis of the total economic impact of climate change",
+    authors: "Various",
+    year: 2024,
+    url: "https://doi.org/10.1016/j.enpol.2023.113922"
+  },
+  {
+    id: 8,
+    title: "Assessing evidence on the impacts of nature-based interventions for climate change mitigation",
+    authors: "Cheng et al.",
+    year: 2023,
+    url: "https://doi.org/10.1186/s13750-023-00312-3"
   }
 ];
 
@@ -62,6 +97,7 @@ export const climateEffects = [
     iconColor: "text-green-600",
     description: "An estimated one million plant and animal species are at risk of extinction due to climate change."
   }
+  
 ];
 
 export const CHART_COLORS = ['#4CAF50', '#F44336'];
