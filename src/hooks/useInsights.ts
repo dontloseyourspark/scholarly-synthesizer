@@ -81,14 +81,20 @@ export const useInsights = (topicId: number) => {
             return {
               ...insight,
               scholar: insight.scholars,
-              sources: []
+              sources: [],
+              upvotes: insight.upvotes || 0,
+              downvotes: insight.downvotes || 0,
+              position: insight.position as 'support' | 'neutral' | 'against'
             };
           }
 
           return {
             ...insight,
             scholar: insight.scholars,
-            sources: sourcesData?.map(item => item.sources).filter(Boolean) || []
+            sources: sourcesData?.map(item => item.sources).filter(Boolean) || [],
+            upvotes: insight.upvotes || 0,
+            downvotes: insight.downvotes || 0,
+            position: insight.position as 'support' | 'neutral' | 'against'
           };
         })
       );

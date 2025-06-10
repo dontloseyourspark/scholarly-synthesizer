@@ -9,11 +9,7 @@ export type DatabaseDiscussion = {
   created_at: string;
   updated_at: string;
   parent_id: string | null;
-  user: {
-    id: string;
-    username: string | null;
-    avatar_url: string | null;
-  } | null;
+  user_id: string | null;
   replies?: DatabaseDiscussion[];
 };
 
@@ -29,34 +25,17 @@ export const useDiscussions = (topicId: number) => {
       
       const { data, error } = await supabase
         .from('discussions')
-        .select(`
-          *,
-          profiles (
-            id,
-            username,
-            avatar_url
-          )
-        `)
+        .select('*')
         .eq('topic_id', topicId)
         .order('created_at', { ascending: true });
 
       if (error) throw error;
       
-      // Transform the data to include user info and organize replies
-      const transformedData = (data || []).map(discussion => ({
-        ...discussion,
-        user: discussion.profiles ? {
-          id: discussion.profiles.id,
-          username: discussion.profiles.username,
-          avatar_url: discussion.profiles.avatar_url
-        } : null
-      }));
-
       // Organize discussions with replies
-      const topLevelDiscussions = transformedData.filter(d => !d.parent_id);
+      const topLevelDiscussions = (data || []).filter(d => !d.parent_id);
       const repliesMap = new Map();
       
-      transformedData.filter(d => d.parent_id).forEach(reply => {
+      (data || []).filter(d => d.parent_id).forEach(reply => {
         if (!repliesMap.has(reply.parent_id)) {
           repliesMap.set(reply.parent_id, []);
         }
