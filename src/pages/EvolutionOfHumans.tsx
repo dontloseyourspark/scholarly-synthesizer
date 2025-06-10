@@ -10,6 +10,7 @@ import DescriptionSection from '@/components/evolution/DescriptionSection';
 import EvidenceSection from '@/components/evolution/EvidenceSection';
 import VisualizationsSection from '@/components/evolution/VisualizationsSection';
 import CallToActionSection from '@/components/evolution/CallToActionSection';
+import InsightsContainer from '@/components/evolution/InsightsContainer';
 
 const EvolutionOfHumans = () => {
   // Get the evolution of humans topic data - use the exact slug from the topicsData
@@ -39,6 +40,7 @@ const EvolutionOfHumans = () => {
         <DescriptionSection description={evolutionTopic.description} />
         <EvidenceSection />
         <VisualizationsSection />
+        <InsightsContainer />
         <CallToActionSection topicSlug={evolutionTopic.slug} />
       </main>
       
