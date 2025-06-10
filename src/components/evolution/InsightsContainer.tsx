@@ -1,24 +1,22 @@
 
-import React, { useState } from 'react';
-import { useToast } from '@/hooks/use-toast';
-import InsightsSection from './InsightsSection';
-import { handleVote } from '@/utils/handleVote';
-import { Insight } from '@/data/insightsData';
-import { evolutionInsights } from '@/data/evolutionInsights';
+import React from 'react';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 
 const InsightsContainer: React.FC = () => {
-  const [insights, setInsights] = useState<Insight[]>(evolutionInsights);
-  const { toast } = useToast();
+  const topicId = getTopicIdFromSlug('evolution-of-humans');
+  
+  if (!topicId) {
+    return (
+      <div className="container mx-auto px-4 mt-8">
+        <div className="text-center text-red-600">
+          Error: Could not find topic ID for evolution of humans
+        </div>
+      </div>
+    );
+  }
 
-  const onVote = (insightId: string, voteType: 'up' | 'down') => {
-    const updated = handleVote(insightId, voteType, insights);
-    setInsights(updated);
-    toast({
-      title: `You voted ${voteType} on an insight.`,
-    });
-  };
-
-  return <InsightsSection insights={insights} onVote={onVote} />;
+  return <DatabaseInsightsContainer topicId={topicId} />;
 };
 
 export default InsightsContainer;

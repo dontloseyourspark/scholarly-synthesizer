@@ -54,6 +54,141 @@ export type Database = {
         }
         Relationships: []
       }
+      discussions: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          parent_id: string | null
+          topic_id: number | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          topic_id?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          parent_id?: string | null
+          topic_id?: number | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "discussions_parent_id_fkey"
+            columns: ["parent_id"]
+            isOneToOne: false
+            referencedRelation: "discussions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "discussions_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insight_sources: {
+        Row: {
+          created_at: string
+          id: string
+          insight_id: string | null
+          source_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          insight_id?: string | null
+          source_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          insight_id?: string | null
+          source_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insight_sources_insight_id_fkey"
+            columns: ["insight_id"]
+            isOneToOne: false
+            referencedRelation: "insights"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insight_sources_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insights: {
+        Row: {
+          confidence: number | null
+          content: string
+          created_at: string
+          downvotes: number | null
+          id: string
+          position: string
+          scholar_id: string | null
+          topic_id: number | null
+          updated_at: string
+          upvotes: number | null
+        }
+        Insert: {
+          confidence?: number | null
+          content: string
+          created_at?: string
+          downvotes?: number | null
+          id?: string
+          position: string
+          scholar_id?: string | null
+          topic_id?: number | null
+          updated_at?: string
+          upvotes?: number | null
+        }
+        Update: {
+          confidence?: number | null
+          content?: string
+          created_at?: string
+          downvotes?: number | null
+          id?: string
+          position?: string
+          scholar_id?: string | null
+          topic_id?: number | null
+          updated_at?: string
+          upvotes?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "insights_scholar_id_fkey"
+            columns: ["scholar_id"]
+            isOneToOne: false
+            referencedRelation: "scholars"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "insights_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           academic_title: string | null
@@ -105,33 +240,78 @@ export type Database = {
         }
         Relationships: []
       }
+      scholars: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          credentials: string[] | null
+          id: string
+          institution: string | null
+          name: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          credentials?: string[] | null
+          id?: string
+          institution?: string | null
+          name: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          credentials?: string[] | null
+          id?: string
+          institution?: string | null
+          name?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       sources: {
         Row: {
           authors: string | null
           created_at: string
+          doi: string | null
           id: number
           name: string | null
+          publication: string | null
+          title: string | null
           type: string | null
           updated_at: string | null
           url: string | null
+          year: number | null
         }
         Insert: {
           authors?: string | null
           created_at?: string
+          doi?: string | null
           id?: number
           name?: string | null
+          publication?: string | null
+          title?: string | null
           type?: string | null
           updated_at?: string | null
           url?: string | null
+          year?: number | null
         }
         Update: {
           authors?: string | null
           created_at?: string
+          doi?: string | null
           id?: number
           name?: string | null
+          publication?: string | null
+          title?: string | null
           type?: string | null
           updated_at?: string | null
           url?: string | null
+          year?: number | null
         }
         Relationships: []
       }
@@ -158,6 +338,38 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: []
+      }
+      votes: {
+        Row: {
+          created_at: string
+          id: string
+          insight_id: string | null
+          user_id: string | null
+          vote_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          insight_id?: string | null
+          user_id?: string | null
+          vote_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          insight_id?: string | null
+          user_id?: string | null
+          vote_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "votes_insight_id_fkey"
+            columns: ["insight_id"]
+            isOneToOne: false
+            referencedRelation: "insights"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
