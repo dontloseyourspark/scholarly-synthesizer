@@ -30,11 +30,25 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
     new Set(topicInsights.flatMap(insight => insight.sources))
   ).slice(0, 3); // Limit to 3 sources for preview
   
+  // Determine the correct route for this topic
+  const getTopicRoute = (slug: string) => {
+    switch (slug) {
+      case 'climate-change':
+        return '/climate-change';
+      case 'evolution-of-humans':
+        return '/evolution-of-humans';
+      default:
+        return `/topics/${slug}`;
+    }
+  };
+
+  const topicRoute = getTopicRoute(topic.slug);
+  
   return (
     <Card className="h-full flex flex-col transition-all hover:shadow-md">
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">
-          <Link to={`/topics/${topic.slug}`} className="hover:text-scholarly-blue transition-colors">
+          <Link to={topicRoute} className="hover:text-scholarly-blue transition-colors">
             {topic.title}
           </Link>
         </CardTitle>
@@ -95,7 +109,7 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
               {topicInsights.length > 0 && sources.length > 0 && (
                 <div className="pt-2 text-center">
                   <Link 
-                    to={`/topics/${topic.slug}`} 
+                    to={topicRoute} 
                     className="text-xs text-scholarly-blue hover:underline"
                   >
                     View all {topic.sourcesCount} sources
