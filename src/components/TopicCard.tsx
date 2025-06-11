@@ -37,6 +37,18 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
         return '/climate-change';
       case 'evolution-of-humans':
         return '/evolution-of-humans';
+      case 'vaccine-efficacy':
+        return '/vaccine-efficacy';
+      case 'artificial-intelligence-safety':
+        return '/artificial-intelligence-safety';
+      case 'nutrition-science':
+        return '/nutrition-science';
+      case 'quantum-computing':
+        return '/quantum-computing';
+      case 'economic-impacts-immigration':
+        return '/economic-impacts-immigration';
+      case 'effectiveness-psychotherapy':
+        return '/effectiveness-psychotherapy';
       default:
         return `/topics/${slug}`;
     }
