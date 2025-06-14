@@ -1,74 +1,63 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '@/components/ui/button';
-import { getTopic } from '@/data/topicsData';
-import { Earth } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
-import VisualizationsSection from '@/components/climate/VisualizationsSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
-import InsightsContainer from '@/components/climate/InsightsContainer';
+import { Thermometer } from 'lucide-react';
+import { getTopic } from '@/data/topicsData';
 import { keyPublications } from '@/data/climateChangeData';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 
 const ClimateChange = () => {
-  const climateChangeTopic = getTopic('climate-change');
+  const topic = getTopic('climate-change')!;
+  const topicId = getTopicIdFromSlug('climate-change');
 
-  if (!climateChangeTopic) {
-    return (
-      <TopicPageLayout>
-        <div className="container mx-auto px-4 text-center py-12">
-          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
-          <p className="mb-6">
-            We couldn't find information about the Climate Change topic.
-          </p>
-          <Button asChild>
-            <Link to="/topics">Browse All Topics</Link>
-          </Button>
-        </div>
-      </TopicPageLayout>
-    );
-  }
+  const description = "Climate change refers to long-term shifts in global temperatures and weather patterns. Scientific evidence overwhelmingly shows that human activities, particularly the emission of greenhouse gases, are the primary driver of climate change since the mid-20th century.";
 
-  const additionalContent = (
-    <p className="text-base text-muted-foreground leading-relaxed">
-      The scientific consensus on climate change is built on decades of research, observations, 
-      and climate modeling. Multiple lines of evidence consistently point to human activities 
-      as the primary driver of recent climate change.
-    </p>
-  );
+  const content = {
+    sections: [
+      {
+        title: "The Scientific Evidence",
+        content: "Multiple lines of evidence support the reality of anthropogenic climate change, including rising global temperatures, melting ice sheets, rising sea levels, and changing precipitation patterns. The scientific consensus is based on data from thousands of research studies and observations from around the world."
+      },
+      {
+        title: "Greenhouse Gas Effects",
+        content: "Carbon dioxide levels have increased by over 40% since pre-industrial times, primarily due to fossil fuel combustion and deforestation. Other greenhouse gases like methane and nitrous oxide have also increased significantly, contributing to the enhanced greenhouse effect."
+      }
+    ]
+  };
 
   return (
     <TopicPageLayout>
-      <TopicHeroSection 
-        topic={climateChangeTopic}
+      <TopicHeroSection
+        topic={topic}
         title="Climate Change"
-        categoryIcon={Earth}
-        categoryLabel="Climate Topics"
+        categoryIcon={Thermometer}
+        categoryLabel="Environmental Science"
         keyPublications={keyPublications}
       />
-      <TopicDescriptionSection 
-        title="Understanding Climate Change"
-        description={climateChangeTopic.description}
-        additionalContent={additionalContent}
-      />
-      <TopicContentSection 
-        title="Climate Effects"
-        subtitle="Key Environmental Impacts"
-        description="Research on rising temperatures, changing weather patterns, melting ice caps, and biodiversity loss caused by climate change."
-      />
-      <TopicVisualizationsSection>
-        <VisualizationsSection />
-      </TopicVisualizationsSection>
-      <InsightsContainer />
-      <TopicCallToActionSection 
-        topicSlug={climateChangeTopic.slug}
-        title="Contribute to Climate Research"
-        description="Help advance our understanding of climate change by contributing your expertise and research insights."
-      />
+      
+      <TopicDescriptionSection description={description} />
+      
+      <TopicContentSection content={content} />
+      
+      <TopicVisualizationsSection />
+      
+      {topicId ? (
+        <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications} />
+      ) : (
+        <div className="container mx-auto px-4 mt-8">
+          <div className="text-center text-red-600">
+            Error: Could not map topic to database
+          </div>
+        </div>
+      )}
+      
+      <TopicCallToActionSection />
     </TopicPageLayout>
   );
 };

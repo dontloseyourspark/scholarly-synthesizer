@@ -9,9 +9,18 @@ import { DatabaseInsight } from '@/hooks/useInsights';
 type DatabaseInsightsTabsProps = {
   insights: DatabaseInsight[];
   onVote: (insightId: string, voteType: 'up' | 'down') => void;
+  keyPublications?: Array<{
+    id: string;
+    title: string;
+    authors: string;
+    year: number;
+    url: string;
+    doi?: string;
+    publication?: string;
+  }>;
 };
 
-const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({ insights, onVote }) => {
+const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({ insights, onVote, keyPublications }) => {
   return (
     <div className="container mx-auto px-4 mt-8">
       <Tabs defaultValue="insights" className="w-full">
@@ -26,7 +35,7 @@ const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({ insights, o
         </TabsContent>
         
         <TabsContent value="sources">
-          <SourcesTab insights={insights} />
+          <SourcesTab insights={insights} keyPublications={keyPublications} />
         </TabsContent>
         
         <TabsContent value="discussion">

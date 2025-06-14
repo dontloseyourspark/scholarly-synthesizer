@@ -19,6 +19,8 @@ interface TopicHeroSectionProps {
     authors: string;
     year: number;
     url: string;
+    doi?: string;
+    publication?: string;
   }>;
 }
 
