@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { BookOpen } from 'lucide-react';
 
-const NavbarLogo = () => {
+const NavbarBrand = () => {
   return (
     <Link to="/" className="flex items-center space-x-2">
       <BookOpen className="h-6 w-6 text-scholarly-blue" />
@@ -12,4 +12,4 @@ const NavbarLogo = () => {
   );
 };
 
-export default NavbarLogo;
+export default NavbarBrand;

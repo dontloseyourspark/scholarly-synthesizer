@@ -1,22 +1,18 @@
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { Search, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useToast } from '@/components/ui/use-toast';
+import { useLocation } from 'react-router-dom';
+import SearchForm from '@/components/search/SearchForm';
+import { useSearchNavigation } from '@/hooks/useSearchNavigation';
 
 const SearchBar = ({ className }: { className?: string }) => {
   const [query, setQuery] = useState('');
-  const navigate = useNavigate();
   const location = useLocation();
-  const { toast } = useToast();
+  const { navigateToSearch, clearSearch } = useSearchNavigation();
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const q = queryParams.get('q');
     if (q) {
-      // Convert back from URL format to readable format
       const readableQuery = q.replace(/-/g, ' ');
       setQuery(readableQuery);
     } else {
@@ -26,54 +22,23 @@ const SearchBar = ({ className }: { className?: string }) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!query.trim()) {
-      toast({
-        title: "Empty search",
-        description: "Please enter a topic to search.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    // Process query and navigate to topics page with query parameter
-    const processedQuery = query.trim().toLowerCase().replace(/\s+/g, '-');
-    navigate(`/topics?q=${encodeURIComponent(processedQuery)}`);
+    navigateToSearch(query);
   };
 
-  const clearSearch = () => {
+  const handleClear = () => {
     setQuery('');
-    // Navigate to topics page without any query parameters
-    navigate('/topics', { replace: true });
+    clearSearch();
   };
 
   return (
-    <form onSubmit={handleSearch} className={`flex w-full max-w-lg items-center space-x-2 ${className}`}>
-      <div className="flex-1 relative">
-        <Input
-          type="text"
-          placeholder="Search for scholarly consensus on a topic..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full pl-10 pr-8"
-        />
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        {query && (
-          <Button 
-            type="button" 
-            variant="ghost" 
-            size="sm" 
-            onClick={clearSearch}
-            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted"
-          >
-            <X className="h-3 w-3" />
-          </Button>
-        )}
-      </div>
-      <Button type="submit" className="bg-scholarly-blue hover:bg-scholarly-accent">
-        Search
-      </Button>
-    </form>
+    <SearchForm
+      query={query}
+      onQueryChange={setQuery}
+      onSubmit={handleSearch}
+      onClear={handleClear}
+      placeholder="Search for scholarly consensus on a topic..."
+      className={className}
+    />
   );
 };
 

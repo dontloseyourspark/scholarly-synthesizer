@@ -2,10 +2,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import NavbarLogo from './navbar/NavbarLogo';
+import NavbarBrand from './navbar/NavbarBrand';
 import NavbarDesktopMenu from './navbar/NavbarDesktopMenu';
 import NavbarSearch from './navbar/NavbarSearch';
-import NavbarUserMenu from './navbar/NavbarUserMenu';
+import NavbarAuth from './navbar/NavbarAuth';
 import NavbarMobileMenu from './navbar/NavbarMobileMenu';
 
 const Navbar = () => {
@@ -20,13 +20,13 @@ const Navbar = () => {
   return (
     <header className="border-b border-border bg-card sticky top-0 z-50">
       <div className="container mx-auto px-4 flex items-center justify-between h-16">
-        <NavbarLogo />
+        <NavbarBrand />
         
         <NavbarDesktopMenu isAdmin={isAdmin} />
         
         <div className="hidden md:flex items-center space-x-4">
           <NavbarSearch />
-          <NavbarUserMenu 
+          <NavbarAuth 
             user={user} 
             userProfile={userProfile} 
             isAdmin={isAdmin} 
