@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { BookOpen, Users, Award, FileText, CheckCircle, AlertCircle, Mail, Github } from 'lucide-react';
 import Footer from '@/components/Footer';
 import Navbar from '@/components/Navbar';
+import { Link } from 'react-router-dom';
 
 const Contribute = () => {
   return (
@@ -23,13 +24,17 @@ const Contribute = () => {
             Your contributions help advance evidence-based understanding across critical topics.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
-              <FileText className="h-5 w-5 mr-2" />
-              Submit Research
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue" asChild>
+              <Link to="/auth">
+                <FileText className="h-5 w-5 mr-2" />
+                Submit Research
+              </Link>
             </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
-              <Users className="h-5 w-5 mr-2" />
-              Join Review Panel
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue" asChild>
+              <Link to="/auth">
+                <Users className="h-5 w-5 mr-2" />
+                Join Review Panel
+              </Link>
             </Button>
           </div>
         </div>
