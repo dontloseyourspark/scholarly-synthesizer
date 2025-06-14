@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { BookOpen, User, Search, Menu, LogOut, ShieldCheck, UserCircle } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { BookOpen, User, Search, Menu, LogOut, ShieldCheck, UserCircle, X } from 'lucide-react';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -17,10 +18,29 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 const Navbar = () => {
   const { user, signOut, isAdmin, userProfile } = useAuth();
   const navigate = useNavigate();
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/');
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      const processedQuery = searchQuery.trim().toLowerCase().replace(/\s+/g, '-');
+      navigate(`/topics?q=${encodeURIComponent(processedQuery)}`);
+      setIsSearchExpanded(false);
+      setSearchQuery('');
+    }
+  };
+
+  const toggleSearch = () => {
+    setIsSearchExpanded(!isSearchExpanded);
+    if (isSearchExpanded) {
+      setSearchQuery('');
+    }
   };
 
   return (
@@ -53,10 +73,26 @@ const Navbar = () => {
         </div>
         
         <div className="hidden md:flex items-center space-x-4">
-          <Button variant="outline" size="sm" className="flex items-center">
-            <Search className="h-4 w-4 mr-2" />
-            Search
-          </Button>
+          {isSearchExpanded ? (
+            <form onSubmit={handleSearchSubmit} className="flex items-center space-x-2 animate-in slide-in-from-right-2 duration-200">
+              <Input
+                type="text"
+                placeholder="Search topics..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-64"
+                autoFocus
+              />
+              <Button type="button" variant="ghost" size="sm" onClick={toggleSearch}>
+                <X className="h-4 w-4" />
+              </Button>
+            </form>
+          ) : (
+            <Button variant="outline" size="sm" className="flex items-center" onClick={toggleSearch}>
+              <Search className="h-4 w-4 mr-2" />
+              Search
+            </Button>
+          )}
           
           {user ? (
             <DropdownMenu>
