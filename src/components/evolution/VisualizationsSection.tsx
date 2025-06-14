@@ -46,11 +46,11 @@ const migrationData = [
 ];
 
 const consensusData = [
-  { name: 'Accept human evolution', value: 97, color: '#0A2463' },
-  { name: 'Reject/Uncertain', value: 3, color: '#D1D5DB' }
+  { name: 'Support', value: 97, color: '#4CAF50' },
+  { name: 'Against', value: 3, color: '#F44336' }
 ];
 
-const CHART_COLORS = ['#0A2463', '#D1D5DB'];
+const CHART_COLORS = ['#4CAF50', '#F44336'];
 
 const VisualizationsSection = () => {
   return (

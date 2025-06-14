@@ -1,12 +1,11 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Legend } from 'recharts';
 
 const consensusData = [
-  { name: 'Net positive economic impact', value: 78, color: '#0A2463' },
-  { name: 'Mixed/Uncertain views', value: 22, color: '#D1D5DB' }
+  { name: 'Support', value: 78, color: '#4CAF50' },
+  { name: 'Against', value: 22, color: '#F44336' }
 ];
 
 const laborMarketData = [
@@ -24,7 +23,7 @@ const fiscalImpactData = [
   { timeframe: 'Lifetime total', impact: 3.6 }
 ];
 
-const CHART_COLORS = ['#0A2463', '#D1D5DB'];
+const CHART_COLORS = ['#4CAF50', '#F44336'];
 
 const EconomicVisualizationsSection = () => {
   return (
