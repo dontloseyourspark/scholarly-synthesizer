@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
 interface ConsensusData {
   name: string;
@@ -44,14 +44,13 @@ const ConsensusChart = ({ title, data, description, source }: ConsensusChartProp
                   outerRadius={100}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
                 >
                   {data.map((entry, index) => (
                     <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                   ))}
                 </Pie>
                 <Tooltip formatter={(value, name) => [`${value}%`, name]} />
-                <Legend />
               </PieChart>
             </ResponsiveContainer>
           </div>
