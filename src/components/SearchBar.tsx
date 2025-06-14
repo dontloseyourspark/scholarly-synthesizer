@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/use-toast';
@@ -41,6 +41,11 @@ const SearchBar = ({ className }: { className?: string }) => {
     navigate(`/topics?q=${encodeURIComponent(processedQuery)}`);
   };
 
+  const clearSearch = () => {
+    setQuery('');
+    navigate('/topics');
+  };
+
   return (
     <form onSubmit={handleSearch} className={`flex w-full max-w-lg items-center space-x-2 ${className}`}>
       <div className="flex-1 relative">
@@ -49,9 +54,20 @@ const SearchBar = ({ className }: { className?: string }) => {
           placeholder="Search for scholarly consensus on a topic..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full pl-10"
+          className="w-full pl-10 pr-8"
         />
         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        {query && (
+          <Button 
+            type="button" 
+            variant="ghost" 
+            size="sm" 
+            onClick={clearSearch}
+            className="absolute right-1 top-1/2 transform -translate-y-1/2 h-6 w-6 p-0 hover:bg-muted"
+          >
+            <X className="h-3 w-3" />
+          </Button>
+        )}
       </div>
       <Button type="submit" className="bg-scholarly-blue hover:bg-scholarly-accent">
         Search
