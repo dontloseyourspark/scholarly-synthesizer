@@ -21,14 +21,14 @@ const CallToActionSection = ({ topicSlug }: CallToActionSectionProps) => {
         </p>
         
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <Button asChild className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray">
+          <Button asChild className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray hover:text-scholarly-blue">
             <Link to={`/topics/${topicSlug}/publications`}>
               <BookOpen className="mr-2 h-4 w-4" />
               Browse Scientific Publications
             </Link>
           </Button>
           
-          <Button asChild variant="outline" className="bg-transparent border-white text-white hover:bg-white/10">
+          <Button asChild variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
             <Link to="/contribute">
               <ChevronRight className="mr-2 h-4 w-4" />
               Contribute to the Consensus
