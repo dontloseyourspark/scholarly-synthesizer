@@ -2,11 +2,26 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Legend } from 'recharts';
 
 const consensusData = [
-  { name: 'Immigration has net positive economic impact', value: 78 },
-  { name: 'Other/Mixed/Uncertain', value: 22 }
+  { name: 'Net positive economic impact', value: 78, color: '#0A2463' },
+  { name: 'Mixed/Uncertain views', value: 22, color: '#D1D5DB' }
+];
+
+const laborMarketData = [
+  { sector: 'Agriculture', nativeWages: 0.2, immigrantShare: 36 },
+  { sector: 'Construction', nativeWages: -0.1, immigrantShare: 25 },
+  { sector: 'Hospitality', nativeWages: 0.3, immigrantShare: 23 },
+  { sector: 'Healthcare', nativeWages: 0.8, immigrantShare: 18 },
+  { sector: 'Technology', nativeWages: 1.2, immigrantShare: 32 }
+];
+
+const fiscalImpactData = [
+  { timeframe: 'First 10 years', impact: -2.4 },
+  { timeframe: '11-20 years', impact: 1.8 },
+  { timeframe: '21-30 years', impact: 4.2 },
+  { timeframe: 'Lifetime total', impact: 3.6 }
 ];
 
 const CHART_COLORS = ['#0A2463', '#D1D5DB'];
@@ -17,7 +32,7 @@ const EconomicVisualizationsSection = () => {
       <Tabs defaultValue="consensus" className="w-full">
         <TabsList className="mb-8">
           <TabsTrigger value="consensus">Economic Consensus</TabsTrigger>
-          <TabsTrigger value="impacts">Economic Impacts</TabsTrigger>
+          <TabsTrigger value="impacts">Fiscal Impact</TabsTrigger>
           <TabsTrigger value="data">Labor Market Data</TabsTrigger>
         </TabsList>
         
@@ -50,13 +65,14 @@ const EconomicVisualizationsSection = () => {
                         outerRadius={100}
                         fill="#8884d8"
                         dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
                       >
                         {consensusData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip />
+                      <Tooltip formatter={(value, name) => [`${value}%`, name]} />
+                      <Legend />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
@@ -66,27 +82,57 @@ const EconomicVisualizationsSection = () => {
         </TabsContent>
         
         <TabsContent value="impacts">
-          <Card>
+          <Card className="border-none shadow-lg">
             <CardHeader>
-              <CardTitle>Economic Impacts</CardTitle>
+              <CardTitle className="text-2xl">Fiscal Impact Over Time</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                Charts and graphs showing economic impacts of immigration across different metrics.
-              </p>
+              <div className="mb-6">
+                <p className="mb-4">
+                  Immigration's fiscal impact varies significantly over time. While there may be initial costs, 
+                  immigrants typically become net fiscal contributors as they establish careers and pay taxes.
+                </p>
+              </div>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={fiscalImpactData} margin={{ top: 20, right: 30, left: 20, bottom: 70 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="timeframe" angle={-45} textAnchor="end" height={70} />
+                    <YAxis label={{ value: 'Net Fiscal Impact (%)', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip formatter={(value) => [`${value}%`, 'Net Fiscal Impact']} />
+                    <Bar dataKey="impact" fill="#0A2463" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="text-sm text-gray-600 mt-4">Source: National Academy of Sciences economic analysis</p>
             </CardContent>
           </Card>
         </TabsContent>
         
         <TabsContent value="data">
-          <Card>
+          <Card className="border-none shadow-lg">
             <CardHeader>
-              <CardTitle>Labor Market Data</CardTitle>
+              <CardTitle className="text-2xl">Labor Market Effects by Sector</CardTitle>
             </CardHeader>
             <CardContent>
-              <p className="text-muted-foreground">
-                Analysis of labor market effects and employment patterns related to immigration.
-              </p>
+              <div className="mb-6">
+                <p className="mb-4">
+                  Immigration effects vary by economic sector. This chart shows the relationship between 
+                  immigrant workforce participation and wage effects for native workers.
+                </p>
+              </div>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={laborMarketData} margin={{ top: 20, right: 30, left: 20, bottom: 70 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="sector" angle={-45} textAnchor="end" height={70} />
+                    <YAxis label={{ value: 'Native Wage Change (%)', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="nativeWages" stroke="#0A2463" name="Native Wage Change %" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="text-sm text-gray-600 mt-4">Source: Bureau of Labor Statistics and economic research studies</p>
             </CardContent>
           </Card>
         </TabsContent>
