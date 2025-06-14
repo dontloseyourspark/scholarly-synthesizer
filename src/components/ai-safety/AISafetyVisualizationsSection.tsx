@@ -1,12 +1,11 @@
-
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Support', value: 85, color: '#F44336' },
-  { name: 'Against', value: 15, color: '#4CAF50' }
+  { name: 'Concerned', value: 78, color: '#F44336' },
+  { name: 'Not concerned', value: 22, color: '#4CAF50' }
 ];
 
 const consensusDescription = [
