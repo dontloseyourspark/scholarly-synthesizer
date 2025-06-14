@@ -1,4 +1,3 @@
-
 import React from 'react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
@@ -11,7 +10,7 @@ import { getTopic } from '@/data/topicsData';
 import { keyPublications } from '@/data/climateChangeData';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
 import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
-import { ConsensusTab } from '@/components/climate/ConsensusTab';
+import ConsensusTab from '@/components/climate/ConsensusTab';
 
 const ClimateChange = () => {
   const topic = getTopic('climate-change')!;

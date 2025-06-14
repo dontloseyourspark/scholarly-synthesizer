@@ -4,7 +4,6 @@ import { useInsights } from '@/hooks/useInsights';
 import DatabaseInsightsLoadingState from './DatabaseInsightsLoadingState';
 import DatabaseInsightsErrorState from './DatabaseInsightsErrorState';
 import DatabaseInsightsTabs from './DatabaseInsightsTabs';
-import { handleVote } from '@/utils/handleVote';
 
 type DatabaseInsightsContainerProps = {
   topicId: number;
@@ -27,6 +26,7 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
     insights, 
     loading, 
     error, 
+    handleVote,
     refetch 
   } = useInsights(topicId);
 
@@ -41,7 +41,7 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
   return (
     <DatabaseInsightsTabs 
       insights={insights || []} 
-      onVote={(insightId, voteType) => handleVote(insightId, voteType)} 
+      onVote={handleVote} 
       keyPublications={keyPublications}
     />
   );
