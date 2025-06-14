@@ -100,6 +100,16 @@
   }
 }
 
+@layer components {
+  .bg-scholarly-blue:hover {
+    @apply bg-white text-scholarly-blue;
+  }
+  
+  .bg-scholarly-blue:hover svg {
+    @apply text-scholarly-blue;
+  }
+}
+
 .consensus-gradient {
   background: linear-gradient(90deg, #F44336 0%, #FFC107 50%, #4CAF50 100%);
 }
