@@ -1,18 +1,21 @@
 
 export const vaccinePublications = [
   {
+    id: "1",
     title: "Efficacy and safety of COVID-19 vaccines: a systematic review",
     authors: "Graña C, Ghosn L, Evrenoglou T, et al.",
     year: 2022,
     url: "https://www.cochrane.org/CD015477/INFECTN_how-effective-are-covid-19-vaccines"
   },
   {
+    id: "2",
     title: "Vaccine effectiveness: how well do vaccines work?",
     authors: "World Health Organization",
     year: 2023,
     url: "https://www.who.int/news-room/feature-stories/detail/vaccine-efficacy-effectiveness-and-protection"
   },
   {
+    id: "3",
     title: "The history and impact of vaccination",
     authors: "Greenwood B",
     year: 2014,

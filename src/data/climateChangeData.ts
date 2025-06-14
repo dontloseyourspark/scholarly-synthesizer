@@ -15,56 +15,56 @@ export const impactData = [
 
 export const keyPublications = [
   {
-    id: 1,
+    id: "1",
     title: "IPCC Sixth Assessment Report",
     authors: "Intergovernmental Panel on Climate Change",
     year: 2021,
     url: "https://www.ipcc.ch/report/ar6/wg1/"
   },
   {
-    id: 2,
+    id: "2",
     title: "Global Warming of 1.5°C",
     authors: "IPCC Special Report",
     year: 2018,
     url: "https://www.ipcc.ch/sr15/"
   },
   {
-    id: 3,
+    id: "3",
     title: "State of the Climate 2022",
     authors: "World Meteorological Organization",
     year: 2022,
     url: "https://library.wmo.int/index.php?lvl=notice_display&id=22130"
   },
   {
-    id: 4,
+    id: "4",
     title: "How climate change degrades child health: A systematic review and meta-analysis",
     authors: "Various",
     year: 2024,
     url: "https://doi.org/10.1016/j.scitotenv.2024.170944"
   },
   {
-    id: 5,
+    id: "5",
     title: "Climate change effects on water footprint of crop production: A meta-analysis",
     authors: "Various",
     year: 2024,
     url: "https://doi.org/10.1016/j.envc.2024.101033"
   },
   {
-    id: 6,
+    id: "6",
     title: "Climate change adaptation and mitigation in agriculture: a review of the evidence for synergies and tradeoffs",
     authors: "Barbieri, Bittner, Wollenberg & Adair",
     year: 2024,
     url: "https://doi.org/10.1088/1748-9326/ad1629"
   },
   {
-    id: 7,
+    id: "7",
     title: "A meta-analysis of the total economic impact of climate change",
     authors: "Various",
     year: 2024,
     url: "https://doi.org/10.1016/j.enpol.2023.113922"
   },
   {
-    id: 8,
+    id: "8",
     title: "Assessing evidence on the impacts of nature-based interventions for climate change mitigation",
     authors: "Cheng et al.",
     year: 2023,
