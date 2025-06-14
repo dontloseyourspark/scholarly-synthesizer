@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -152,10 +153,10 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
             </div>
           </HoverCardContent>
         </HoverCard>
-        <Link to={`/topics/${topic.slug}/contributions`} className="flex items-center">
+        <div className="flex items-center">
           <Calendar className="h-3.5 w-3.5 mr-1" />
           <span>Updated {new Date(topic.updatedAt).toLocaleDateString()}</span>
-        </Link>
+        </div>
       </CardFooter>
     </Card>
   );
