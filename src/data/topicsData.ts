@@ -12,7 +12,7 @@ export const topics: Topic[] = [
     consensusPercentage: 97,
     contributorsCount: 0,
     sourcesCount: 1243,
-    updatedAt: '2023-08-15T14:22:30Z',
+    updatedAt: '2025-06-14T14:22:30Z',
     tags: ['Climate', 'Environment', 'Earth Science']
   },
   {
@@ -24,7 +24,7 @@ export const topics: Topic[] = [
     consensusPercentage: 95,
     contributorsCount: 0,
     sourcesCount: 982,
-    updatedAt: '2023-09-05T09:15:20Z',
+    updatedAt: '2025-06-14T09:15:20Z',
     tags: ['Medicine', 'Public Health', 'Immunology']
   },
   {
@@ -36,7 +36,7 @@ export const topics: Topic[] = [
     consensusPercentage: 68,
     contributorsCount: 0,
     sourcesCount: 615,
-    updatedAt: '2023-10-12T16:45:10Z',
+    updatedAt: '2025-06-14T16:45:10Z',
     tags: ['Technology', 'Computer Science', 'Ethics']
   },
   {
@@ -48,7 +48,7 @@ export const topics: Topic[] = [
     consensusPercentage: 72,
     contributorsCount: 0,
     sourcesCount: 721,
-    updatedAt: '2023-07-28T11:30:45Z',
+    updatedAt: '2025-06-14T11:30:45Z',
     tags: ['Health', 'Food Science', 'Medicine']
   },
   {
@@ -60,7 +60,7 @@ export const topics: Topic[] = [
     consensusPercentage: 90,
     contributorsCount: 0,
     sourcesCount: 432,
-    updatedAt: '2023-09-30T13:20:15Z',
+    updatedAt: '2025-06-14T13:20:15Z',
     tags: ['Physics', 'Computer Science', 'Technology']
   },
   {
@@ -72,7 +72,7 @@ export const topics: Topic[] = [
     consensusPercentage: 99,
     contributorsCount: 0,
     sourcesCount: 876,
-    updatedAt: '2023-06-22T10:15:30Z',
+    updatedAt: '2025-06-14T10:15:30Z',
     tags: ['Biology', 'Anthropology', 'Genetics']
   },
   {
@@ -84,7 +84,7 @@ export const topics: Topic[] = [
     consensusPercentage: 65,
     contributorsCount: 0,
     sourcesCount: 519,
-    updatedAt: '2023-08-05T15:45:22Z',
+    updatedAt: '2025-06-14T15:45:22Z',
     tags: ['Economics', 'Social Science', 'Policy']
   },
   {
@@ -96,7 +96,7 @@ export const topics: Topic[] = [
     consensusPercentage: 78,
     contributorsCount: 0,
     sourcesCount: 684,
-    updatedAt: '2023-09-18T14:10:05Z',
+    updatedAt: '2025-06-14T14:10:05Z',
     tags: ['Psychology', 'Mental Health', 'Medicine']
   }
 ];
