@@ -43,7 +43,8 @@ const SearchBar = ({ className }: { className?: string }) => {
 
   const clearSearch = () => {
     setQuery('');
-    navigate('/topics');
+    // Navigate to topics page without any query parameters
+    navigate('/topics', { replace: true });
   };
 
   return (
