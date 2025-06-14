@@ -1,6 +1,6 @@
 
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,7 +9,20 @@ import { useToast } from '@/components/ui/use-toast';
 const SearchBar = ({ className }: { className?: string }) => {
   const [query, setQuery] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const { toast } = useToast();
+
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const q = queryParams.get('q');
+    if (q) {
+      // Convert back from URL format to readable format
+      const readableQuery = q.replace(/-/g, ' ');
+      setQuery(readableQuery);
+    } else {
+      setQuery('');
+    }
+  }, [location.search]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
