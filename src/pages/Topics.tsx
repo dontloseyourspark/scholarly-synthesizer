@@ -1,15 +1,12 @@
+
 import React, { useState, useEffect } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import SearchBar from '@/components/SearchBar';
+import StaticPageLayout from '@/components/layout/StaticPageLayout';
+import TopicsHeader from '@/components/topics/TopicsHeader';
+import TopicsFilters from '@/components/topics/TopicsFilters';
 import TopicCard, { Topic } from '@/components/TopicCard';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Earth } from 'lucide-react';
 import { searchTopics, topics } from '@/data/topicsData';
@@ -26,7 +23,6 @@ const Topics = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const q = queryParams.get('q');
-    // Set search query to the URL parameter value or empty string if not present
     setSearchQuery(q || '');
   }, [location.search]);
   
@@ -55,20 +51,9 @@ const Topics = () => {
   };
   
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      
-      <main className="flex-grow bg-scholarly-lightGray pb-16">
-        <section className="bg-scholarly-blue py-12 mb-8">
-          <div className="container mx-auto px-4">
-            <h1 className="text-3xl font-serif font-bold text-white mb-4">Browse Topics</h1>
-            <p className="text-scholarly-lightGray max-w-3xl mb-6">
-              Explore scholarly consensus across a wide range of fields, from climate science to medicine, 
-              technology, and social sciences.
-            </p>
-            <SearchBar />
-          </div>
-        </section>
+    <StaticPageLayout>
+      <div className="bg-scholarly-lightGray pb-16">
+        <TopicsHeader />
         
         <div className="container mx-auto px-4 mb-8">
           <Alert className="bg-scholarly-blue/10 border-scholarly-blue">
@@ -96,53 +81,13 @@ const Topics = () => {
             </TabsList>
             
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              <div className="bg-white p-6 rounded-lg shadow-sm h-fit">
-                <h3 className="font-medium text-lg mb-4">Filters</h3>
-                
-                <div className="space-y-6">
-                  <div>
-                    <Label className="text-base mb-2 block">Consensus Level</Label>
-                    <RadioGroup value={consensusFilter} onValueChange={setConsensusFilter}>
-                      <div className="flex items-center space-x-2 mb-2">
-                        <RadioGroupItem value="all" id="all" />
-                        <Label htmlFor="all" className="font-normal">All levels</Label>
-                      </div>
-                      <div className="flex items-center space-x-2 mb-2">
-                        <RadioGroupItem value="high" id="high" />
-                        <Label htmlFor="high" className="font-normal">High consensus</Label>
-                      </div>
-                      <div className="flex items-center space-x-2 mb-2">
-                        <RadioGroupItem value="medium" id="medium" />
-                        <Label htmlFor="medium" className="font-normal">Medium consensus</Label>
-                      </div>
-                      <div className="flex items-center space-x-2 mb-2">
-                        <RadioGroupItem value="low" id="low" />
-                        <Label htmlFor="low" className="font-normal">Low consensus</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="disputed" id="disputed" />
-                        <Label htmlFor="disputed" className="font-normal">Disputed</Label>
-                      </div>
-                    </RadioGroup>
-                  </div>
-                  
-                  <div>
-                    <Label className="text-base mb-2 block">Tags</Label>
-                    <div className="space-y-2 max-h-60 overflow-y-auto pr-2">
-                      {allTags.map((tag) => (
-                        <div key={tag} className="flex items-center space-x-2">
-                          <Checkbox 
-                            id={`tag-${tag}`} 
-                            checked={selectedTags.includes(tag)}
-                            onCheckedChange={() => handleTagChange(tag)}
-                          />
-                          <Label htmlFor={`tag-${tag}`} className="font-normal">{tag}</Label>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <TopicsFilters
+                consensusFilter={consensusFilter}
+                setConsensusFilter={setConsensusFilter}
+                selectedTags={selectedTags}
+                onTagChange={handleTagChange}
+                allTags={allTags}
+              />
               
               <div className="lg:col-span-3">
                 {filteredTopics.length === 0 ? (
@@ -163,10 +108,8 @@ const Topics = () => {
             </div>
           </Tabs>
         </div>
-      </main>
-      
-      <Footer />
-    </div>
+      </div>
+    </StaticPageLayout>
   );
 };
 
