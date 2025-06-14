@@ -15,6 +15,8 @@ type SearchAndSortControlsProps = {
   onSearchTermChange: (value: string) => void;
   sortBy: 'year-desc' | 'year-asc' | 'title-asc' | 'title-desc';
   onSortByChange: (value: 'year-desc' | 'year-asc' | 'title-asc' | 'title-desc') => void;
+  itemsPerPage: number;
+  onItemsPerPageChange: (value: number) => void;
   totalCount: number;
   useStaticData: boolean;
   filteredCount: number;
@@ -25,6 +27,8 @@ const SearchAndSortControls = ({
   onSearchTermChange,
   sortBy,
   onSortByChange,
+  itemsPerPage,
+  onItemsPerPageChange,
   totalCount,
   useStaticData,
   filteredCount
@@ -53,6 +57,19 @@ const SearchAndSortControls = ({
               <SelectItem value="year-asc">Year (Oldest)</SelectItem>
               <SelectItem value="title-asc">Title (A-Z)</SelectItem>
               <SelectItem value="title-desc">Title (Z-A)</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="md:w-32">
+          <Select value={itemsPerPage.toString()} onValueChange={(value) => onItemsPerPageChange(Number(value))}>
+            <SelectTrigger>
+              <SelectValue placeholder="Per page" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="5">5 per page</SelectItem>
+              <SelectItem value="10">10 per page</SelectItem>
+              <SelectItem value="20">20 per page</SelectItem>
+              <SelectItem value="50">50 per page</SelectItem>
             </SelectContent>
           </Select>
         </div>

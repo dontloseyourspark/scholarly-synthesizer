@@ -22,6 +22,7 @@ const TopicPublications = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState<'year-desc' | 'year-asc' | 'title-asc' | 'title-desc'>('year-desc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
 
   // Debounce search term to avoid too many API calls
@@ -33,6 +34,11 @@ const TopicPublications = () => {
 
     return () => clearTimeout(timer);
   }, [searchTerm]);
+
+  // Reset to first page when items per page changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [itemsPerPage]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -62,7 +68,7 @@ const TopicPublications = () => {
     searchTerm: debouncedSearchTerm,
     sortBy,
     page: currentPage,
-    itemsPerPage: ITEMS_PER_PAGE
+    itemsPerPage: itemsPerPage
   });
 
   if (!topic) {
@@ -123,8 +129,8 @@ const TopicPublications = () => {
     });
 
     totalCount = sortedPublications.length;
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    allPublications = sortedPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    allPublications = sortedPublications.slice(startIndex, startIndex + itemsPerPage);
     loading = false;
   } else {
     // Use database data
@@ -133,7 +139,7 @@ const TopicPublications = () => {
     loading = dbLoading;
   }
 
-  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalCount / itemsPerPage);
 
   const getBackRoute = (topicSlug: string) => {
     switch (topicSlug) {
@@ -196,6 +202,8 @@ const TopicPublications = () => {
                 onSearchTermChange={setSearchTerm}
                 sortBy={sortBy}
                 onSortByChange={setSortBy}
+                itemsPerPage={itemsPerPage}
+                onItemsPerPageChange={setItemsPerPage}
                 totalCount={totalCount}
                 useStaticData={useStaticData}
                 filteredCount={allPublications.length}
@@ -221,7 +229,7 @@ const TopicPublications = () => {
 
               <PublicationsResultsSummary
                 currentPage={currentPage}
-                itemsPerPage={ITEMS_PER_PAGE}
+                itemsPerPage={itemsPerPage}
                 totalCount={totalCount}
                 totalPages={totalPages}
                 useStaticData={useStaticData}
