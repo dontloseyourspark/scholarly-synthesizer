@@ -35,7 +35,13 @@ export const useTopicVisualizations = (topicId: number) => {
 
       if (error) throw error;
       
-      setVisualizations(data || []);
+      // Type cast the data to ensure proper typing
+      const typedVisualizations = (data || []).map(viz => ({
+        ...viz,
+        chart_type: viz.chart_type as TopicVisualization['chart_type']
+      }));
+      
+      setVisualizations(typedVisualizations);
     } catch (err: any) {
       setError(err.message);
       toast({

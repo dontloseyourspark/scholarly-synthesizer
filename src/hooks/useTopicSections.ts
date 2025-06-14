@@ -34,7 +34,13 @@ export const useTopicSections = (topicId: number) => {
 
       if (error) throw error;
       
-      setSections(data || []);
+      // Type cast the data to ensure proper typing
+      const typedSections = (data || []).map(section => ({
+        ...section,
+        section_type: section.section_type as TopicSection['section_type']
+      }));
+      
+      setSections(typedSections);
     } catch (err: any) {
       setError(err.message);
       toast({

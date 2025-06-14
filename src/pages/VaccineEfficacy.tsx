@@ -76,7 +76,7 @@ const VaccineEfficacy = () => {
             title: heroSection.title || 'Vaccine Efficacy',
             slug: 'vaccine-efficacy',
             description: heroSection.description || '',
-            consensusLevel: 'strong' as const,
+            consensusLevel: 'high' as const,
             consensusPercentage: 97,
             contributorsCount: 150,
             sourcesCount: keyPublications.length,
