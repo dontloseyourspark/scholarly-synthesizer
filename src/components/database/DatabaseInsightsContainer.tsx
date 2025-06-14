@@ -7,7 +7,7 @@ import DatabaseInsightsTabs from './DatabaseInsightsTabs';
 import { handleVote } from '@/utils/handleVote';
 
 type DatabaseInsightsContainerProps = {
-  topicId: string;
+  topicId: number;
   keyPublications?: Array<{
     id: string;
     title: string;
@@ -24,24 +24,24 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
   keyPublications 
 }) => {
   const { 
-    data: insights, 
-    isLoading, 
+    insights, 
+    loading, 
     error, 
     refetch 
   } = useInsights(topicId);
 
-  if (isLoading) {
+  if (loading) {
     return <DatabaseInsightsLoadingState />;
   }
 
   if (error) {
-    return <DatabaseInsightsErrorState onRetry={() => refetch()} />;
+    return <DatabaseInsightsErrorState error={error} onRetry={() => refetch()} />;
   }
 
   return (
     <DatabaseInsightsTabs 
       insights={insights || []} 
-      onVote={handleVote} 
+      onVote={(insightId, voteType) => handleVote(insightId, voteType)} 
       keyPublications={keyPublications}
     />
   );
