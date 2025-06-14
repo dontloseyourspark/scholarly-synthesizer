@@ -5,7 +5,8 @@ import { Brain } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import PsychotherapyMethodsSection from '@/components/psychotherapy/PsychotherapyMethodsSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
+import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import PsychotherapyVisualizationsSection from '@/components/psychotherapy/PsychotherapyVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import PsychotherapyInsightsContainer from '@/components/psychotherapy/PsychotherapyInsightsContainer';
@@ -37,8 +38,14 @@ const EffectivenessPsychotherapy = () => {
         title="Understanding Psychotherapy Effectiveness"
         description={psychotherapyTopic.description}
       />
-      <PsychotherapyMethodsSection />
-      <PsychotherapyVisualizationsSection />
+      <TopicContentSection 
+        title="Therapeutic Methods"
+        subtitle="Evidence-Based Approaches"
+        description="Research on different psychotherapy modalities and their effectiveness for various conditions."
+      />
+      <TopicVisualizationsSection>
+        <PsychotherapyVisualizationsSection />
+      </TopicVisualizationsSection>
       <PsychotherapyInsightsContainer />
       <TopicCallToActionSection topicSlug={psychotherapyTopic.slug} />
     </TopicPageLayout>

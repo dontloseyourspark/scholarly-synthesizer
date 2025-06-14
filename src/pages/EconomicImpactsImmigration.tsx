@@ -5,7 +5,8 @@ import { TrendingUp } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import EconomicImpactsSection from '@/components/economic/EconomicImpactsSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
+import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import EconomicVisualizationsSection from '@/components/economic/EconomicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import EconomicInsightsContainer from '@/components/economic/EconomicInsightsContainer';
@@ -37,8 +38,14 @@ const EconomicImpactsImmigration = () => {
         title="Understanding Economic Impacts of Immigration"
         description={economicTopic.description}
       />
-      <EconomicImpactsSection />
-      <EconomicVisualizationsSection />
+      <TopicContentSection 
+        title="Economic Impact Analysis"
+        subtitle="Key Economic Effects"
+        description="Research on labor market effects, fiscal impacts, and economic growth from immigration."
+      />
+      <TopicVisualizationsSection>
+        <EconomicVisualizationsSection />
+      </TopicVisualizationsSection>
       <EconomicInsightsContainer />
       <TopicCallToActionSection topicSlug={economicTopic.slug} />
     </TopicPageLayout>

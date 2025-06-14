@@ -7,7 +7,8 @@ import { Earth } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import EffectsSection from '@/components/climate/EffectsSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
+import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import VisualizationsSection from '@/components/climate/VisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import InsightsContainer from '@/components/climate/InsightsContainer';
@@ -54,8 +55,14 @@ const ClimateChange = () => {
         description={climateChangeTopic.description}
         additionalContent={additionalContent}
       />
-      <EffectsSection />
-      <VisualizationsSection />
+      <TopicContentSection 
+        title="Climate Effects"
+        subtitle="Key Environmental Impacts"
+        description="Research on rising temperatures, changing weather patterns, melting ice caps, and biodiversity loss caused by climate change."
+      />
+      <TopicVisualizationsSection>
+        <VisualizationsSection />
+      </TopicVisualizationsSection>
       <InsightsContainer />
       <TopicCallToActionSection 
         topicSlug={climateChangeTopic.slug}

@@ -5,7 +5,8 @@ import { Cpu } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import QuantumApplicationsSection from '@/components/quantum/QuantumApplicationsSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
+import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import QuantumVisualizationsSection from '@/components/quantum/QuantumVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import QuantumInsightsContainer from '@/components/quantum/QuantumInsightsContainer';
@@ -37,8 +38,14 @@ const QuantumComputing = () => {
         title="Understanding Quantum Computing"
         description={quantumTopic.description}
       />
-      <QuantumApplicationsSection />
-      <QuantumVisualizationsSection />
+      <TopicContentSection 
+        title="Quantum Applications"
+        subtitle="Potential Applications"
+        description="Quantum computing applications in cryptography, optimization, simulation, and machine learning."
+      />
+      <TopicVisualizationsSection>
+        <QuantumVisualizationsSection />
+      </TopicVisualizationsSection>
       <QuantumInsightsContainer />
       <TopicCallToActionSection topicSlug={quantumTopic.slug} />
     </TopicPageLayout>

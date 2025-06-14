@@ -5,7 +5,8 @@ import { Apple } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import NutritionEvidenceSection from '@/components/nutrition/NutritionEvidenceSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
+import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import NutritionVisualizationsSection from '@/components/nutrition/NutritionVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import NutritionInsightsContainer from '@/components/nutrition/NutritionInsightsContainer';
@@ -37,8 +38,14 @@ const NutritionScience = () => {
         title="Understanding Nutrition Science"
         description={nutritionTopic.description}
       />
-      <NutritionEvidenceSection />
-      <NutritionVisualizationsSection />
+      <TopicContentSection 
+        title="Nutritional Evidence"
+        subtitle="Key Findings"
+        description="Evidence-based nutrition recommendations from clinical studies and population research."
+      />
+      <TopicVisualizationsSection>
+        <NutritionVisualizationsSection />
+      </TopicVisualizationsSection>
       <NutritionInsightsContainer />
       <TopicCallToActionSection topicSlug={nutritionTopic.slug} />
     </TopicPageLayout>

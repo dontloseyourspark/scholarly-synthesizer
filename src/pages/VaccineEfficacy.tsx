@@ -5,7 +5,8 @@ import { Shield } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import VaccineEvidenceSection from '@/components/vaccine/VaccineEvidenceSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
+import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import VaccineVisualizationsSection from '@/components/vaccine/VaccineVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import VaccineInsightsContainer from '@/components/vaccine/VaccineInsightsContainer';
@@ -47,8 +48,14 @@ const VaccineEfficacy = () => {
         description={vaccineTopic.description}
         additionalContent={additionalContent}
       />
-      <VaccineEvidenceSection />
-      <VaccineVisualizationsSection />
+      <TopicContentSection 
+        title="Vaccine Evidence"
+        subtitle="Clinical Research Findings"
+        description="Evidence-based research on vaccine effectiveness, safety profiles, and immunization outcomes from clinical trials and real-world studies."
+      />
+      <TopicVisualizationsSection>
+        <VaccineVisualizationsSection />
+      </TopicVisualizationsSection>
       <VaccineInsightsContainer />
       <TopicCallToActionSection 
         topicSlug={vaccineTopic.slug}

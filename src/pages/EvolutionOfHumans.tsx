@@ -5,7 +5,8 @@ import { Dna } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
-import EvidenceSection from '@/components/evolution/EvidenceSection';
+import TopicContentSection from '@/components/topics/TopicContentSection';
+import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import VisualizationsSection from '@/components/evolution/VisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import InsightsContainer from '@/components/evolution/InsightsContainer';
@@ -37,8 +38,14 @@ const EvolutionOfHumans = () => {
         title="Understanding Human Evolution"
         description={evolutionTopic.description}
       />
-      <EvidenceSection />
-      <VisualizationsSection />
+      <TopicContentSection 
+        title="Evolutionary Evidence"
+        subtitle="Key Scientific Findings"
+        description="Research on fossil records, genetic evidence, comparative anatomy, and molecular biology supporting human evolution."
+      />
+      <TopicVisualizationsSection>
+        <VisualizationsSection />
+      </TopicVisualizationsSection>
       <InsightsContainer />
       <TopicCallToActionSection topicSlug={evolutionTopic.slug} />
     </TopicPageLayout>
