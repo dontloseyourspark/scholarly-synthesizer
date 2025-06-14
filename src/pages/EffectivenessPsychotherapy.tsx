@@ -1,77 +1,134 @@
 
 import React from 'react';
-import { getTopic } from '@/data/topicsData';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
 import { Brain, Heart, Users, TrendingUp } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
 import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
-import PsychotherapyVisualizationsSection from '@/components/psychotherapy/PsychotherapyVisualizationsSection';
+import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
-import PsychotherapyInsightsContainer from '@/components/psychotherapy/PsychotherapyInsightsContainer';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useTopicSections } from '@/hooks/useTopicSections';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
+import { useTopicContentCards } from '@/hooks/useTopicContentCards';
 
 const EffectivenessPsychotherapy = () => {
-  const psychotherapyTopic = getTopic('effectiveness-psychotherapy');
+  const topicId = getTopicIdFromSlug('effectiveness-psychotherapy');
   
-  if (!psychotherapyTopic) {
+  if (!topicId) {
     return (
       <TopicPageLayout>
         <div className="container mx-auto px-4 text-center py-12">
-          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
+          <h1 className="text-3xl font-serif font-bold mb-4">Topic not found</h1>
           <p className="mb-6">We couldn't find information about the Effectiveness of Psychotherapy topic.</p>
         </div>
       </TopicPageLayout>
     );
   }
 
-  const psychotherapyCards = [
-    {
-      title: "Evidence-Based Practice",
-      icon: <Brain className="h-8 w-8 text-blue-500" />,
-      description: "Cognitive-behavioral therapy and other evidence-based approaches show consistent positive outcomes."
-    },
-    {
-      title: "Mental Health Outcomes",
-      icon: <Heart className="h-8 w-8 text-red-500" />,
-      description: "Meta-analyses demonstrate significant improvements in depression, anxiety, and other conditions."
-    },
-    {
-      title: "Therapeutic Relationship",
-      icon: <Users className="h-8 w-8 text-green-500" />,
-      description: "Strong therapeutic alliance is a key predictor of successful treatment outcomes across modalities."
-    },
-    {
-      title: "Treatment Efficacy",
-      icon: <TrendingUp className="h-8 w-8 text-purple-500" />,
-      description: "Psychotherapy shows effect sizes comparable to many medical treatments for psychological disorders."
-    }
-  ];
+  const { sections, loading: sectionsLoading } = useTopicSections(topicId);
+  const { keyPublications, loading: publicationsLoading } = useTopicPublications(topicId);
+  const { cards, loading: cardsLoading } = useTopicContentCards(topicId);
+
+  if (sectionsLoading || publicationsLoading || cardsLoading) {
+    return (
+      <TopicPageLayout>
+        <LoadingSpinner message="Loading page content..." />
+      </TopicPageLayout>
+    );
+  }
+
+  // Get sections by type
+  const heroSection = sections.find(s => s.section_type === 'hero');
+  const descriptionSection = sections.find(s => s.section_type === 'description');
+  const contentSection = sections.find(s => s.section_type === 'content');
+  const callToActionSection = sections.find(s => s.section_type === 'call_to_action');
+
+  // Convert database cards to component format
+  const psychotherapyCards = cards.map(card => {
+    // Map icon names to actual icon components
+    const getIcon = (iconName: string | null) => {
+      switch (iconName) {
+        case 'Brain': return <Brain className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+        case 'Heart': return <Heart className={`h-8 w-8 ${card.icon_color || 'text-red-500'}`} />;
+        case 'Users': return <Users className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
+        case 'TrendingUp': return <TrendingUp className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
+        default: return <Brain className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+      }
+    };
+
+    return {
+      title: card.title,
+      icon: getIcon(card.icon_name),
+      description: card.description
+    };
+  });
 
   return (
     <TopicPageLayout>
-      <TopicHeroSection 
-        topic={psychotherapyTopic}
-        title="Effectiveness of Psychotherapy"
-        categoryIcon={Brain}
-        categoryLabel="Psychology"
-        keyPublications={[]}
-      />
-      <TopicDescriptionSection 
-        title="Understanding Psychotherapy Effectiveness"
-        description={psychotherapyTopic.description}
-      />
-      <TopicContentSection 
-        title="Therapeutic Methods"
-        subtitle="Evidence-Based Approaches"
-        description="Research on different psychotherapy modalities and their effectiveness for various conditions."
-        cards={psychotherapyCards}
-      />
+      {heroSection && (
+        <TopicHeroSection 
+          topic={{
+            id: 'effectiveness-psychotherapy',
+            title: heroSection.title || 'Effectiveness of Psychotherapy',
+            slug: 'effectiveness-psychotherapy',
+            description: heroSection.description || '',
+            consensusLevel: 'medium' as const,
+            consensusPercentage: 88,
+            contributorsCount: 160,
+            sourcesCount: keyPublications.length,
+            updatedAt: new Date().toISOString(),
+            tags: ['Psychology', 'Mental Health', 'Medicine']
+          }}
+          title={heroSection.title || 'Effectiveness of Psychotherapy'}
+          categoryIcon={Brain}
+          categoryLabel={heroSection.category_label || 'Psychology'}
+          keyPublications={keyPublications.map(pub => ({
+            id: pub.id,
+            title: pub.title,
+            authors: pub.authors,
+            year: pub.year,
+            url: pub.url,
+            doi: pub.doi || undefined,
+            publication: pub.publication || undefined
+          }))}
+        />
+      )}
+      
+      {descriptionSection && (
+        <TopicDescriptionSection 
+          title={descriptionSection.title || 'Understanding Psychotherapy Effectiveness'}
+          description={descriptionSection.description || ''}
+          additionalContent={descriptionSection.additional_content ? (
+            <p className="text-base text-muted-foreground leading-relaxed">
+              {descriptionSection.additional_content}
+            </p>
+          ) : undefined}
+        />
+      )}
+      
+      {contentSection && psychotherapyCards.length > 0 && (
+        <TopicContentSection 
+          title={contentSection.title || 'Therapeutic Methods'}
+          subtitle={contentSection.subtitle || 'Evidence-Based Approaches'}
+          description={contentSection.description || 'Research on psychotherapy effectiveness.'}
+          cards={psychotherapyCards}
+        />
+      )}
+      
       <TopicVisualizationsSection>
-        <PsychotherapyVisualizationsSection />
+        <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
-      <PsychotherapyInsightsContainer />
-      <TopicCallToActionSection topicSlug={psychotherapyTopic.slug} />
+      
+      {callToActionSection && (
+        <TopicCallToActionSection 
+          topicSlug="effectiveness-psychotherapy"
+          title={callToActionSection.title || 'Support Mental Health Research'}
+          description={callToActionSection.description || 'Help advance psychotherapy research.'}
+        />
+      )}
     </TopicPageLayout>
   );
 };

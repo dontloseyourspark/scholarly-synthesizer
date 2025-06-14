@@ -1,77 +1,134 @@
 
 import React from 'react';
-import { getTopic } from '@/data/topicsData';
-import { Dna, Skull, Users, Clock } from 'lucide-react';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
+import { Dna, Users, Clock } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
 import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
-import VisualizationsSection from '@/components/evolution/VisualizationsSection';
+import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
-import InsightsContainer from '@/components/evolution/InsightsContainer';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useTopicSections } from '@/hooks/useTopicSections';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
+import { useTopicContentCards } from '@/hooks/useTopicContentCards';
 
 const EvolutionOfHumans = () => {
-  const evolutionTopic = getTopic('evolution-of-humans');
+  const topicId = getTopicIdFromSlug('evolution-of-humans');
   
-  if (!evolutionTopic) {
+  if (!topicId) {
     return (
       <TopicPageLayout>
         <div className="container mx-auto px-4 text-center py-12">
-          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
+          <h1 className="text-3xl font-serif font-bold mb-4">Topic not found</h1>
           <p className="mb-6">We couldn't find information about the Evolution of Humans topic.</p>
         </div>
       </TopicPageLayout>
     );
   }
 
-  const evolutionCards = [
-    {
-      title: "Fossil Evidence",
-      icon: <Skull className="h-8 w-8 text-brown-500" />,
-      description: "Extensive fossil record showing gradual changes in human ancestors over millions of years."
-    },
-    {
-      title: "Genetic Analysis",
-      icon: <Dna className="h-8 w-8 text-blue-500" />,
-      description: "DNA evidence reveals evolutionary relationships and migration patterns of early humans."
-    },
-    {
-      title: "Population Genetics",
-      icon: <Users className="h-8 w-8 text-green-500" />,
-      description: "Studies of genetic diversity provide insights into human evolutionary history and demographics."
-    },
-    {
-      title: "Timeline",
-      icon: <Clock className="h-8 w-8 text-purple-500" />,
-      description: "Human evolution spans approximately 7 million years from early hominids to modern humans."
-    }
-  ];
+  const { sections, loading: sectionsLoading } = useTopicSections(topicId);
+  const { keyPublications, loading: publicationsLoading } = useTopicPublications(topicId);
+  const { cards, loading: cardsLoading } = useTopicContentCards(topicId);
+
+  if (sectionsLoading || publicationsLoading || cardsLoading) {
+    return (
+      <TopicPageLayout>
+        <LoadingSpinner message="Loading page content..." />
+      </TopicPageLayout>
+    );
+  }
+
+  // Get sections by type
+  const heroSection = sections.find(s => s.section_type === 'hero');
+  const descriptionSection = sections.find(s => s.section_type === 'description');
+  const contentSection = sections.find(s => s.section_type === 'content');
+  const callToActionSection = sections.find(s => s.section_type === 'call_to_action');
+
+  // Convert database cards to component format
+  const evolutionCards = cards.map(card => {
+    // Map icon names to actual icon components
+    const getIcon = (iconName: string | null) => {
+      switch (iconName) {
+        case 'Skull': return <div className={`h-8 w-8 ${card.icon_color || 'text-brown-500'} flex items-center justify-center font-bold text-lg`}>💀</div>;
+        case 'Dna': return <Dna className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+        case 'Users': return <Users className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
+        case 'Clock': return <Clock className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
+        default: return <Dna className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+      }
+    };
+
+    return {
+      title: card.title,
+      icon: getIcon(card.icon_name),
+      description: card.description
+    };
+  });
 
   return (
     <TopicPageLayout>
-      <TopicHeroSection 
-        topic={evolutionTopic}
-        title="Evolution of Humans"
-        categoryIcon={Dna}
-        categoryLabel="Biological Sciences"
-        keyPublications={[]}
-      />
-      <TopicDescriptionSection 
-        title="Understanding Human Evolution"
-        description={evolutionTopic.description}
-      />
-      <TopicContentSection 
-        title="Evolutionary Evidence"
-        subtitle="Key Scientific Findings"
-        description="Research on fossil records, genetic evidence, comparative anatomy, and molecular biology supporting human evolution."
-        cards={evolutionCards}
-      />
+      {heroSection && (
+        <TopicHeroSection 
+          topic={{
+            id: 'evolution-of-humans',
+            title: heroSection.title || 'Evolution of Humans',
+            slug: 'evolution-of-humans',
+            description: heroSection.description || '',
+            consensusLevel: 'high' as const,
+            consensusPercentage: 99,
+            contributorsCount: 200,
+            sourcesCount: keyPublications.length,
+            updatedAt: new Date().toISOString(),
+            tags: ['Biology', 'Anthropology', 'Genetics']
+          }}
+          title={heroSection.title || 'Evolution of Humans'}
+          categoryIcon={Dna}
+          categoryLabel={heroSection.category_label || 'Biological Sciences'}
+          keyPublications={keyPublications.map(pub => ({
+            id: pub.id,
+            title: pub.title,
+            authors: pub.authors,
+            year: pub.year,
+            url: pub.url,
+            doi: pub.doi || undefined,
+            publication: pub.publication || undefined
+          }))}
+        />
+      )}
+      
+      {descriptionSection && (
+        <TopicDescriptionSection 
+          title={descriptionSection.title || 'Understanding Human Evolution'}
+          description={descriptionSection.description || ''}
+          additionalContent={descriptionSection.additional_content ? (
+            <p className="text-base text-muted-foreground leading-relaxed">
+              {descriptionSection.additional_content}
+            </p>
+          ) : undefined}
+        />
+      )}
+      
+      {contentSection && evolutionCards.length > 0 && (
+        <TopicContentSection 
+          title={contentSection.title || 'Evolutionary Evidence'}
+          subtitle={contentSection.subtitle || 'Key Scientific Findings'}
+          description={contentSection.description || 'Research on human evolutionary history.'}
+          cards={evolutionCards}
+        />
+      )}
+      
       <TopicVisualizationsSection>
-        <VisualizationsSection />
+        <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
-      <InsightsContainer />
-      <TopicCallToActionSection topicSlug={evolutionTopic.slug} />
+      
+      {callToActionSection && (
+        <TopicCallToActionSection 
+          topicSlug="evolution-of-humans"
+          title={callToActionSection.title || 'Contribute to Evolutionary Research'}
+          description={callToActionSection.description || 'Help advance our understanding of human evolution.'}
+        />
+      )}
     </TopicPageLayout>
   );
 };
