@@ -7,6 +7,8 @@ import { Users, BookOpen, Calendar } from 'lucide-react';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import ConsensusIndicator, { ConsensusLevel } from './ConsensusIndicator';
 import { getInsightsForTopic } from '@/data/insightsData';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
+import { useTopicStats } from '@/hooks/useTopicStats';
 
 export type Topic = {
   id: string;
@@ -22,6 +24,16 @@ export type Topic = {
 };
 
 const TopicCard = ({ topic }: { topic: Topic }) => {
+  // Get the database topic ID for this topic
+  const databaseTopicId = getTopicIdFromSlug(topic.slug);
+  
+  // Fetch real statistics from database
+  const { stats, loading: statsLoading } = useTopicStats(databaseTopicId);
+  
+  // Use database stats if available, otherwise fall back to topic data
+  const contributorsCount = stats?.contributorsCount ?? topic.contributorsCount;
+  const sourcesCount = stats?.sourcesCount ?? topic.sourcesCount;
+  
   // Get insights for this topic to access sources
   const topicInsights = getInsightsForTopic(topic.id);
   
@@ -79,7 +91,7 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
         <ConsensusIndicator 
           level={topic.consensusLevel} 
           percentage={topic.consensusPercentage} 
-          sampleSize={topic.contributorsCount}
+          sampleSize={contributorsCount}
         />
       </CardContent>
       <CardFooter className="pt-2 text-xs text-muted-foreground flex flex-wrap items-center gap-4">
@@ -87,7 +99,9 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
           <HoverCardTrigger asChild>
             <div className="flex items-center cursor-pointer hover:text-scholarly-blue transition-colors">
               <Users className="h-3.5 w-3.5 mr-1" />
-              <span>{topic.contributorsCount} contributors</span>
+              <span>
+                {statsLoading ? '...' : contributorsCount} contributors
+              </span>
             </div>
           </HoverCardTrigger>
           <HoverCardContent className="w-80 p-0 overflow-hidden">
@@ -113,7 +127,9 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
           <HoverCardTrigger asChild>
             <div className="flex items-center cursor-pointer hover:text-scholarly-blue transition-colors">
               <BookOpen className="h-3.5 w-3.5 mr-1" />
-              <span>{topic.sourcesCount} sources</span>
+              <span>
+                {statsLoading ? '...' : sourcesCount} sources
+              </span>
             </div>
           </HoverCardTrigger>
           <HoverCardContent className="w-80 p-0 overflow-hidden">
@@ -146,7 +162,7 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
                     to={topicRoute} 
                     className="text-xs text-scholarly-blue hover:underline"
                   >
-                    View all {topic.sourcesCount} sources
+                    View all {sourcesCount} sources
                   </Link>
                 </div>
               )}
