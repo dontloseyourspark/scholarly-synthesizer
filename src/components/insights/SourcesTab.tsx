@@ -49,7 +49,7 @@ const SourcesTab: React.FC<SourcesTabProps> = ({ insights, keyPublications }) =>
     const pathSegments = location.pathname.split('/');
     if (pathSegments.length >= 2) {
       const topicSlug = pathSegments[1];
-      return `/${topicSlug}/publications`;
+      return `/topics/${topicSlug}/publications`;
     }
     return '/topics/publications';
   };
