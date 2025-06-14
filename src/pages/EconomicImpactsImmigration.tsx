@@ -9,6 +9,7 @@ import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useTopicSections } from '@/hooks/useTopicSections';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
@@ -48,14 +49,13 @@ const EconomicImpactsImmigration = () => {
 
   // Convert database cards to component format
   const economicCards = cards.map(card => {
-    // Map icon names to actual icon components
     const getIcon = (iconName: string | null) => {
       switch (iconName) {
+        case 'TrendingUp': return <TrendingUp className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
         case 'Users': return <Users className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
-        case 'DollarSign': return <DollarSign className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
-        case 'TrendingUp': return <TrendingUp className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
-        case 'BarChart': return <BarChart className={`h-8 w-8 ${card.icon_color || 'text-orange-500'}`} />;
-        default: return <TrendingUp className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
+        case 'DollarSign': return <DollarSign className={`h-8 w-8 ${card.icon_color || 'text-green-600'}`} />;
+        case 'BarChart': return <BarChart className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
+        default: return <TrendingUp className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
       }
     };
 
@@ -76,15 +76,15 @@ const EconomicImpactsImmigration = () => {
             slug: 'economic-impacts-immigration',
             description: heroSection.description || '',
             consensusLevel: 'medium' as const,
-            consensusPercentage: 76,
-            contributorsCount: 140,
+            consensusPercentage: 78,
+            contributorsCount: 195,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),
-            tags: ['Economics', 'Social Science', 'Policy']
+            tags: ['Economics', 'Immigration', 'Policy']
           }}
           title={heroSection.title || 'Economic Impacts of Immigration'}
           categoryIcon={TrendingUp}
-          categoryLabel={heroSection.category_label || 'Economic Studies'}
+          categoryLabel={heroSection.category_label || 'Economics'}
           keyPublications={keyPublications.map(pub => ({
             id: pub.id,
             title: pub.title,
@@ -99,7 +99,7 @@ const EconomicImpactsImmigration = () => {
       
       {descriptionSection && (
         <TopicDescriptionSection 
-          title={descriptionSection.title || 'Understanding Economic Impacts of Immigration'}
+          title={descriptionSection.title || 'Understanding Economic Impacts'}
           description={descriptionSection.description || ''}
           additionalContent={descriptionSection.additional_content ? (
             <p className="text-base text-muted-foreground leading-relaxed">
@@ -111,9 +111,9 @@ const EconomicImpactsImmigration = () => {
       
       {contentSection && economicCards.length > 0 && (
         <TopicContentSection 
-          title={contentSection.title || 'Economic Impact Analysis'}
-          subtitle={contentSection.subtitle || 'Key Economic Effects'}
-          description={contentSection.description || 'Research on immigration economics.'}
+          title={contentSection.title || 'Economic Research'}
+          subtitle={contentSection.subtitle || 'Policy Analysis'}
+          description={contentSection.description || 'Research on immigration and economic outcomes.'}
           cards={economicCards}
         />
       )}
@@ -122,11 +122,21 @@ const EconomicImpactsImmigration = () => {
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
       
+      <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
+        id: pub.id,
+        title: pub.title,
+        authors: pub.authors,
+        year: pub.year,
+        url: pub.url,
+        doi: pub.doi || undefined,
+        publication: pub.publication || undefined
+      }))} />
+      
       {callToActionSection && (
         <TopicCallToActionSection 
           topicSlug="economic-impacts-immigration"
-          title={callToActionSection.title || 'Support Immigration Research'}
-          description={callToActionSection.description || 'Help advance immigration economics research.'}
+          title={callToActionSection.title || 'Advance Economic Research'}
+          description={callToActionSection.description || 'Help inform evidence-based immigration policy.'}
         />
       )}
     </TopicPageLayout>

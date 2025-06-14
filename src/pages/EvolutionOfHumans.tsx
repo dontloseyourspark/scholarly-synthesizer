@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
-import { Dna, Users, Clock } from 'lucide-react';
+import { Skull, Dna, Users, Clock } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -9,6 +9,7 @@ import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useTopicSections } from '@/hooks/useTopicSections';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
@@ -48,14 +49,13 @@ const EvolutionOfHumans = () => {
 
   // Convert database cards to component format
   const evolutionCards = cards.map(card => {
-    // Map icon names to actual icon components
     const getIcon = (iconName: string | null) => {
       switch (iconName) {
-        case 'Skull': return <div className={`h-8 w-8 ${card.icon_color || 'text-brown-500'} flex items-center justify-center font-bold text-lg`}>💀</div>;
+        case 'Skull': return <Skull className={`h-8 w-8 ${card.icon_color || 'text-brown-500'}`} />;
         case 'Dna': return <Dna className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
         case 'Users': return <Users className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
         case 'Clock': return <Clock className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
-        default: return <Dna className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+        default: return <Skull className={`h-8 w-8 ${card.icon_color || 'text-brown-500'}`} />;
       }
     };
 
@@ -76,15 +76,15 @@ const EvolutionOfHumans = () => {
             slug: 'evolution-of-humans',
             description: heroSection.description || '',
             consensusLevel: 'high' as const,
-            consensusPercentage: 99,
-            contributorsCount: 200,
+            consensusPercentage: 98,
+            contributorsCount: 320,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),
-            tags: ['Biology', 'Anthropology', 'Genetics']
+            tags: ['Evolution', 'Biology', 'Anthropology']
           }}
           title={heroSection.title || 'Evolution of Humans'}
-          categoryIcon={Dna}
-          categoryLabel={heroSection.category_label || 'Biological Sciences'}
+          categoryIcon={Skull}
+          categoryLabel={heroSection.category_label || 'Biology'}
           keyPublications={keyPublications.map(pub => ({
             id: pub.id,
             title: pub.title,
@@ -112,8 +112,8 @@ const EvolutionOfHumans = () => {
       {contentSection && evolutionCards.length > 0 && (
         <TopicContentSection 
           title={contentSection.title || 'Evolutionary Evidence'}
-          subtitle={contentSection.subtitle || 'Key Scientific Findings'}
-          description={contentSection.description || 'Research on human evolutionary history.'}
+          subtitle={contentSection.subtitle || 'Scientific Foundation'}
+          description={contentSection.description || 'Evidence-based research on human evolution.'}
           cards={evolutionCards}
         />
       )}
@@ -122,11 +122,21 @@ const EvolutionOfHumans = () => {
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
       
+      <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
+        id: pub.id,
+        title: pub.title,
+        authors: pub.authors,
+        year: pub.year,
+        url: pub.url,
+        doi: pub.doi || undefined,
+        publication: pub.publication || undefined
+      }))} />
+      
       {callToActionSection && (
         <TopicCallToActionSection 
           topicSlug="evolution-of-humans"
-          title={callToActionSection.title || 'Contribute to Evolutionary Research'}
-          description={callToActionSection.description || 'Help advance our understanding of human evolution.'}
+          title={callToActionSection.title || 'Advance Evolutionary Research'}
+          description={callToActionSection.description || 'Help advance our understanding of human origins.'}
         />
       )}
     </TopicPageLayout>

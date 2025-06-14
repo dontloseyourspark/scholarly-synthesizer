@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
-import { Cpu, Zap, Lock } from 'lucide-react';
+import { Atom, Zap, Lock, Cpu } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -9,6 +9,7 @@ import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useTopicSections } from '@/hooks/useTopicSections';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
@@ -48,14 +49,13 @@ const QuantumComputing = () => {
 
   // Convert database cards to component format
   const quantumCards = cards.map(card => {
-    // Map icon names to actual icon components
     const getIcon = (iconName: string | null) => {
       switch (iconName) {
+        case 'Atom': return <Atom className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
         case 'Zap': return <Zap className={`h-8 w-8 ${card.icon_color || 'text-yellow-500'}`} />;
-        case 'Lock': return <Lock className={`h-8 w-8 ${card.icon_color || 'text-red-500'}`} />;
-        case 'Cpu': return <Cpu className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
-        case 'Atom': return <div className={`h-8 w-8 ${card.icon_color || 'text-purple-500'} flex items-center justify-center font-bold text-lg`}>⚛️</div>;
-        default: return <Cpu className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+        case 'Lock': return <Lock className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
+        case 'Cpu': return <Cpu className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
+        default: return <Atom className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
       }
     };
 
@@ -75,16 +75,16 @@ const QuantumComputing = () => {
             title: heroSection.title || 'Quantum Computing',
             slug: 'quantum-computing',
             description: heroSection.description || '',
-            consensusLevel: 'high' as const,
-            consensusPercentage: 92,
-            contributorsCount: 90,
+            consensusLevel: 'medium' as const,
+            consensusPercentage: 82,
+            contributorsCount: 150,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),
-            tags: ['Physics', 'Computer Science', 'Technology']
+            tags: ['Physics', 'Computing', 'Technology']
           }}
           title={heroSection.title || 'Quantum Computing'}
-          categoryIcon={Cpu}
-          categoryLabel={heroSection.category_label || 'Technology Topics'}
+          categoryIcon={Atom}
+          categoryLabel={heroSection.category_label || 'Physics'}
           keyPublications={keyPublications.map(pub => ({
             id: pub.id,
             title: pub.title,
@@ -111,9 +111,9 @@ const QuantumComputing = () => {
       
       {contentSection && quantumCards.length > 0 && (
         <TopicContentSection 
-          title={contentSection.title || 'Quantum Applications'}
-          subtitle={contentSection.subtitle || 'Potential Applications'}
-          description={contentSection.description || 'Quantum computing applications and research.'}
+          title={contentSection.title || 'Quantum Technologies'}
+          subtitle={contentSection.subtitle || 'Quantum Mechanics Applications'}
+          description={contentSection.description || 'Research on quantum computing and technologies.'}
           cards={quantumCards}
         />
       )}
@@ -122,11 +122,21 @@ const QuantumComputing = () => {
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
       
+      <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
+        id: pub.id,
+        title: pub.title,
+        authors: pub.authors,
+        year: pub.year,
+        url: pub.url,
+        doi: pub.doi || undefined,
+        publication: pub.publication || undefined
+      }))} />
+      
       {callToActionSection && (
         <TopicCallToActionSection 
           topicSlug="quantum-computing"
-          title={callToActionSection.title || 'Explore Quantum Future'}
-          description={callToActionSection.description || 'Help advance quantum computing research.'}
+          title={callToActionSection.title || 'Advance Quantum Research'}
+          description={callToActionSection.description || 'Help shape the future of quantum technologies.'}
         />
       )}
     </TopicPageLayout>

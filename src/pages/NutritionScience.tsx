@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
-import { Apple, Utensils, Heart, Scale } from 'lucide-react';
+import { Apple, Heart, TrendingUp, Users } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -9,6 +9,7 @@ import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useTopicSections } from '@/hooks/useTopicSections';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
@@ -48,13 +49,12 @@ const NutritionScience = () => {
 
   // Convert database cards to component format
   const nutritionCards = cards.map(card => {
-    // Map icon names to actual icon components
     const getIcon = (iconName: string | null) => {
       switch (iconName) {
-        case 'Utensils': return <Utensils className={`h-8 w-8 ${card.icon_color || 'text-orange-500'}`} />;
-        case 'Heart': return <Heart className={`h-8 w-8 ${card.icon_color || 'text-red-500'}`} />;
-        case 'Scale': return <Scale className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
         case 'Apple': return <Apple className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
+        case 'Heart': return <Heart className={`h-8 w-8 ${card.icon_color || 'text-red-500'}`} />;
+        case 'TrendingUp': return <TrendingUp className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+        case 'Users': return <Users className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
         default: return <Apple className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
       }
     };
@@ -75,12 +75,12 @@ const NutritionScience = () => {
             title: heroSection.title || 'Nutrition Science',
             slug: 'nutrition-science',
             description: heroSection.description || '',
-            consensusLevel: 'medium' as const,
-            consensusPercentage: 85,
-            contributorsCount: 180,
+            consensusLevel: 'high' as const,
+            consensusPercentage: 88,
+            contributorsCount: 210,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),
-            tags: ['Health', 'Food Science', 'Medicine']
+            tags: ['Nutrition', 'Health', 'Medicine']
           }}
           title={heroSection.title || 'Nutrition Science'}
           categoryIcon={Apple}
@@ -111,9 +111,9 @@ const NutritionScience = () => {
       
       {contentSection && nutritionCards.length > 0 && (
         <TopicContentSection 
-          title={contentSection.title || 'Nutritional Evidence'}
-          subtitle={contentSection.subtitle || 'Key Findings'}
-          description={contentSection.description || 'Evidence-based nutrition research.'}
+          title={contentSection.title || 'Nutritional Research'}
+          subtitle={contentSection.subtitle || 'Evidence-Based Guidelines'}
+          description={contentSection.description || 'Research on nutrition and health outcomes.'}
           cards={nutritionCards}
         />
       )}
@@ -122,11 +122,21 @@ const NutritionScience = () => {
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
       
+      <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
+        id: pub.id,
+        title: pub.title,
+        authors: pub.authors,
+        year: pub.year,
+        url: pub.url,
+        doi: pub.doi || undefined,
+        publication: pub.publication || undefined
+      }))} />
+      
       {callToActionSection && (
         <TopicCallToActionSection 
           topicSlug="nutrition-science"
-          title={callToActionSection.title || 'Contribute to Nutrition Research'}
-          description={callToActionSection.description || 'Help advance nutrition science.'}
+          title={callToActionSection.title || 'Advance Nutrition Research'}
+          description={callToActionSection.description || 'Help improve global health through nutrition science.'}
         />
       )}
     </TopicPageLayout>

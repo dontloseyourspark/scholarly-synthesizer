@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
-import { ThermometerSun, Cloud, Wind, Trees } from 'lucide-react';
+import { Thermometer, Wind, Droplets, TreePine } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -9,6 +9,7 @@ import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useTopicSections } from '@/hooks/useTopicSections';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
@@ -48,14 +49,13 @@ const ClimateChange = () => {
 
   // Convert database cards to component format
   const climateCards = cards.map(card => {
-    // Map icon names to actual icon components
     const getIcon = (iconName: string | null) => {
       switch (iconName) {
-        case 'ThermometerSun': return <ThermometerSun className={`h-8 w-8 ${card.icon_color || 'text-orange-500'}`} />;
-        case 'Cloud': return <Cloud className={`h-8 w-8 ${card.icon_color || 'text-blue-400'}`} />;
-        case 'Wind': return <Wind className={`h-8 w-8 ${card.icon_color || 'text-cyan-500'}`} />;
-        case 'Trees': return <Trees className={`h-8 w-8 ${card.icon_color || 'text-green-600'}`} />;
-        default: return <ThermometerSun className={`h-8 w-8 ${card.icon_color || 'text-orange-500'}`} />;
+        case 'Thermometer': return <Thermometer className={`h-8 w-8 ${card.icon_color || 'text-red-500'}`} />;
+        case 'Wind': return <Wind className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+        case 'Droplets': return <Droplets className={`h-8 w-8 ${card.icon_color || 'text-blue-400'}`} />;
+        case 'TreePine': return <TreePine className={`h-8 w-8 ${card.icon_color || 'text-green-500'}`} />;
+        default: return <Thermometer className={`h-8 w-8 ${card.icon_color || 'text-red-500'}`} />;
       }
     };
 
@@ -77,14 +77,14 @@ const ClimateChange = () => {
             description: heroSection.description || '',
             consensusLevel: 'high' as const,
             consensusPercentage: 97,
-            contributorsCount: 150,
+            contributorsCount: 240,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),
-            tags: ['Climate', 'Environment', 'Earth Science']
+            tags: ['Climate Science', 'Environment', 'Policy']
           }}
           title={heroSection.title || 'Climate Change'}
-          categoryIcon={ThermometerSun}
-          categoryLabel={heroSection.category_label || 'Environmental Science'}
+          categoryIcon={Thermometer}
+          categoryLabel={heroSection.category_label || 'Climate Science'}
           keyPublications={keyPublications.map(pub => ({
             id: pub.id,
             title: pub.title,
@@ -111,8 +111,8 @@ const ClimateChange = () => {
       
       {contentSection && climateCards.length > 0 && (
         <TopicContentSection 
-          title={contentSection.title || 'Climate Evidence'}
-          subtitle={contentSection.subtitle || 'Scientific Research Findings'}
+          title={contentSection.title || 'Climate Science Evidence'}
+          subtitle={contentSection.subtitle || 'Scientific Foundation'}
           description={contentSection.description || 'Evidence-based research on climate change.'}
           cards={climateCards}
         />
@@ -122,11 +122,21 @@ const ClimateChange = () => {
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
       
+      <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
+        id: pub.id,
+        title: pub.title,
+        authors: pub.authors,
+        year: pub.year,
+        url: pub.url,
+        doi: pub.doi || undefined,
+        publication: pub.publication || undefined
+      }))} />
+      
       {callToActionSection && (
         <TopicCallToActionSection 
           topicSlug="climate-change"
-          title={callToActionSection.title || 'Join Climate Action'}
-          description={callToActionSection.description || 'Help advance our understanding of climate science.'}
+          title={callToActionSection.title || 'Join the Climate Research Community'}
+          description={callToActionSection.description || 'Help advance climate science research.'}
         />
       )}
     </TopicPageLayout>
