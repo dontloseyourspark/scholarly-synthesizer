@@ -1,4 +1,3 @@
-
 import React from 'react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
@@ -6,7 +5,7 @@ import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
-import { ThermometerSun, Cloud, Wind, Tree } from 'lucide-react';
+import { ThermometerSun, Cloud, Wind, Trees } from 'lucide-react';
 import { getTopic } from '@/data/topicsData';
 import { keyPublications } from '@/data/climateChangeData';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
@@ -37,7 +36,7 @@ const ClimateChange = () => {
     },
     {
       title: "Biodiversity Loss",
-      icon: <Tree className="h-8 w-8 text-green-600" />,
+      icon: <Trees className="h-8 w-8 text-green-600" />,
       description: "An estimated one million plant and animal species are at risk of extinction due to climate change."
     }
   ];
