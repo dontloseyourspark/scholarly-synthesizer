@@ -1,209 +1,277 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { FileCheck, BookOpen, Shield, Award, ArrowRight } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { BookOpen, Users, Award, FileText, CheckCircle, AlertCircle, Mail, Github } from 'lucide-react';
+import Footer from '@/components/Footer';
+import Navbar from '@/components/Navbar';
 
 const Contribute = () => {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-background">
       <Navbar />
       
-      <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="bg-scholarly-blue text-white py-20">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">
-              Contribute Your Expertise
-            </h1>
-            <p className="text-lg md:text-xl max-w-3xl mx-auto mb-10 text-scholarly-lightGray">
-              Help build a clearer picture of scholarly consensus by sharing insights
-              from your research and expertise.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Button className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray">
-                Apply as a Scholar
-              </Button>
-              <Button variant="outline" className="border-white text-white hover:bg-scholarly-accent">
-                Sign In to Contribute
-              </Button>
-            </div>
+      {/* Hero Section */}
+      <section className="bg-gradient-to-r from-scholarly-blue to-scholarly-accent text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h1 className="text-4xl md:text-5xl font-serif font-bold mb-6">
+            Contribute to ScholarSphere
+          </h1>
+          <p className="text-xl mb-8 max-w-3xl mx-auto text-scholarly-lightGray">
+            Help build the world's most comprehensive database of scholarly consensus and expert insights. 
+            Your contributions help advance evidence-based understanding across critical topics.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
+              <FileText className="h-5 w-5 mr-2" />
+              Submit Research
+            </Button>
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
+              <Users className="h-5 w-5 mr-2" />
+              Join Review Panel
+            </Button>
           </div>
-        </section>
-        
-        {/* Process Section */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif font-bold text-center mb-12">How to Contribute</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="text-center">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-scholarly-blue bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <FileCheck className="h-8 w-8 text-scholarly-blue" />
-                  </div>
-                  <CardTitle className="text-xl">1. Verification</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Complete the scholar verification process by providing your credentials,
-                    institutional affiliation, and research background.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="text-center">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-scholarly-blue bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <BookOpen className="h-8 w-8 text-scholarly-blue" />
-                  </div>
-                  <CardTitle className="text-xl">2. Contribute</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Share insights on topics within your expertise, backed by peer-reviewed
-                    sources and clear reasoning.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card className="text-center">
-                <CardHeader>
-                  <div className="w-16 h-16 bg-scholarly-blue bg-opacity-10 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Shield className="h-8 w-8 text-scholarly-blue" />
-                  </div>
-                  <CardTitle className="text-xl">3. Review</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Participate in peer review by evaluating contributions from other
-                    scholars and providing constructive feedback.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
+        </div>
+      </section>
+
+      {/* Ways to Contribute */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-serif font-bold text-center mb-12">Ways to Contribute</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <FileText className="h-12 w-12 text-scholarly-blue mb-4" />
+                <CardTitle className="text-xl">Submit Research</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Share peer-reviewed publications, meta-analyses, and systematic reviews that contribute to scholarly consensus.
+                </p>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Peer-reviewed articles</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Meta-analyses</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Systematic reviews</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Conference proceedings</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <Users className="h-12 w-12 text-scholarly-blue mb-4" />
+                <CardTitle className="text-xl">Expert Review</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Join our panel of expert reviewers to validate submissions and provide insights on research quality.
+                </p>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />PhD or equivalent expertise</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Publication history</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Research validation</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Quality assessment</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="hover:shadow-lg transition-shadow">
+              <CardHeader>
+                <BookOpen className="h-12 w-12 text-scholarly-blue mb-4" />
+                <CardTitle className="text-xl">Topic Curation</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground mb-4">
+                  Help organize and categorize research by topic, ensuring comprehensive coverage of important issues.
+                </p>
+                <ul className="space-y-2 text-sm">
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Topic organization</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Research categorization</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Gap identification</li>
+                  <li className="flex items-center"><CheckCircle className="h-4 w-4 text-green-500 mr-2" />Content structuring</li>
+                </ul>
+              </CardContent>
+            </Card>
           </div>
-        </section>
-        
-        {/* Scholar Benefits */}
-        <section className="py-16 bg-scholarly-lightGray">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif font-bold text-center mb-12">Benefits for Scholars</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <Award className="h-5 w-5 mr-2 text-scholarly-blue" />
-                    Build Your Academic Reputation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Gain recognition for your expertise and contributions to scholarly consensus.
-                    Your profile showcases your credentials and impact on the platform.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <Award className="h-5 w-5 mr-2 text-scholarly-blue" />
-                    Expand Public Understanding
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Help bridge the gap between academic research and public knowledge by
-                    communicating complex topics in accessible ways.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <Award className="h-5 w-5 mr-2 text-scholarly-blue" />
-                    Connect with Other Experts
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Engage with scholars across disciplines, fostering interdisciplinary
-                    connections and potential collaborations.
-                  </p>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center text-xl">
-                    <Award className="h-5 w-5 mr-2 text-scholarly-blue" />
-                    Counteract Misinformation
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground">
-                    Contribute to a reliable source of expert knowledge that helps combat
-                    misinformation and clarifies complex topics for the public.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-        
-        {/* Guidelines */}
-        <section className="py-16">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl font-serif font-bold text-center mb-8">Contribution Guidelines</h2>
-            
-            <Card className="max-w-3xl mx-auto">
-              <CardContent className="pt-6">
-                <div className="space-y-4">
-                  <p>
-                    All contributions to ScholarSphere should adhere to the following guidelines:
-                  </p>
-                  
-                  <ul className="list-disc pl-6 space-y-2">
-                    <li>Insights must be supported by credible, peer-reviewed sources</li>
-                    <li>Maintain objectivity and avoid advocacy for specific policy positions</li>
-                    <li>Clearly state your level of confidence and any uncertainties</li>
-                    <li>Use accessible language while maintaining scientific accuracy</li>
-                    <li>Respect diverse viewpoints within scholarly discourse</li>
-                    <li>Disclose any potential conflicts of interest</li>
-                  </ul>
-                  
-                  <p>
-                    For a complete set of guidelines and our code of conduct, please refer to our
-                    <Link to="/guidelines" className="text-scholarly-blue hover:underline ml-1">
-                      detailed contribution guidelines
-                    </Link>.
-                  </p>
+        </div>
+      </section>
+
+      {/* Submission Guidelines */}
+      <section className="bg-scholarly-lightGray py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-serif font-bold text-center mb-12">Submission Guidelines</h2>
+          <div className="max-w-4xl mx-auto">
+            <Card>
+              <CardContent className="p-8">
+                <div className="space-y-8">
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4 flex items-center">
+                      <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+                      Research Quality Standards
+                    </h3>
+                    <ul className="space-y-3 text-muted-foreground">
+                      <li>• <strong>Peer Review:</strong> All submissions must be peer-reviewed publications from reputable journals</li>
+                      <li>• <strong>Methodology:</strong> Clear description of research methods and statistical approaches</li>
+                      <li>• <strong>Sample Size:</strong> Adequate sample sizes for statistical significance</li>
+                      <li>• <strong>Reproducibility:</strong> Sufficient detail for replication attempts</li>
+                      <li>• <strong>Ethics:</strong> Evidence of ethical approval and informed consent where applicable</li>
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4 flex items-center">
+                      <FileText className="h-5 w-5 text-blue-500 mr-2" />
+                      Required Information
+                    </h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="font-medium mb-2">Publication Details</h4>
+                        <ul className="space-y-1 text-sm text-muted-foreground">
+                          <li>• Full citation (APA format)</li>
+                          <li>• DOI or URL</li>
+                          <li>• Publication date</li>
+                          <li>• Journal impact factor</li>
+                          <li>• Open access status</li>
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="font-medium mb-2">Research Summary</h4>
+                        <ul className="space-y-1 text-sm text-muted-foreground">
+                          <li>• Research question/hypothesis</li>
+                          <li>• Key findings</li>
+                          <li>• Methodology overview</li>
+                          <li>• Statistical significance</li>
+                          <li>• Limitations acknowledged</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="text-xl font-semibold mb-4 flex items-center">
+                      <AlertCircle className="h-5 w-5 text-amber-500 mr-2" />
+                      Review Process
+                    </h3>
+                    <div className="flex flex-col md:flex-row gap-6">
+                      <div className="flex-1">
+                        <div className="space-y-4">
+                          <div className="flex items-center">
+                            <Badge variant="outline" className="mr-3">1</Badge>
+                            <span className="text-sm">Initial screening for basic requirements</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Badge variant="outline" className="mr-3">2</Badge>
+                            <span className="text-sm">Expert panel review for quality and relevance</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Badge variant="outline" className="mr-3">3</Badge>
+                            <span className="text-sm">Community feedback and discussion period</span>
+                          </div>
+                          <div className="flex items-center">
+                            <Badge variant="outline" className="mr-3">4</Badge>
+                            <span className="text-sm">Final approval and database integration</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <Card className="bg-blue-50">
+                          <CardContent className="p-4">
+                            <h4 className="font-medium mb-2">Review Timeline</h4>
+                            <ul className="space-y-1 text-sm text-muted-foreground">
+                              <li>• Initial review: 3-5 business days</li>
+                              <li>• Expert panel: 1-2 weeks</li>
+                              <li>• Community feedback: 1 week</li>
+                              <li>• Total process: 2-4 weeks</li>
+                            </ul>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
-        </section>
-        
-        {/* CTA Section */}
-        <section className="bg-scholarly-blue text-white py-16">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="text-3xl font-serif font-bold mb-6">Ready to Contribute?</h2>
-            <p className="text-xl max-w-2xl mx-auto mb-8">
-              Join our community of scholars working to illuminate consensus on important topics.
-            </p>
-            <Button className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray">
-              Apply Now <ArrowRight className="ml-2 h-4 w-4" />
+        </div>
+      </section>
+
+      {/* Recognition Program */}
+      <section className="py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="text-3xl font-serif font-bold text-center mb-12">Contributor Recognition</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+            <Card className="text-center">
+              <CardHeader>
+                <Award className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+                <CardTitle>Bronze Contributor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">5+ validated submissions</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• Profile badge</li>
+                  <li>• Contributor listing</li>
+                  <li>• Early access features</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center border-2 border-scholarly-blue">
+              <CardHeader>
+                <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                <CardTitle>Silver Contributor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">25+ validated submissions</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• All Bronze benefits</li>
+                  <li>• Review panel invitation</li>
+                  <li>• Priority support</li>
+                </ul>
+              </CardContent>
+            </Card>
+
+            <Card className="text-center">
+              <CardHeader>
+                <Award className="h-12 w-12 text-yellow-500 mx-auto mb-4" />
+                <CardTitle>Gold Contributor</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">100+ validated submissions</p>
+                <ul className="space-y-2 text-sm">
+                  <li>• All Silver benefits</li>
+                  <li>• Editorial board invitation</li>
+                  <li>• Annual recognition</li>
+                </ul>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="bg-scholarly-blue text-white py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-serif font-bold mb-6">Ready to Contribute?</h2>
+          <p className="text-xl mb-8 max-w-2xl mx-auto text-scholarly-lightGray">
+            Join our community of researchers, scholars, and experts working to advance evidence-based understanding.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
+              <Mail className="h-5 w-5 mr-2" />
+              Contact Us
+            </Button>
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
+              <Github className="h-5 w-5 mr-2" />
+              GitHub Issues
             </Button>
           </div>
-        </section>
-      </main>
-      
+          <div className="mt-8 text-sm text-scholarly-lightGray">
+            <p>Questions? Email us at <a href="mailto:contribute@scholarsphere.com" className="underline hover:text-white">contribute@scholarsphere.com</a></p>
+          </div>
+        </div>
+      </section>
+
       <Footer />
     </div>
   );
