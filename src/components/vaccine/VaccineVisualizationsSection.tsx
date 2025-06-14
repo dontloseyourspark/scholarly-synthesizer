@@ -2,14 +2,17 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Support', value: 97 },
-  { name: 'Against', value: 3 }
+  { name: 'Support', value: 97, color: '#4CAF50' },
+  { name: 'Against', value: 3, color: '#F44336' }
 ];
 
-const CHART_COLORS = ['#4CAF50', '#F44336'];
+const consensusDescription = [
+  "Extensive research and clinical trials consistently demonstrate that vaccines are highly effective at preventing infectious diseases. The scientific consensus is overwhelming, with studies showing vaccines have prevented millions of deaths and cases of serious illness.",
+  "Multiple meta-analyses and systematic reviews confirm the safety and efficacy of vaccines across different populations and age groups."
+];
 
 const VaccineVisualizationsSection = () => {
   return (
@@ -22,47 +25,12 @@ const VaccineVisualizationsSection = () => {
       </TabsList>
       
       <TabsContent value="consensus">
-        <Card className="border-none shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">Scientific Consensus on Vaccine Efficacy</CardTitle>
-          </CardHeader>
-          <CardContent className="px-6 pb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <p className="mb-6">
-                  Extensive research and clinical trials consistently demonstrate that vaccines are highly effective at preventing 
-                  infectious diseases. The scientific consensus is overwhelming, with studies showing vaccines have prevented 
-                  millions of deaths and cases of serious illness.
-                </p>
-                <p>
-                  Multiple meta-analyses and systematic reviews confirm the safety and efficacy of vaccines across different 
-                  populations and age groups.
-                </p>
-              </div>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={consensusData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {consensusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <ConsensusChart
+          title="Scientific Consensus on Vaccine Efficacy"
+          data={consensusData}
+          description={consensusDescription}
+          source="Clinical trials and medical research studies"
+        />
       </TabsContent>
       
       <TabsContent value="efficacy">
