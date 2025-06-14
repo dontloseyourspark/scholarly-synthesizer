@@ -261,13 +261,15 @@ const Contribute = () => {
             Join our community of researchers, scholars, and experts working to advance evidence-based understanding.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
-              <Mail className="h-5 w-5 mr-2" />
-              Contact Us
+            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue" asChild>
+              <a href="mailto:info@scholarsphere.com">
+                <Mail className="h-5 w-5 mr-2" />
+                Contact Us
+              </a>
             </Button>
           </div>
           <div className="mt-8 text-sm text-scholarly-lightGray">
-            <p>Questions? Email us at <a href="mailto:contribute@scholarsphere.com" className="underline hover:text-white">contribute@scholarsphere.com</a></p>
+            <p>Questions? Email us at <a href="mailto:info@scholarsphere.com" className="underline hover:text-white">info@scholarsphere.com</a></p>
           </div>
         </div>
       </section>
