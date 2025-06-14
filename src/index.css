@@ -101,11 +101,11 @@
 }
 
 @layer components {
-  .bg-scholarly-blue:hover {
+  button.bg-scholarly-blue:hover {
     @apply bg-white text-scholarly-blue;
   }
   
-  .bg-scholarly-blue:hover svg {
+  button.bg-scholarly-blue:hover svg {
     @apply text-scholarly-blue;
   }
 }
