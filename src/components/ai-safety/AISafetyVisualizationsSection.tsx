@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Support', value: 85, color: '#4CAF50' },
-  { name: 'Against', value: 15, color: '#F44336' }
+  { name: 'Support', value: 85, color: '#F44336' },
+  { name: 'Against', value: 15, color: '#4CAF50' }
 ];
 
 const consensusDescription = [
