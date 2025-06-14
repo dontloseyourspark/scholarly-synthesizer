@@ -1,3 +1,4 @@
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '../ui/button';
 import { Link } from 'react-router-dom';
@@ -13,7 +14,7 @@ const CallToActionCard = () => (
       <div className="flex flex-wrap justify-center gap-4 mt-8">
             <Button
               variant="default"
-              className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray"
+              className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray hover:text-scholarly-blue"
               asChild
             >
               <Link to="/contribute">Contribute an Insight</Link>
