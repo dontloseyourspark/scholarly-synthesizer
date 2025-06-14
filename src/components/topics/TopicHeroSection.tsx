@@ -58,7 +58,7 @@ const TopicHeroSection = ({
                 <ConsensusIndicator 
                   level={topic.consensusLevel} 
                   percentage={topic.consensusPercentage} 
-                  sampleSize={topic.contributorsCount}
+                  sampleSize={topic.sourcesCount}
                   className="mb-4"
                 />
                 <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground mt-2">

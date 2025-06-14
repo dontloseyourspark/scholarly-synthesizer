@@ -33,7 +33,7 @@ const HeroSection = ({ topic }: HeroSectionProps) => {
             <ConsensusIndicator 
               level={topic.consensusLevel} 
               percentage={topic.consensusPercentage} 
-              sampleSize={topic.contributorsCount}
+              sampleSize={topic.sourcesCount}
               className="mb-4"
             />
             

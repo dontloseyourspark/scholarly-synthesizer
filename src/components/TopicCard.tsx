@@ -91,7 +91,7 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
         <ConsensusIndicator 
           level={topic.consensusLevel} 
           percentage={topic.consensusPercentage} 
-          sampleSize={contributorsCount}
+          sampleSize={sourcesCount}
         />
       </CardContent>
       <CardFooter className="pt-2 text-xs text-muted-foreground flex flex-wrap items-center gap-4">

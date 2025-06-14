@@ -59,8 +59,8 @@ const ConsensusIndicator = ({ level, percentage, sampleSize, className }: Consen
               </TooltipTrigger>
               <TooltipContent className="max-w-xs">
                 <p>
-                  This indicator shows the level of consensus among scholars on this topic. 
-                  {sampleSize && ` Based on contributions from ${sampleSize} scholars.`}
+                  This indicator shows the level of consensus among scholars on this topic.
+                  {sampleSize && ` Based on ${sampleSize} peer-reviewed sources.`}
                 </p>
               </TooltipContent>
             </Tooltip>
