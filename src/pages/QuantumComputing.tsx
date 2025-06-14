@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopic } from '@/data/topicsData';
-import { Cpu } from 'lucide-react';
+import { Cpu, Zap, Lock, Atom } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -25,6 +25,29 @@ const QuantumComputing = () => {
     );
   }
 
+  const quantumCards = [
+    {
+      title: "Quantum Supremacy",
+      icon: <Zap className="h-8 w-8 text-yellow-500" />,
+      description: "Demonstrated ability to solve specific problems exponentially faster than classical computers."
+    },
+    {
+      title: "Cryptography",
+      icon: <Lock className="h-8 w-8 text-red-500" />,
+      description: "Quantum computers could break current encryption methods while enabling quantum-safe cryptography."
+    },
+    {
+      title: "Quantum Processors",
+      icon: <Cpu className="h-8 w-8 text-blue-500" />,
+      description: "Advanced quantum processors with increasing qubit counts and improved error correction."
+    },
+    {
+      title: "Molecular Simulation",
+      icon: <Atom className="h-8 w-8 text-purple-500" />,
+      description: "Quantum computers excel at simulating quantum systems for drug discovery and materials science."
+    }
+  ];
+
   return (
     <TopicPageLayout>
       <TopicHeroSection 
@@ -42,6 +65,7 @@ const QuantumComputing = () => {
         title="Quantum Applications"
         subtitle="Potential Applications"
         description="Quantum computing applications in cryptography, optimization, simulation, and machine learning."
+        cards={quantumCards}
       />
       <TopicVisualizationsSection>
         <QuantumVisualizationsSection />

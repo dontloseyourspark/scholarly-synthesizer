@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopic } from '@/data/topicsData';
-import { Bot } from 'lucide-react';
+import { Bot, Shield, AlertTriangle, Cpu } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -25,6 +25,29 @@ const AISafety = () => {
     );
   }
 
+  const aiSafetyCards = [
+    {
+      title: "Risk Assessment",
+      icon: <AlertTriangle className="h-8 w-8 text-red-500" />,
+      description: "Identifying potential risks from advanced AI systems including misalignment and unintended consequences."
+    },
+    {
+      title: "Alignment Research",
+      icon: <Shield className="h-8 w-8 text-green-500" />,
+      description: "Ensuring AI systems remain aligned with human values and intentions as they become more capable."
+    },
+    {
+      title: "Robustness Testing",
+      icon: <Cpu className="h-8 w-8 text-blue-500" />,
+      description: "Developing methods to test AI systems for safety and reliability under various conditions."
+    },
+    {
+      title: "Governance Frameworks",
+      icon: <Bot className="h-8 w-8 text-purple-500" />,
+      description: "Creating policies and regulations to guide the safe development and deployment of AI systems."
+    }
+  ];
+
   return (
     <TopicPageLayout>
       <TopicHeroSection 
@@ -42,6 +65,7 @@ const AISafety = () => {
         title="AI Safety Research"
         subtitle="Risk Assessment and Mitigation"
         description="Research on potential risks from advanced artificial intelligence systems and methods to ensure AI systems remain beneficial and aligned with human values."
+        cards={aiSafetyCards}
       />
       <TopicVisualizationsSection>
         <AISafetyVisualizationsSection />

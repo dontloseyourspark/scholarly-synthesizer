@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopic } from '@/data/topicsData';
-import { Brain } from 'lucide-react';
+import { Brain, Heart, Users, TrendingUp } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -25,6 +25,29 @@ const EffectivenessPsychotherapy = () => {
     );
   }
 
+  const psychotherapyCards = [
+    {
+      title: "Evidence-Based Practice",
+      icon: <Brain className="h-8 w-8 text-blue-500" />,
+      description: "Cognitive-behavioral therapy and other evidence-based approaches show consistent positive outcomes."
+    },
+    {
+      title: "Mental Health Outcomes",
+      icon: <Heart className="h-8 w-8 text-red-500" />,
+      description: "Meta-analyses demonstrate significant improvements in depression, anxiety, and other conditions."
+    },
+    {
+      title: "Therapeutic Relationship",
+      icon: <Users className="h-8 w-8 text-green-500" />,
+      description: "Strong therapeutic alliance is a key predictor of successful treatment outcomes across modalities."
+    },
+    {
+      title: "Treatment Efficacy",
+      icon: <TrendingUp className="h-8 w-8 text-purple-500" />,
+      description: "Psychotherapy shows effect sizes comparable to many medical treatments for psychological disorders."
+    }
+  ];
+
   return (
     <TopicPageLayout>
       <TopicHeroSection 
@@ -42,6 +65,7 @@ const EffectivenessPsychotherapy = () => {
         title="Therapeutic Methods"
         subtitle="Evidence-Based Approaches"
         description="Research on different psychotherapy modalities and their effectiveness for various conditions."
+        cards={psychotherapyCards}
       />
       <TopicVisualizationsSection>
         <PsychotherapyVisualizationsSection />

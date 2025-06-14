@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopic } from '@/data/topicsData';
-import { Dna } from 'lucide-react';
+import { Dna, Skull, Users, Clock } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -25,6 +25,29 @@ const EvolutionOfHumans = () => {
     );
   }
 
+  const evolutionCards = [
+    {
+      title: "Fossil Evidence",
+      icon: <Skull className="h-8 w-8 text-brown-500" />,
+      description: "Extensive fossil record showing gradual changes in human ancestors over millions of years."
+    },
+    {
+      title: "Genetic Analysis",
+      icon: <Dna className="h-8 w-8 text-blue-500" />,
+      description: "DNA evidence reveals evolutionary relationships and migration patterns of early humans."
+    },
+    {
+      title: "Population Genetics",
+      icon: <Users className="h-8 w-8 text-green-500" />,
+      description: "Studies of genetic diversity provide insights into human evolutionary history and demographics."
+    },
+    {
+      title: "Timeline",
+      icon: <Clock className="h-8 w-8 text-purple-500" />,
+      description: "Human evolution spans approximately 7 million years from early hominids to modern humans."
+    }
+  ];
+
   return (
     <TopicPageLayout>
       <TopicHeroSection 
@@ -42,6 +65,7 @@ const EvolutionOfHumans = () => {
         title="Evolutionary Evidence"
         subtitle="Key Scientific Findings"
         description="Research on fossil records, genetic evidence, comparative anatomy, and molecular biology supporting human evolution."
+        cards={evolutionCards}
       />
       <TopicVisualizationsSection>
         <VisualizationsSection />
