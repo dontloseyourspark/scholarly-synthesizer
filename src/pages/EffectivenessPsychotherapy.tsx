@@ -9,6 +9,7 @@ import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
+import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useTopicSections } from '@/hooks/useTopicSections';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
@@ -121,6 +122,16 @@ const EffectivenessPsychotherapy = () => {
       <TopicVisualizationsSection>
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
+      
+      <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
+        id: pub.id,
+        title: pub.title,
+        authors: pub.authors,
+        year: pub.year,
+        url: pub.url,
+        doi: pub.doi || undefined,
+        publication: pub.publication || undefined
+      }))} />
       
       {callToActionSection && (
         <TopicCallToActionSection 
