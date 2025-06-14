@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -265,10 +264,6 @@ const Contribute = () => {
             <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
               <Mail className="h-5 w-5 mr-2" />
               Contact Us
-            </Button>
-            <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue">
-              <Github className="h-5 w-5 mr-2" />
-              GitHub Issues
             </Button>
           </div>
           <div className="mt-8 text-sm text-scholarly-lightGray">
