@@ -24,6 +24,7 @@ import {
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { getTopic } from '@/data/topicsData';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
 import { keyPublications } from '@/data/climateChangeData';
 import { vaccinePublications } from '@/data/vaccineData';
 
@@ -34,12 +35,50 @@ const TopicPublications = () => {
   const topic = getTopic(slug || '');
   
   const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('year-desc');
+  const [sortBy, setSortBy] = useState<'year-desc' | 'year-asc' | 'title-asc' | 'title-desc'>('year-desc');
   const [currentPage, setCurrentPage] = useState(1);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+  // Debounce search term to avoid too many API calls
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+      setCurrentPage(1); // Reset to first page when searching
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  // Get topic ID for database queries
+  const getTopicId = (topicSlug: string): number | null => {
+    switch (topicSlug) {
+      case 'climate-change':
+        return 1; // Assuming climate change has ID 1 in the database
+      case 'vaccine-efficacy':
+        return 2; // Assuming vaccine efficacy has ID 2 in the database
+      default:
+        return null;
+    }
+  };
+
+  const topicId = topic ? getTopicId(topic.slug) : null;
+
+  // Use database hook if we have a topic ID, otherwise fall back to static data
+  const {
+    publications: dbPublications,
+    totalCount: dbTotalCount,
+    loading: dbLoading,
+    error: dbError
+  } = useTopicPublications(topicId || 0, {
+    searchTerm: debouncedSearchTerm,
+    sortBy,
+    page: currentPage,
+    itemsPerPage: ITEMS_PER_PAGE
+  });
 
   if (!topic) {
     return (
@@ -59,7 +98,7 @@ const TopicPublications = () => {
     );
   }
 
-  // Get topic-specific publications
+  // Fall back to static data if no topic ID or database error
   const getPublicationsForTopic = (topicSlug: string) => {
     switch (topicSlug) {
       case 'vaccine-efficacy':
@@ -71,34 +110,45 @@ const TopicPublications = () => {
     }
   };
 
-  const allPublications = getPublicationsForTopic(topic.slug);
+  const useStaticData = !topicId || dbError;
+  
+  let allPublications, totalCount, loading;
+  
+  if (useStaticData) {
+    // Use static data with client-side filtering
+    const staticPublications = getPublicationsForTopic(topic.slug);
+    const filteredPublications = staticPublications.filter(pub =>
+      pub.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      pub.authors.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+    );
+    
+    const sortedPublications = [...filteredPublications].sort((a, b) => {
+      switch (sortBy) {
+        case 'year-desc':
+          return b.year - a.year;
+        case 'year-asc':
+          return a.year - b.year;
+        case 'title-asc':
+          return a.title.localeCompare(b.title);
+        case 'title-desc':
+          return b.title.localeCompare(a.title);
+        default:
+          return 0;
+      }
+    });
 
-  // Filter publications based on search term
-  const filteredPublications = allPublications.filter(pub =>
-    pub.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    pub.authors.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+    totalCount = sortedPublications.length;
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    allPublications = sortedPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+    loading = false;
+  } else {
+    // Use database data
+    allPublications = dbPublications;
+    totalCount = dbTotalCount;
+    loading = dbLoading;
+  }
 
-  // Sort publications
-  const sortedPublications = [...filteredPublications].sort((a, b) => {
-    switch (sortBy) {
-      case 'year-desc':
-        return b.year - a.year;
-      case 'year-asc':
-        return a.year - b.year;
-      case 'title-asc':
-        return a.title.localeCompare(b.title);
-      case 'title-desc':
-        return b.title.localeCompare(a.title);
-      default:
-        return 0;
-    }
-  });
-
-  // Pagination
-  const totalPages = Math.ceil(sortedPublications.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedPublications = sortedPublications.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   // Generate pagination items
   const generatePaginationItems = () => {
@@ -176,11 +226,16 @@ const TopicPublications = () => {
             </Link>
             <h1 className="text-3xl md:text-4xl font-serif font-bold mb-2">{topic.title}: Publications</h1>
             <p className="text-muted-foreground">
-              {allPublications.length} peer-reviewed sources supporting the scientific consensus.
+              {loading ? 'Loading...' : `${totalCount} peer-reviewed sources supporting the scientific consensus.`}
             </p>
           </div>
 
-          {allPublications.length > 0 ? (
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-scholarly-blue mx-auto"></div>
+              <p className="mt-4 text-muted-foreground">Loading publications...</p>
+            </div>
+          ) : totalCount > 0 ? (
             <>
               {/* Search and Sort Controls */}
               <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
@@ -191,16 +246,13 @@ const TopicPublications = () => {
                       <Input
                         placeholder="Search publications by title or author..."
                         value={searchTerm}
-                        onChange={(e) => {
-                          setSearchTerm(e.target.value);
-                          setCurrentPage(1); // Reset to first page when searching
-                        }}
+                        onChange={(e) => setSearchTerm(e.target.value)}
                         className="pl-10"
                       />
                     </div>
                   </div>
                   <div className="md:w-48">
-                    <Select value={sortBy} onValueChange={setSortBy}>
+                    <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
                       <SelectTrigger>
                         <SelectValue placeholder="Sort by..." />
                       </SelectTrigger>
@@ -216,15 +268,18 @@ const TopicPublications = () => {
                 
                 {searchTerm && (
                   <div className="mt-4 text-sm text-muted-foreground">
-                    Showing {filteredPublications.length} of {allPublications.length} publications
+                    {useStaticData ? 
+                      `Showing ${allPublications.length} of ${totalCount} publications` :
+                      `Found ${totalCount} publications`
+                    }
                   </div>
                 )}
               </div>
 
               {/* Publications List */}
               <div className="space-y-6">
-                {paginatedPublications.map((publication, index) => (
-                  <Card key={index}>
+                {allPublications.map((publication, index) => (
+                  <Card key={publication.id || index}>
                     <CardHeader className="pb-3">
                       <CardTitle className="text-xl">
                         <a 
@@ -241,6 +296,16 @@ const TopicPublications = () => {
                       <p className="text-muted-foreground mb-2">
                         {publication.authors}, {publication.year}
                       </p>
+                      {publication.publication && (
+                        <p className="text-sm text-muted-foreground mb-2">
+                          Published in: {publication.publication}
+                        </p>
+                      )}
+                      {publication.doi && (
+                        <p className="text-sm text-muted-foreground mb-2">
+                          DOI: {publication.doi}
+                        </p>
+                      )}
                       <p className="text-sm">
                         This is a peer-reviewed publication related to {topic.title.toLowerCase()}.
                       </p>
@@ -306,19 +371,39 @@ const TopicPublications = () => {
 
               {/* Results Summary */}
               <div className="mt-6 text-center text-sm text-muted-foreground">
-                Showing {startIndex + 1}-{Math.min(startIndex + ITEMS_PER_PAGE, sortedPublications.length)} of {sortedPublications.length} publications
+                {useStaticData ? (
+                  <>Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, totalCount)} of {totalCount} publications</>
+                ) : (
+                  <>Showing page {currentPage} of {totalPages} ({totalCount} total publications)</>
+                )}
               </div>
             </>
           ) : (
             <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-4">Publications Coming Soon</h3>
+              <h3 className="text-xl font-medium mb-4">
+                {searchTerm ? 'No publications found' : 'Publications Coming Soon'}
+              </h3>
               <p className="text-muted-foreground mb-6">
-                We're currently compiling peer-reviewed publications for this topic. 
-                Check back soon for a comprehensive list of sources.
+                {searchTerm ? 
+                  'Try adjusting your search terms or filters.' :
+                  'We\'re currently compiling peer-reviewed publications for this topic. Check back soon for a comprehensive list of sources.'
+                }
               </p>
+              {searchTerm && (
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setSearchTerm('');
+                    setCurrentPage(1);
+                  }}
+                  className="mb-4"
+                >
+                  Clear Search
+                </Button>
+              )}
               <Link 
                 to={backRoute}
-                className="text-scholarly-blue hover:underline"
+                className="text-scholarly-blue hover:underline block"
               >
                 Return to {topic.title}
               </Link>
