@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -80,7 +79,7 @@ const Navbar = () => {
                 placeholder="Search topics..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-64"
+                className="w-64 cursor-text"
                 autoFocus
               />
               <Button type="button" variant="ghost" size="sm" onClick={toggleSearch}>
@@ -88,7 +87,7 @@ const Navbar = () => {
               </Button>
             </form>
           ) : (
-            <Button variant="outline" size="sm" className="flex items-center" onClick={toggleSearch}>
+            <Button variant="outline" size="sm" className="flex items-center hover:bg-transparent hover:border-border" onClick={toggleSearch}>
               <Search className="h-4 w-4 mr-2" />
               Search
             </Button>
