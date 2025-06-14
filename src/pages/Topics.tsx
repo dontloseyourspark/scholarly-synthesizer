@@ -26,9 +26,8 @@ const Topics = () => {
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const q = queryParams.get('q');
-    if (q) {
-      setSearchQuery(q);
-    }
+    // Set search query to the URL parameter value or empty string if not present
+    setSearchQuery(q || '');
   }, [location.search]);
   
   useEffect(() => {
