@@ -1,28 +1,14 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Search } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { 
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-  PaginationEllipsis,
-} from '@/components/ui/pagination';
-import { 
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { ArrowLeft } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
+import SearchAndSortControls from '@/components/publications/SearchAndSortControls';
+import PublicationCard from '@/components/publications/PublicationCard';
+import PublicationsPagination from '@/components/publications/PublicationsPagination';
+import PublicationsResultsSummary from '@/components/publications/PublicationsResultsSummary';
+import EmptyPublicationsState from '@/components/publications/EmptyPublicationsState';
 import { getTopic } from '@/data/topicsData';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
 import { keyPublications } from '@/data/climateChangeData';
@@ -150,42 +136,6 @@ const TopicPublications = () => {
 
   const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-  // Generate pagination items
-  const generatePaginationItems = () => {
-    const items = [];
-    const maxVisible = 5;
-    
-    if (totalPages <= maxVisible) {
-      for (let i = 1; i <= totalPages; i++) {
-        items.push(i);
-      }
-    } else {
-      if (currentPage <= 3) {
-        for (let i = 1; i <= 4; i++) {
-          items.push(i);
-        }
-        items.push('ellipsis');
-        items.push(totalPages);
-      } else if (currentPage >= totalPages - 2) {
-        items.push(1);
-        items.push('ellipsis');
-        for (let i = totalPages - 3; i <= totalPages; i++) {
-          items.push(i);
-        }
-      } else {
-        items.push(1);
-        items.push('ellipsis');
-        for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          items.push(i);
-        }
-        items.push('ellipsis');
-        items.push(totalPages);
-      }
-    }
-    
-    return items;
-  };
-
   const getBackRoute = (topicSlug: string) => {
     switch (topicSlug) {
       case 'climate-change':
@@ -210,6 +160,11 @@ const TopicPublications = () => {
   };
 
   const backRoute = getBackRoute(topic.slug);
+
+  const handleClearSearch = () => {
+    setSearchTerm('');
+    setCurrentPage(1);
+  };
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -237,177 +192,49 @@ const TopicPublications = () => {
             </div>
           ) : totalCount > 0 ? (
             <>
-              {/* Search and Sort Controls */}
-              <div className="bg-white p-6 rounded-lg shadow-sm mb-6">
-                <div className="flex flex-col md:flex-row gap-4">
-                  <div className="flex-1">
-                    <div className="relative">
-                      <Search className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-                      <Input
-                        placeholder="Search publications by title or author..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="pl-10"
-                      />
-                    </div>
-                  </div>
-                  <div className="md:w-48">
-                    <Select value={sortBy} onValueChange={(value: any) => setSortBy(value)}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Sort by..." />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="year-desc">Year (Newest)</SelectItem>
-                        <SelectItem value="year-asc">Year (Oldest)</SelectItem>
-                        <SelectItem value="title-asc">Title (A-Z)</SelectItem>
-                        <SelectItem value="title-desc">Title (Z-A)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-                
-                {searchTerm && (
-                  <div className="mt-4 text-sm text-muted-foreground">
-                    {useStaticData ? 
-                      `Showing ${allPublications.length} of ${totalCount} publications` :
-                      `Found ${totalCount} publications`
-                    }
-                  </div>
-                )}
-              </div>
+              <SearchAndSortControls
+                searchTerm={searchTerm}
+                onSearchTermChange={setSearchTerm}
+                sortBy={sortBy}
+                onSortByChange={setSortBy}
+                totalCount={totalCount}
+                useStaticData={useStaticData}
+                filteredCount={allPublications.length}
+              />
 
               {/* Publications List */}
               <div className="space-y-6">
                 {allPublications.map((publication, index) => (
-                  <Card key={publication.id || index}>
-                    <CardHeader className="pb-3">
-                      <CardTitle className="text-xl">
-                        <a 
-                          href={publication.url} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-scholarly-blue hover:underline"
-                        >
-                          {publication.title}
-                        </a>
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                      <p className="text-muted-foreground mb-2">
-                        {publication.authors}, {publication.year}
-                      </p>
-                      {publication.publication && (
-                        <p className="text-sm text-muted-foreground mb-2">
-                          Published in: {publication.publication}
-                        </p>
-                      )}
-                      {publication.doi && (
-                        <p className="text-sm text-muted-foreground mb-2">
-                          DOI: {publication.doi}
-                        </p>
-                      )}
-                      <p className="text-sm">
-                        This is a peer-reviewed publication related to {topic.title.toLowerCase()}.
-                      </p>
-                    </CardContent>
-                  </Card>
+                  <PublicationCard
+                    key={publication.id || index}
+                    publication={publication}
+                    topicTitle={topic.title}
+                    index={index}
+                  />
                 ))}
               </div>
 
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="mt-8 flex justify-center">
-                  <Pagination>
-                    <PaginationContent>
-                      {currentPage > 1 && (
-                        <PaginationItem>
-                          <PaginationPrevious 
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCurrentPage(currentPage - 1);
-                              window.scrollTo(0, 0);
-                            }}
-                          />
-                        </PaginationItem>
-                      )}
-                      
-                      {generatePaginationItems().map((item, index) => (
-                        <PaginationItem key={index}>
-                          {item === 'ellipsis' ? (
-                            <PaginationEllipsis />
-                          ) : (
-                            <PaginationLink
-                              href="#"
-                              isActive={currentPage === item}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                setCurrentPage(item as number);
-                                window.scrollTo(0, 0);
-                              }}
-                            >
-                              {item}
-                            </PaginationLink>
-                          )}
-                        </PaginationItem>
-                      ))}
-                      
-                      {currentPage < totalPages && (
-                        <PaginationItem>
-                          <PaginationNext 
-                            href="#"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setCurrentPage(currentPage + 1);
-                              window.scrollTo(0, 0);
-                            }}
-                          />
-                        </PaginationItem>
-                      )}
-                    </PaginationContent>
-                  </Pagination>
-                </div>
-              )}
+              <PublicationsPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
 
-              {/* Results Summary */}
-              <div className="mt-6 text-center text-sm text-muted-foreground">
-                {useStaticData ? (
-                  <>Showing {((currentPage - 1) * ITEMS_PER_PAGE) + 1}-{Math.min(currentPage * ITEMS_PER_PAGE, totalCount)} of {totalCount} publications</>
-                ) : (
-                  <>Showing page {currentPage} of {totalPages} ({totalCount} total publications)</>
-                )}
-              </div>
+              <PublicationsResultsSummary
+                currentPage={currentPage}
+                itemsPerPage={ITEMS_PER_PAGE}
+                totalCount={totalCount}
+                totalPages={totalPages}
+                useStaticData={useStaticData}
+              />
             </>
           ) : (
-            <div className="text-center py-12">
-              <h3 className="text-xl font-medium mb-4">
-                {searchTerm ? 'No publications found' : 'Publications Coming Soon'}
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                {searchTerm ? 
-                  'Try adjusting your search terms or filters.' :
-                  'We\'re currently compiling peer-reviewed publications for this topic. Check back soon for a comprehensive list of sources.'
-                }
-              </p>
-              {searchTerm && (
-                <Button 
-                  variant="outline" 
-                  onClick={() => {
-                    setSearchTerm('');
-                    setCurrentPage(1);
-                  }}
-                  className="mb-4"
-                >
-                  Clear Search
-                </Button>
-              )}
-              <Link 
-                to={backRoute}
-                className="text-scholarly-blue hover:underline block"
-              >
-                Return to {topic.title}
-              </Link>
-            </div>
+            <EmptyPublicationsState
+              searchTerm={searchTerm}
+              onClearSearch={handleClearSearch}
+              topicTitle={topic.title}
+              backRoute={backRoute}
+            />
           )}
         </div>
       </main>
