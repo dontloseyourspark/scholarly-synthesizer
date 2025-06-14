@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -96,7 +95,7 @@ const TopicPublications = () => {
     }
   };
 
-  const useStaticData = !topicId || dbError;
+  const useStaticData = !topicId || !!dbError; // Convert to boolean with !!
   
   let allPublications, totalCount, loading;
   
