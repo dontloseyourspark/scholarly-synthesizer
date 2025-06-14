@@ -7,7 +7,6 @@ import { Search, X } from 'lucide-react';
 
 const NavbarSearch = () => {
   const navigate = useNavigate();
-  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -15,41 +14,41 @@ const NavbarSearch = () => {
     if (searchQuery.trim()) {
       const processedQuery = searchQuery.trim().toLowerCase().replace(/\s+/g, '-');
       navigate(`/topics?q=${encodeURIComponent(processedQuery)}`);
-      setIsSearchExpanded(false);
       setSearchQuery('');
     }
   };
 
-  const toggleSearch = () => {
-    setIsSearchExpanded(!isSearchExpanded);
-    if (isSearchExpanded) {
-      setSearchQuery('');
-    }
+  const clearSearch = () => {
+    setSearchQuery('');
   };
+
+  const inputWidth = searchQuery ? `${Math.max(200, searchQuery.length * 8 + 100)}px` : '200px';
 
   return (
-    <>
-      {isSearchExpanded ? (
-        <form onSubmit={handleSearchSubmit} className="flex items-center space-x-2 animate-in slide-in-from-right-2 duration-200">
-          <Input
-            type="text"
-            placeholder="Search topics..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-64 cursor-text"
-            autoFocus
-          />
-          <Button type="button" variant="ghost" size="sm" onClick={toggleSearch}>
-            <X className="h-4 w-4" />
+    <form onSubmit={handleSearchSubmit} className="flex items-center space-x-2">
+      <div className="relative flex items-center">
+        <Search className="absolute left-3 h-4 w-4 text-muted-foreground pointer-events-none" />
+        <Input
+          type="text"
+          placeholder="Search topics..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="pl-10 pr-8 transition-all duration-200 cursor-text hover:border-border"
+          style={{ width: inputWidth }}
+        />
+        {searchQuery && (
+          <Button 
+            type="button" 
+            variant="ghost" 
+            size="sm" 
+            onClick={clearSearch}
+            className="absolute right-1 h-6 w-6 p-0 hover:bg-muted"
+          >
+            <X className="h-3 w-3" />
           </Button>
-        </form>
-      ) : (
-        <Button variant="outline" size="sm" className="flex items-center hover:bg-transparent hover:border-border" onClick={toggleSearch}>
-          <Search className="h-4 w-4 mr-2" />
-          Search
-        </Button>
-      )}
-    </>
+        )}
+      </div>
+    </form>
   );
 };
 
