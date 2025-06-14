@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { getTopic } from '@/data/topicsData';
-import { Shield } from 'lucide-react';
+import { Shield, Syringe, Users, BarChart } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
@@ -34,6 +34,29 @@ const VaccineEfficacy = () => {
     </p>
   );
 
+  const vaccineCards = [
+    {
+      title: "Clinical Trials",
+      icon: <BarChart className="h-8 w-8 text-blue-500" />,
+      description: "Rigorous phase I, II, and III trials involving thousands of participants demonstrate vaccine safety and efficacy."
+    },
+    {
+      title: "Herd Immunity",
+      icon: <Users className="h-8 w-8 text-green-600" />,
+      description: "Vaccines protect communities by reducing disease transmission when vaccination coverage reaches sufficient levels."
+    },
+    {
+      title: "Vaccine Development",
+      icon: <Syringe className="h-8 w-8 text-purple-500" />,
+      description: "Modern vaccine platforms including mRNA, viral vector, and protein subunit technologies offer improved efficacy."
+    },
+    {
+      title: "Safety Monitoring",
+      icon: <Shield className="h-8 w-8 text-orange-500" />,
+      description: "Continuous post-market surveillance systems monitor vaccine safety and effectiveness in real-world populations."
+    }
+  ];
+
   return (
     <TopicPageLayout>
       <TopicHeroSection 
@@ -52,6 +75,7 @@ const VaccineEfficacy = () => {
         title="Vaccine Evidence"
         subtitle="Clinical Research Findings"
         description="Evidence-based research on vaccine effectiveness, safety profiles, and immunization outcomes from clinical trials and real-world studies."
+        cards={vaccineCards}
       />
       <TopicVisualizationsSection>
         <VaccineVisualizationsSection />
