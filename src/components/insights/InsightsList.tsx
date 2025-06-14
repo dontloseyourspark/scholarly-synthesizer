@@ -15,7 +15,7 @@ const InsightsList: React.FC<InsightsListProps> = ({ insights, onVote }) => {
       <EmptyState 
         title="No insights have been contributed for this topic yet."
         actionText="Be the first to contribute"
-        onAction={() => {}}
+        actionLink="/contribute"
       />
     );
   }
