@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { BookOpen, Twitter, Github, Mail } from 'lucide-react';
+import { BookOpen, Twitter, Mail } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -20,10 +19,6 @@ const Footer = () => {
               <a href="https://twitter.com" className="text-scholarly-gray hover:text-scholarly-blue transition-colors">
                 <Twitter className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
-              </a>
-              <a href="https://github.com" className="text-scholarly-gray hover:text-scholarly-blue transition-colors">
-                <Github className="h-5 w-5" />
-                <span className="sr-only">GitHub</span>
               </a>
               <a href="mailto:info@scholarsphere.com" className="text-scholarly-gray hover:text-scholarly-blue transition-colors">
                 <Mail className="h-5 w-5" />
