@@ -1,29 +1,44 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Earth, BookOpen } from 'lucide-react';
+import { LucideIcon, BookOpen } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import ConsensusIndicator from '@/components/ConsensusIndicator';
 import { Topic } from '@/components/TopicCard';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
-import { keyPublications } from '@/data/climateChangeData';
 
-type HeroSectionProps = {
+interface TopicHeroSectionProps {
   topic: Topic;
-};
+  title: string;
+  categoryIcon: LucideIcon;
+  categoryLabel: string;
+  keyPublications: Array<{
+    id: string;
+    title: string;
+    authors: string;
+    year: number;
+    url: string;
+  }>;
+}
 
-const HeroSection = ({ topic }: HeroSectionProps) => {
+const TopicHeroSection = ({ 
+  topic, 
+  title, 
+  categoryIcon: CategoryIcon, 
+  categoryLabel, 
+  keyPublications 
+}: TopicHeroSectionProps) => {
   return (
     <section className="bg-scholarly-blue py-12">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
           <div>
             <Link to="/topics" className="text-scholarly-lightGray hover:text-white flex items-center mb-4">
-              <Earth className="mr-2 h-5 w-5" />
-              Climate Topics
+              <CategoryIcon className="mr-2 h-5 w-5" />
+              {categoryLabel}
             </Link>
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-4">Climate Change</h1>
+            <h1 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold text-white mb-4">{title}</h1>
             <div className="flex flex-wrap gap-2 mb-6">
               {topic.tags.map((tag, index) => (
                 <Badge key={index} variant="outline" className="bg-scholarly-blue bg-opacity-20 text-white border-scholarly-lightGray">
@@ -97,4 +112,4 @@ const HeroSection = ({ topic }: HeroSectionProps) => {
   );
 };
 
-export default HeroSection;
+export default TopicHeroSection;

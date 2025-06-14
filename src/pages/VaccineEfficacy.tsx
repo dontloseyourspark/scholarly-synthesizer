@@ -1,48 +1,61 @@
 
 import React from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { getTopic } from '@/data/topicsData';
-import VaccineHeroSection from '@/components/vaccine/VaccineHeroSection';
-import VaccineDescriptionSection from '@/components/vaccine/VaccineDescriptionSection';
+import { Shield } from 'lucide-react';
+import TopicPageLayout from '@/components/layout/TopicPageLayout';
+import TopicHeroSection from '@/components/topics/TopicHeroSection';
+import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
 import VaccineEvidenceSection from '@/components/vaccine/VaccineEvidenceSection';
 import VaccineVisualizationsSection from '@/components/vaccine/VaccineVisualizationsSection';
-import VaccineCallToActionSection from '@/components/vaccine/VaccineCallToActionSection';
+import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import VaccineInsightsContainer from '@/components/vaccine/VaccineInsightsContainer';
+import { vaccinePublications } from '@/data/vaccineData';
 
 const VaccineEfficacy = () => {
   const vaccineTopic = getTopic('vaccine-efficacy');
   
   if (!vaccineTopic) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow bg-scholarly-lightGray py-12">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
-            <p className="mb-6">We couldn't find information about the Vaccine Efficacy topic.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <TopicPageLayout>
+        <div className="container mx-auto px-4 text-center py-12">
+          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
+          <p className="mb-6">We couldn't find information about the Vaccine Efficacy topic.</p>
+        </div>
+      </TopicPageLayout>
     );
   }
 
+  const additionalContent = (
+    <p className="text-base text-muted-foreground leading-relaxed">
+      The scientific consensus on vaccine efficacy is built on decades of rigorous clinical trials, 
+      real-world effectiveness studies, and comprehensive safety monitoring systems. Modern vaccines 
+      undergo extensive testing phases before approval and continue to be monitored throughout their use.
+    </p>
+  );
+
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      
-      <main className="flex-grow bg-scholarly-lightGray pb-16">
-        <VaccineHeroSection topic={vaccineTopic} />
-        <VaccineDescriptionSection description={vaccineTopic.description} />
-        <VaccineEvidenceSection />
-        <VaccineVisualizationsSection />
-        <VaccineInsightsContainer />
-        <VaccineCallToActionSection topicSlug={vaccineTopic.slug} />
-      </main>
-      
-      <Footer />
-    </div>
+    <TopicPageLayout>
+      <TopicHeroSection 
+        topic={vaccineTopic}
+        title="Vaccine Efficacy"
+        categoryIcon={Shield}
+        categoryLabel="Medical Topics"
+        keyPublications={vaccinePublications}
+      />
+      <TopicDescriptionSection 
+        title="Understanding Vaccine Efficacy"
+        description={vaccineTopic.description}
+        additionalContent={additionalContent}
+      />
+      <VaccineEvidenceSection />
+      <VaccineVisualizationsSection />
+      <VaccineInsightsContainer />
+      <TopicCallToActionSection 
+        topicSlug={vaccineTopic.slug}
+        title="Contribute to Vaccine Research"
+        description="Help advance our understanding of vaccine efficacy by contributing your expertise and insights."
+      />
+    </TopicPageLayout>
   );
 };
 

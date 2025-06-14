@@ -1,13 +1,13 @@
 
 import React from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { getTopic } from '@/data/topicsData';
-import PsychotherapyHeroSection from '@/components/psychotherapy/PsychotherapyHeroSection';
-import PsychotherapyDescriptionSection from '@/components/psychotherapy/PsychotherapyDescriptionSection';
+import { Brain } from 'lucide-react';
+import TopicPageLayout from '@/components/layout/TopicPageLayout';
+import TopicHeroSection from '@/components/topics/TopicHeroSection';
+import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
 import PsychotherapyMethodsSection from '@/components/psychotherapy/PsychotherapyMethodsSection';
 import PsychotherapyVisualizationsSection from '@/components/psychotherapy/PsychotherapyVisualizationsSection';
-import PsychotherapyCallToActionSection from '@/components/psychotherapy/PsychotherapyCallToActionSection';
+import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import PsychotherapyInsightsContainer from '@/components/psychotherapy/PsychotherapyInsightsContainer';
 
 const EffectivenessPsychotherapy = () => {
@@ -15,34 +15,33 @@ const EffectivenessPsychotherapy = () => {
   
   if (!psychotherapyTopic) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow bg-scholarly-lightGray py-12">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
-            <p className="mb-6">We couldn't find information about the Effectiveness of Psychotherapy topic.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <TopicPageLayout>
+        <div className="container mx-auto px-4 text-center py-12">
+          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
+          <p className="mb-6">We couldn't find information about the Effectiveness of Psychotherapy topic.</p>
+        </div>
+      </TopicPageLayout>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      
-      <main className="flex-grow bg-scholarly-lightGray pb-16">
-        <PsychotherapyHeroSection topic={psychotherapyTopic} />
-        <PsychotherapyDescriptionSection description={psychotherapyTopic.description} />
-        <PsychotherapyMethodsSection />
-        <PsychotherapyVisualizationsSection />
-        <PsychotherapyInsightsContainer />
-        <PsychotherapyCallToActionSection topicSlug={psychotherapyTopic.slug} />
-      </main>
-      
-      <Footer />
-    </div>
+    <TopicPageLayout>
+      <TopicHeroSection 
+        topic={psychotherapyTopic}
+        title="Effectiveness of Psychotherapy"
+        categoryIcon={Brain}
+        categoryLabel="Psychology"
+        keyPublications={[]}
+      />
+      <TopicDescriptionSection 
+        title="Understanding Psychotherapy Effectiveness"
+        description={psychotherapyTopic.description}
+      />
+      <PsychotherapyMethodsSection />
+      <PsychotherapyVisualizationsSection />
+      <PsychotherapyInsightsContainer />
+      <TopicCallToActionSection topicSlug={psychotherapyTopic.slug} />
+    </TopicPageLayout>
   );
 };
 

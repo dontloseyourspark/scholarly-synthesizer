@@ -1,13 +1,13 @@
 
 import React from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { getTopic } from '@/data/topicsData';
-import NutritionHeroSection from '@/components/nutrition/NutritionHeroSection';
-import NutritionDescriptionSection from '@/components/nutrition/NutritionDescriptionSection';
+import { Apple } from 'lucide-react';
+import TopicPageLayout from '@/components/layout/TopicPageLayout';
+import TopicHeroSection from '@/components/topics/TopicHeroSection';
+import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
 import NutritionEvidenceSection from '@/components/nutrition/NutritionEvidenceSection';
 import NutritionVisualizationsSection from '@/components/nutrition/NutritionVisualizationsSection';
-import NutritionCallToActionSection from '@/components/nutrition/NutritionCallToActionSection';
+import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import NutritionInsightsContainer from '@/components/nutrition/NutritionInsightsContainer';
 
 const NutritionScience = () => {
@@ -15,34 +15,33 @@ const NutritionScience = () => {
   
   if (!nutritionTopic) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow bg-scholarly-lightGray py-12">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
-            <p className="mb-6">We couldn't find information about the Nutrition Science topic.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <TopicPageLayout>
+        <div className="container mx-auto px-4 text-center py-12">
+          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
+          <p className="mb-6">We couldn't find information about the Nutrition Science topic.</p>
+        </div>
+      </TopicPageLayout>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      
-      <main className="flex-grow bg-scholarly-lightGray pb-16">
-        <NutritionHeroSection topic={nutritionTopic} />
-        <NutritionDescriptionSection description={nutritionTopic.description} />
-        <NutritionEvidenceSection />
-        <NutritionVisualizationsSection />
-        <NutritionInsightsContainer />
-        <NutritionCallToActionSection topicSlug={nutritionTopic.slug} />
-      </main>
-      
-      <Footer />
-    </div>
+    <TopicPageLayout>
+      <TopicHeroSection 
+        topic={nutritionTopic}
+        title="Nutrition Science"
+        categoryIcon={Apple}
+        categoryLabel="Health Sciences"
+        keyPublications={[]}
+      />
+      <TopicDescriptionSection 
+        title="Understanding Nutrition Science"
+        description={nutritionTopic.description}
+      />
+      <NutritionEvidenceSection />
+      <NutritionVisualizationsSection />
+      <NutritionInsightsContainer />
+      <TopicCallToActionSection topicSlug={nutritionTopic.slug} />
+    </TopicPageLayout>
   );
 };
 

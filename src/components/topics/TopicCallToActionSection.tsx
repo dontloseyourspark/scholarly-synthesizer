@@ -4,16 +4,26 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 
-const VaccineCallToActionSection = ({ topicSlug }: { topicSlug: string }) => {
+interface TopicCallToActionSectionProps {
+  topicSlug: string;
+  title?: string;
+  description?: string;
+}
+
+const TopicCallToActionSection = ({ 
+  topicSlug, 
+  title = "Contribute to the Discussion",
+  description = "Help advance our understanding by contributing your expertise and insights."
+}: TopicCallToActionSectionProps) => {
   return (
     <section className="container mx-auto px-4 py-10">
       <Card className="bg-scholarly-blue text-white">
         <CardHeader className="text-center">
-          <CardTitle className="text-2xl font-serif">Contribute to the Discussion</CardTitle>
+          <CardTitle className="text-2xl font-serif">{title}</CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-4">
           <p className="text-scholarly-lightGray">
-            Help advance our understanding of vaccine efficacy by contributing your expertise and insights.
+            {description}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-scholarly-blue" asChild>
@@ -29,4 +39,4 @@ const VaccineCallToActionSection = ({ topicSlug }: { topicSlug: string }) => {
   );
 };
 
-export default VaccineCallToActionSection;
+export default TopicCallToActionSection;

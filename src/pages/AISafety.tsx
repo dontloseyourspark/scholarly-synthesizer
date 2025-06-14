@@ -1,13 +1,13 @@
 
 import React from 'react';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
 import { getTopic } from '@/data/topicsData';
-import AISafetyHeroSection from '@/components/ai-safety/AISafetyHeroSection';
-import AISafetyDescriptionSection from '@/components/ai-safety/AISafetyDescriptionSection';
+import { Bot } from 'lucide-react';
+import TopicPageLayout from '@/components/layout/TopicPageLayout';
+import TopicHeroSection from '@/components/topics/TopicHeroSection';
+import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
 import AISafetyRisksSection from '@/components/ai-safety/AISafetyRisksSection';
 import AISafetyVisualizationsSection from '@/components/ai-safety/AISafetyVisualizationsSection';
-import AISafetyCallToActionSection from '@/components/ai-safety/AISafetyCallToActionSection';
+import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import AISafetyInsightsContainer from '@/components/ai-safety/AISafetyInsightsContainer';
 
 const AISafety = () => {
@@ -15,34 +15,33 @@ const AISafety = () => {
   
   if (!aiSafetyTopic) {
     return (
-      <div className="flex flex-col min-h-screen">
-        <Navbar />
-        <main className="flex-grow bg-scholarly-lightGray py-12">
-          <div className="container mx-auto px-4 text-center">
-            <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
-            <p className="mb-6">We couldn't find information about the AI Safety topic.</p>
-          </div>
-        </main>
-        <Footer />
-      </div>
+      <TopicPageLayout>
+        <div className="container mx-auto px-4 text-center py-12">
+          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
+          <p className="mb-6">We couldn't find information about the AI Safety topic.</p>
+        </div>
+      </TopicPageLayout>
     );
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      
-      <main className="flex-grow bg-scholarly-lightGray pb-16">
-        <AISafetyHeroSection topic={aiSafetyTopic} />
-        <AISafetyDescriptionSection description={aiSafetyTopic.description} />
-        <AISafetyRisksSection />
-        <AISafetyVisualizationsSection />
-        <AISafetyInsightsContainer />
-        <AISafetyCallToActionSection topicSlug={aiSafetyTopic.slug} />
-      </main>
-      
-      <Footer />
-    </div>
+    <TopicPageLayout>
+      <TopicHeroSection 
+        topic={aiSafetyTopic}
+        title="Artificial Intelligence Safety"
+        categoryIcon={Bot}
+        categoryLabel="Technology Topics"
+        keyPublications={[]} // AI safety publications would be imported from data file
+      />
+      <TopicDescriptionSection 
+        title="Understanding AI Safety"
+        description={aiSafetyTopic.description}
+      />
+      <AISafetyRisksSection />
+      <AISafetyVisualizationsSection />
+      <AISafetyInsightsContainer />
+      <TopicCallToActionSection topicSlug={aiSafetyTopic.slug} />
+    </TopicPageLayout>
   );
 };
 
