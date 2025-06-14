@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import ConsensusIndicator from '@/components/ConsensusIndicator';
 import { Topic } from '@/components/TopicCard';
+import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
+import { economicPublications } from '@/data/economicData';
 
 type EconomicHeroSectionProps = {
   topic: Topic;
@@ -43,10 +45,48 @@ const EconomicHeroSection = ({ topic }: EconomicHeroSectionProps) => {
                   className="mb-4"
                 />
                 <div className="flex flex-wrap gap-x-6 gap-y-2 text-sm text-muted-foreground mt-2">
-                  <div className="flex items-center">
-                    <BookOpen className="h-4 w-4 mr-2" />
-                    <span>{topic.sourcesCount} peer-reviewed sources</span>
-                  </div>
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <div className="flex items-center hover:text-scholarly-blue transition-colors cursor-pointer">
+                        <BookOpen className="h-4 w-4 mr-2" />
+                        <span>{topic.sourcesCount} peer-reviewed sources</span>
+                      </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80 p-0 overflow-hidden">
+                      <div className="bg-scholarly-blue p-3 text-white">
+                        <h4 className="font-medium">Key Publications</h4>
+                      </div>
+                      <div className="p-4 space-y-3">
+                        {economicPublications.length > 0 ? (
+                          economicPublications.slice(0, 3).map((publication, index) => (
+                            <div key={index} className="text-xs">
+                              <a 
+                                href={publication.url} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="font-medium text-scholarly-blue hover:underline"
+                              >
+                                {publication.title}
+                              </a>
+                              <p className="text-muted-foreground mt-0.5">
+                                {publication.authors}, {publication.year}
+                              </p>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-sm text-muted-foreground">No publications available for preview</p>
+                        )}
+                        <div className="pt-2 text-center">
+                          <Link 
+                            to={`/topics/${topic.slug}/publications`}
+                            className="text-xs text-scholarly-blue hover:underline"
+                          >
+                            View all {topic.sourcesCount} sources
+                          </Link>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                 </div>
               </CardContent>
             </Card>

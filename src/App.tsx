@@ -20,6 +20,9 @@ import NutritionScience from '@/pages/NutritionScience';
 import QuantumComputing from '@/pages/QuantumComputing';
 import EconomicImpactsImmigration from '@/pages/EconomicImpactsImmigration';
 import EffectivenessPsychotherapy from '@/pages/EffectivenessPsychotherapy';
+import TermsOfService from '@/pages/TermsOfService';
+import PrivacyPolicy from '@/pages/PrivacyPolicy';
+import CookiePolicy from '@/pages/CookiePolicy';
 
 function App() {
   return (
@@ -42,6 +45,9 @@ function App() {
         <Route path="/contribute" element={<Contribute />} />
         <Route path="/admin" element={<AdminPanel />} />
         <Route path="/profile" element={<ProfilePage />} />
+        <Route path="/terms" element={<TermsOfService />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+        <Route path="/cookies" element={<CookiePolicy />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Toaster position="top-right" closeButton />
