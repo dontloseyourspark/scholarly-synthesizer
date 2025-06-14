@@ -10,6 +10,7 @@ interface SearchInputProps {
   onClear: () => void;
   placeholder?: string;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 const SearchInput = ({ 
@@ -17,10 +18,11 @@ const SearchInput = ({
   onChange, 
   onClear, 
   placeholder = "Search...", 
-  className = "" 
+  className = "",
+  style 
 }: SearchInputProps) => {
   return (
-    <div className={`flex-1 relative ${className}`}>
+    <div className={`flex-1 relative ${className}`} style={style}>
       <Input
         type="text"
         placeholder={placeholder}
