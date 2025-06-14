@@ -85,13 +85,28 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
       <CardFooter className="pt-2 text-xs text-muted-foreground flex flex-wrap items-center gap-4">
         <HoverCard>
           <HoverCardTrigger asChild>
-            <Link to={`/topics/${topic.slug}/contributors`} className="flex items-center hover:text-scholarly-blue transition-colors">
+            <div className="flex items-center cursor-pointer hover:text-scholarly-blue transition-colors">
               <Users className="h-3.5 w-3.5 mr-1" />
               <span>{topic.contributorsCount} contributors</span>
-            </Link>
+            </div>
           </HoverCardTrigger>
-          <HoverCardContent className="w-auto p-2">
-            <p className="text-sm">Contribute your scholarship</p>
+          <HoverCardContent className="w-80 p-0 overflow-hidden">
+            <div className="bg-scholarly-blue p-3 text-white">
+              <h4 className="font-medium">Join Our Community</h4>
+            </div>
+            <div className="p-4">
+              <p className="text-sm text-muted-foreground mb-3">
+                Help build the world's most comprehensive database of scholarly consensus by contributing your research and expertise.
+              </p>
+              <div className="text-center">
+                <Link 
+                  to="/contribute" 
+                  className="text-xs text-scholarly-blue hover:underline"
+                >
+                  Contribute your scholarship
+                </Link>
+              </div>
+            </div>
           </HoverCardContent>
         </HoverCard>
         <HoverCard>
