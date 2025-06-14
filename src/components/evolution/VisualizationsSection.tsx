@@ -11,12 +11,19 @@ import {
   Tooltip, 
   ResponsiveContainer,
   BarChart,
-  Bar,
-  Legend,
-  PieChart,
-  Pie,
-  Cell
+  Bar
 } from 'recharts';
+import ConsensusChart from '@/components/common/ConsensusChart';
+
+const consensusData = [
+  { name: 'Support', value: 97, color: '#4CAF50' },
+  { name: 'Against', value: 3, color: '#F44336' }
+];
+
+const consensusDescription = [
+  "The scientific consensus on human evolution is overwhelming, with virtually all scientists in relevant fields accepting the evidence for common descent and evolutionary processes. This consensus is based on multiple independent lines of evidence from fossils, genetics, comparative anatomy, and molecular biology.",
+  "Major scientific organizations worldwide, including the National Academy of Sciences, the American Association for the Advancement of Science, and the Royal Society, have all issued statements supporting the scientific validity of evolutionary theory."
+];
 
 const brainSizeData = [
   { name: 'A. afarensis', volume: 400, species: 'Australopithecine', age: 3.2 },
@@ -45,13 +52,6 @@ const migrationData = [
   { region: 'Americas', timeframe: '15,000 years ago', population: 25 }
 ];
 
-const consensusData = [
-  { name: 'Support', value: 97, color: '#4CAF50' },
-  { name: 'Against', value: 3, color: '#F44336' }
-];
-
-const CHART_COLORS = ['#4CAF50', '#F44336'];
-
 const VisualizationsSection = () => {
   return (
     <section className="container mx-auto px-4 py-10">
@@ -64,51 +64,12 @@ const VisualizationsSection = () => {
         </TabsList>
         
         <TabsContent value="consensus">
-          <Card className="border-none shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-2xl">Scientific Consensus on Human Evolution</CardTitle>
-            </CardHeader>
-            <CardContent className="px-6 pb-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <p className="mb-6">
-                    The scientific consensus on human evolution is overwhelming, with virtually all scientists 
-                    in relevant fields accepting the evidence for common descent and evolutionary processes. 
-                    This consensus is based on multiple independent lines of evidence from fossils, genetics, 
-                    comparative anatomy, and molecular biology.
-                  </p>
-                  <p>
-                    Major scientific organizations worldwide, including the National Academy of Sciences, 
-                    the American Association for the Advancement of Science, and the Royal Society, 
-                    have all issued statements supporting the scientific validity of evolutionary theory.
-                  </p>
-                </div>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={consensusData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={100}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
-                      >
-                        {consensusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value, name) => [`${value}%`, name]} />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-              <p className="text-sm text-gray-600 mt-4">Source: Surveys of scientists and major scientific organizations</p>
-            </CardContent>
-          </Card>
+          <ConsensusChart
+            title="Scientific Consensus on Human Evolution"
+            data={consensusData}
+            description={consensusDescription}
+            source="Surveys of scientists and major scientific organizations"
+          />
         </TabsContent>
         
         <TabsContent value="brain">

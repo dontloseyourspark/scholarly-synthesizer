@@ -2,14 +2,17 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Support', value: 89 },
-  { name: 'Against', value: 11 }
+  { name: 'Support', value: 89, color: '#4CAF50' },
+  { name: 'Against', value: 11, color: '#F44336' }
 ];
 
-const CHART_COLORS = ['#4CAF50', '#F44336'];
+const consensusDescription = [
+  "Mental health professionals and researchers have strong consensus that psychotherapy is effective for treating a wide range of mental health conditions. Meta-analyses consistently demonstrate significant benefits for patients receiving psychological treatments.",
+  "Evidence-based therapies have been rigorously tested and shown to be effective for conditions such as depression, anxiety, PTSD, and many other psychological disorders."
+];
 
 const PsychotherapyVisualizationsSection = () => {
   return (
@@ -21,47 +24,12 @@ const PsychotherapyVisualizationsSection = () => {
       </TabsList>
       
       <TabsContent value="consensus">
-        <Card className="border-none shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">Clinical Consensus on Psychotherapy</CardTitle>
-          </CardHeader>
-          <CardContent className="px-6 pb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <p className="mb-6">
-                  Mental health professionals and researchers have strong consensus that psychotherapy is effective 
-                  for treating a wide range of mental health conditions. Meta-analyses consistently demonstrate 
-                  significant benefits for patients receiving psychological treatments.
-                </p>
-                <p>
-                  Evidence-based therapies have been rigorously tested and shown to be effective for conditions 
-                  such as depression, anxiety, PTSD, and many other psychological disorders.
-                </p>
-              </div>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={consensusData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {consensusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <ConsensusChart
+          title="Clinical Consensus on Psychotherapy"
+          data={consensusData}
+          description={consensusDescription}
+          source="Clinical psychology research and professional organizations"
+        />
       </TabsContent>
       
       <TabsContent value="effectiveness">

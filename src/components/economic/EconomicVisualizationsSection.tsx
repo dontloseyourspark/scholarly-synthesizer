@@ -1,11 +1,18 @@
+
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ResponsiveContainer, Tooltip } from 'recharts';
+import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
   { name: 'Support', value: 78, color: '#4CAF50' },
   { name: 'Against', value: 22, color: '#F44336' }
+];
+
+const consensusDescription = [
+  "Most economists agree that immigration has a net positive impact on the economy over the long term. Research consistently shows that immigrants contribute to economic growth through labor force participation, entrepreneurship, and innovation.",
+  "While there may be short-term adjustments in specific sectors or regions, the overall economic consensus supports the beneficial effects of immigration on economic development."
 ];
 
 const laborMarketData = [
@@ -23,8 +30,6 @@ const fiscalImpactData = [
   { timeframe: 'Lifetime total', impact: 3.6 }
 ];
 
-const CHART_COLORS = ['#4CAF50', '#F44336'];
-
 const EconomicVisualizationsSection = () => {
   return (
     <section className="container mx-auto px-4 py-10">
@@ -36,48 +41,12 @@ const EconomicVisualizationsSection = () => {
         </TabsList>
         
         <TabsContent value="consensus">
-          <Card className="border-none shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-2xl">Economic Consensus on Immigration</CardTitle>
-            </CardHeader>
-            <CardContent className="px-6 pb-6">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                  <p className="mb-6">
-                    Most economists agree that immigration has a net positive impact on the economy over the long term. 
-                    Research consistently shows that immigrants contribute to economic growth through labor force 
-                    participation, entrepreneurship, and innovation.
-                  </p>
-                  <p>
-                    While there may be short-term adjustments in specific sectors or regions, the overall economic 
-                    consensus supports the beneficial effects of immigration on economic development.
-                  </p>
-                </div>
-                <div className="h-72">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                      <Pie
-                        data={consensusData}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={100}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
-                      >
-                        {consensusData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip formatter={(value, name) => [`${value}%`, name]} />
-                      <Legend />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <ConsensusChart
+            title="Economic Consensus on Immigration"
+            data={consensusData}
+            description={consensusDescription}
+            source="Surveys of economists and economic research studies"
+          />
         </TabsContent>
         
         <TabsContent value="impacts">

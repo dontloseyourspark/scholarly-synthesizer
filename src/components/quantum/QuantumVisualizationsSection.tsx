@@ -2,14 +2,17 @@
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Support', value: 88 },
-  { name: 'Against', value: 12 }
+  { name: 'Support', value: 88, color: '#4CAF50' },
+  { name: 'Against', value: 12, color: '#F44336' }
 ];
 
-const CHART_COLORS = ['#4CAF50', '#F44336'];
+const consensusDescription = [
+  "Quantum physicists and computer scientists widely agree that quantum computing represents a revolutionary approach to computation with the potential to solve certain problems exponentially faster than classical computers.",
+  "While challenges remain in building practical quantum computers, the scientific community has strong consensus on the theoretical foundations and potential applications of quantum computing."
+];
 
 const QuantumVisualizationsSection = () => {
   return (
@@ -21,47 +24,12 @@ const QuantumVisualizationsSection = () => {
       </TabsList>
       
       <TabsContent value="consensus">
-        <Card className="border-none shadow-lg">
-          <CardHeader>
-            <CardTitle className="text-2xl">Scientific Consensus on Quantum Computing</CardTitle>
-          </CardHeader>
-          <CardContent className="px-6 pb-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-              <div>
-                <p className="mb-6">
-                  Quantum physicists and computer scientists widely agree that quantum computing represents a 
-                  revolutionary approach to computation with the potential to solve certain problems exponentially 
-                  faster than classical computers.
-                </p>
-                <p>
-                  While challenges remain in building practical quantum computers, the scientific community 
-                  has strong consensus on the theoretical foundations and potential applications of quantum computing.
-                </p>
-              </div>
-              <div className="h-72">
-                <ResponsiveContainer width="100%" height="100%">
-                  <PieChart>
-                    <Pie
-                      data={consensusData}
-                      cx="50%"
-                      cy="50%"
-                      labelLine={false}
-                      outerRadius={100}
-                      fill="#8884d8"
-                      dataKey="value"
-                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                    >
-                      {consensusData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip />
-                  </PieChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <ConsensusChart
+          title="Scientific Consensus on Quantum Computing"
+          data={consensusData}
+          description={consensusDescription}
+          source="Quantum physics and computer science research communities"
+        />
       </TabsContent>
       
       <TabsContent value="progress">
