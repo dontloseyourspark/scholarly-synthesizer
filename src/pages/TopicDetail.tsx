@@ -6,11 +6,12 @@ import Footer from '@/components/Footer';
 import ConsensusIndicator from '@/components/ConsensusIndicator';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend } from 'recharts';
 import { BookOpen, Calendar, Users, ArrowLeft } from 'lucide-react';
 import { getTopic } from '@/data/topicsData';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
 import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
 
 const TopicDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -45,6 +46,7 @@ const TopicDetail = () => {
   }
 
   const topicId = getTopicIdFromSlug(slug);
+  const { publications, loading: publicationsLoading } = useTopicPublications(topicId || 0);
   
   return (
     <div className="flex flex-col min-h-screen">
@@ -94,7 +96,7 @@ const TopicDetail = () => {
                     </div>
                     <div className="flex items-center">
                       <BookOpen className="h-4 w-4 mr-2" />
-                      <span>{topic.sourcesCount} sources</span>
+                      <span>{publicationsLoading ? '...' : publications.length} sources</span>
                     </div>
                     <div className="flex items-center">
                       <Calendar className="h-4 w-4 mr-2" />

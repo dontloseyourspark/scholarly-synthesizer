@@ -315,6 +315,212 @@ export type Database = {
         }
         Relationships: []
       }
+      topic_content_cards: {
+        Row: {
+          created_at: string
+          description: string
+          icon_color: string | null
+          icon_name: string | null
+          id: string
+          sort_order: number | null
+          title: string
+          topic_id: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon_color?: string | null
+          icon_name?: string | null
+          id?: string
+          sort_order?: number | null
+          title: string
+          topic_id?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon_color?: string | null
+          icon_name?: string | null
+          id?: string
+          sort_order?: number | null
+          title?: string
+          topic_id?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_content_cards_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topic_publications: {
+        Row: {
+          authors: string
+          created_at: string
+          doi: string | null
+          id: string
+          is_key_publication: boolean | null
+          publication: string | null
+          sort_order: number | null
+          title: string
+          topic_id: number | null
+          updated_at: string
+          url: string
+          year: number
+        }
+        Insert: {
+          authors: string
+          created_at?: string
+          doi?: string | null
+          id?: string
+          is_key_publication?: boolean | null
+          publication?: string | null
+          sort_order?: number | null
+          title: string
+          topic_id?: number | null
+          updated_at?: string
+          url: string
+          year: number
+        }
+        Update: {
+          authors?: string
+          created_at?: string
+          doi?: string | null
+          id?: string
+          is_key_publication?: boolean | null
+          publication?: string | null
+          sort_order?: number | null
+          title?: string
+          topic_id?: number | null
+          updated_at?: string
+          url?: string
+          year?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_publications_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topic_sections: {
+        Row: {
+          additional_content: string | null
+          category_icon: string | null
+          category_label: string | null
+          created_at: string
+          description: string | null
+          id: string
+          section_type: string
+          sort_order: number | null
+          subtitle: string | null
+          title: string | null
+          topic_id: number | null
+          updated_at: string
+        }
+        Insert: {
+          additional_content?: string | null
+          category_icon?: string | null
+          category_label?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          section_type: string
+          sort_order?: number | null
+          subtitle?: string | null
+          title?: string | null
+          topic_id?: number | null
+          updated_at?: string
+        }
+        Update: {
+          additional_content?: string | null
+          category_icon?: string | null
+          category_label?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          section_type?: string
+          sort_order?: number | null
+          subtitle?: string | null
+          title?: string | null
+          topic_id?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_sections_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      topic_visualizations: {
+        Row: {
+          chart_config: Json | null
+          chart_data: Json | null
+          chart_type: string
+          content_description: string | null
+          content_title: string | null
+          created_at: string
+          id: string
+          sort_order: number | null
+          source_citation: string | null
+          tab_key: string
+          tab_label: string
+          topic_id: number | null
+          updated_at: string
+        }
+        Insert: {
+          chart_config?: Json | null
+          chart_data?: Json | null
+          chart_type: string
+          content_description?: string | null
+          content_title?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number | null
+          source_citation?: string | null
+          tab_key: string
+          tab_label: string
+          topic_id?: number | null
+          updated_at?: string
+        }
+        Update: {
+          chart_config?: Json | null
+          chart_data?: Json | null
+          chart_type?: string
+          content_description?: string | null
+          content_title?: string | null
+          created_at?: string
+          id?: string
+          sort_order?: number | null
+          source_citation?: string | null
+          tab_key?: string
+          tab_label?: string
+          topic_id?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "topic_visualizations_topic_id_fkey"
+            columns: ["topic_id"]
+            isOneToOne: false
+            referencedRelation: "topics"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       topics: {
         Row: {
           created_at: string

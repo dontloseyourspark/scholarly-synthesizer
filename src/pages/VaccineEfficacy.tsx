@@ -1,91 +1,137 @@
 
 import React from 'react';
-import { getTopic } from '@/data/topicsData';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
 import { Shield, Syringe, Users, BarChart } from 'lucide-react';
 import TopicPageLayout from '@/components/layout/TopicPageLayout';
 import TopicHeroSection from '@/components/topics/TopicHeroSection';
 import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection';
 import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
-import VaccineVisualizationsSection from '@/components/vaccine/VaccineVisualizationsSection';
+import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import VaccineInsightsContainer from '@/components/vaccine/VaccineInsightsContainer';
-import { vaccinePublications } from '@/data/vaccineData';
+import LoadingSpinner from '@/components/common/LoadingSpinner';
+import { useTopicSections } from '@/hooks/useTopicSections';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
+import { useTopicContentCards } from '@/hooks/useTopicContentCards';
 
 const VaccineEfficacy = () => {
-  const vaccineTopic = getTopic('vaccine-efficacy');
+  const topicId = getTopicIdFromSlug('vaccine-efficacy');
   
-  if (!vaccineTopic) {
+  if (!topicId) {
     return (
       <TopicPageLayout>
         <div className="container mx-auto px-4 text-center py-12">
-          <h1 className="text-3xl font-serif font-bold mb-4">Topic data not found</h1>
+          <h1 className="text-3xl font-serif font-bold mb-4">Topic not found</h1>
           <p className="mb-6">We couldn't find information about the Vaccine Efficacy topic.</p>
         </div>
       </TopicPageLayout>
     );
   }
 
-  const additionalContent = (
-    <p className="text-base text-muted-foreground leading-relaxed">
-      The scientific consensus on vaccine efficacy is built on decades of rigorous clinical trials, 
-      real-world effectiveness studies, and comprehensive safety monitoring systems. Modern vaccines 
-      undergo extensive testing phases before approval and continue to be monitored throughout their use.
-    </p>
-  );
+  const { sections, loading: sectionsLoading } = useTopicSections(topicId);
+  const { keyPublications, loading: publicationsLoading } = useTopicPublications(topicId);
+  const { cards, loading: cardsLoading } = useTopicContentCards(topicId);
 
-  const vaccineCards = [
-    {
-      title: "Clinical Trials",
-      icon: <BarChart className="h-8 w-8 text-blue-500" />,
-      description: "Rigorous phase I, II, and III trials involving thousands of participants demonstrate vaccine safety and efficacy."
-    },
-    {
-      title: "Herd Immunity",
-      icon: <Users className="h-8 w-8 text-green-600" />,
-      description: "Vaccines protect communities by reducing disease transmission when vaccination coverage reaches sufficient levels."
-    },
-    {
-      title: "Vaccine Development",
-      icon: <Syringe className="h-8 w-8 text-purple-500" />,
-      description: "Modern vaccine platforms including mRNA, viral vector, and protein subunit technologies offer improved efficacy."
-    },
-    {
-      title: "Safety Monitoring",
-      icon: <Shield className="h-8 w-8 text-orange-500" />,
-      description: "Continuous post-market surveillance systems monitor vaccine safety and effectiveness in real-world populations."
-    }
-  ];
+  if (sectionsLoading || publicationsLoading || cardsLoading) {
+    return (
+      <TopicPageLayout>
+        <LoadingSpinner message="Loading page content..." />
+      </TopicPageLayout>
+    );
+  }
+
+  // Get sections by type
+  const heroSection = sections.find(s => s.section_type === 'hero');
+  const descriptionSection = sections.find(s => s.section_type === 'description');
+  const contentSection = sections.find(s => s.section_type === 'content');
+  const callToActionSection = sections.find(s => s.section_type === 'call_to_action');
+
+  // Convert database cards to component format
+  const vaccineCards = cards.map(card => {
+    // Map icon names to actual icon components
+    const getIcon = (iconName: string | null) => {
+      switch (iconName) {
+        case 'BarChart': return <BarChart className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+        case 'Users': return <Users className={`h-8 w-8 ${card.icon_color || 'text-green-600'}`} />;
+        case 'Syringe': return <Syringe className={`h-8 w-8 ${card.icon_color || 'text-purple-500'}`} />;
+        case 'Shield': return <Shield className={`h-8 w-8 ${card.icon_color || 'text-orange-500'}`} />;
+        default: return <Shield className={`h-8 w-8 ${card.icon_color || 'text-blue-500'}`} />;
+      }
+    };
+
+    return {
+      title: card.title,
+      icon: getIcon(card.icon_name),
+      description: card.description
+    };
+  });
 
   return (
     <TopicPageLayout>
-      <TopicHeroSection 
-        topic={vaccineTopic}
-        title="Vaccine Efficacy"
-        categoryIcon={Shield}
-        categoryLabel="Medical Topics"
-        keyPublications={vaccinePublications}
-      />
-      <TopicDescriptionSection 
-        title="Understanding Vaccine Efficacy"
-        description={vaccineTopic.description}
-        additionalContent={additionalContent}
-      />
-      <TopicContentSection 
-        title="Vaccine Evidence"
-        subtitle="Clinical Research Findings"
-        description="Evidence-based research on vaccine effectiveness, safety profiles, and immunization outcomes from clinical trials and real-world studies."
-        cards={vaccineCards}
-      />
+      {heroSection && (
+        <TopicHeroSection 
+          topic={{
+            id: 'vaccine-efficacy',
+            title: heroSection.title || 'Vaccine Efficacy',
+            slug: 'vaccine-efficacy',
+            description: heroSection.description || '',
+            consensusLevel: 'strong' as const,
+            consensusPercentage: 97,
+            contributorsCount: 150,
+            sourcesCount: keyPublications.length,
+            updatedAt: new Date().toISOString(),
+            tags: ['Medical', 'Public Health', 'Vaccines']
+          }}
+          title={heroSection.title || 'Vaccine Efficacy'}
+          categoryIcon={Shield}
+          categoryLabel={heroSection.category_label || 'Medical Topics'}
+          keyPublications={keyPublications.map(pub => ({
+            id: pub.id,
+            title: pub.title,
+            authors: pub.authors,
+            year: pub.year,
+            url: pub.url,
+            doi: pub.doi || undefined,
+            publication: pub.publication || undefined
+          }))}
+        />
+      )}
+      
+      {descriptionSection && (
+        <TopicDescriptionSection 
+          title={descriptionSection.title || 'Understanding Vaccine Efficacy'}
+          description={descriptionSection.description || ''}
+          additionalContent={descriptionSection.additional_content ? (
+            <p className="text-base text-muted-foreground leading-relaxed">
+              {descriptionSection.additional_content}
+            </p>
+          ) : undefined}
+        />
+      )}
+      
+      {contentSection && vaccineCards.length > 0 && (
+        <TopicContentSection 
+          title={contentSection.title || 'Vaccine Evidence'}
+          subtitle={contentSection.subtitle || 'Clinical Research Findings'}
+          description={contentSection.description || 'Evidence-based research on vaccine effectiveness.'}
+          cards={vaccineCards}
+        />
+      )}
+      
       <TopicVisualizationsSection>
-        <VaccineVisualizationsSection />
+        <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
+      
       <VaccineInsightsContainer />
-      <TopicCallToActionSection 
-        topicSlug={vaccineTopic.slug}
-        title="Contribute to Vaccine Research"
-        description="Help advance our understanding of vaccine efficacy by contributing your expertise and insights."
-      />
+      
+      {callToActionSection && (
+        <TopicCallToActionSection 
+          topicSlug="vaccine-efficacy"
+          title={callToActionSection.title || 'Contribute to Vaccine Research'}
+          description={callToActionSection.description || 'Help advance our understanding of vaccine efficacy.'}
+        />
+      )}
     </TopicPageLayout>
   );
 };
