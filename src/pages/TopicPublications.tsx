@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -10,6 +11,7 @@ import PublicationsResultsSummary from '@/components/publications/PublicationsRe
 import EmptyPublicationsState from '@/components/publications/EmptyPublicationsState';
 import { getTopic } from '@/data/topicsData';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
 import { keyPublications } from '@/data/climateChangeData';
 import { vaccinePublications } from '@/data/vaccineData';
 
@@ -44,19 +46,8 @@ const TopicPublications = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  // Get topic ID for database queries
-  const getTopicId = (topicSlug: string): number | null => {
-    switch (topicSlug) {
-      case 'climate-change':
-        return 1; // Assuming climate change has ID 1 in the database
-      case 'vaccine-efficacy':
-        return 2; // Assuming vaccine efficacy has ID 2 in the database
-      default:
-        return null;
-    }
-  };
-
-  const topicId = topic ? getTopicId(topic.slug) : null;
+  // Get topic ID using the centralized mapping utility
+  const topicId = topic ? getTopicIdFromSlug(topic.slug) : null;
 
   // Use database hook if we have a topic ID, otherwise fall back to static data
   const {
