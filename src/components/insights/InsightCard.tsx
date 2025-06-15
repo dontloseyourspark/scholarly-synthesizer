@@ -13,6 +13,11 @@ type InsightCardProps = {
 };
 
 const InsightCard: React.FC<InsightCardProps> = ({ insight, onVote }) => {
+  const handleVote = (voteType: 'up' | 'down') => {
+    console.log('InsightCard handleVote called:', { insightId: insight.id, voteType });
+    onVote(insight.id, voteType);
+  };
+
   return (
     <Card className="overflow-hidden">
       <CardHeader className="pb-4">
@@ -31,9 +36,9 @@ const InsightCard: React.FC<InsightCardProps> = ({ insight, onVote }) => {
             Contributed on {new Date(insight.created_at).toLocaleDateString()}
           </div>
           <VoteButtons 
-            upvotes={insight.upvotes}
-            downvotes={insight.downvotes}
-            onVote={(voteType) => onVote(insight.id, voteType)}
+            upvotes={insight.upvotes || 0}
+            downvotes={insight.downvotes || 0}
+            onVote={handleVote}
           />
         </div>
       </CardContent>

@@ -16,10 +16,13 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({ upvotes, downvotes, onVote })
   const navigate = useNavigate();
 
   const handleVote = (voteType: 'up' | 'down') => {
+    console.log('Vote button clicked:', voteType);
     if (!user) {
+      console.log('User not authenticated, redirecting to auth');
       navigate('/auth');
       return;
     }
+    console.log('Calling onVote with:', voteType);
     onVote(voteType);
   };
 
@@ -29,21 +32,21 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({ upvotes, downvotes, onVote })
         variant="outline" 
         size="sm"
         onClick={() => handleVote('up')}
-        className="text-muted-foreground hover:text-green-600 hover:border-green-600"
+        className="text-muted-foreground hover:text-green-600 hover:border-green-600 transition-colors"
         title={!user ? "Sign in to vote" : "Upvote this insight"}
       >
         <ThumbsUp className="h-4 w-4 mr-1" />
-        {upvotes}
+        {upvotes || 0}
       </Button>
       <Button 
         variant="outline" 
         size="sm"
         onClick={() => handleVote('down')}
-        className="text-muted-foreground hover:text-red-600 hover:border-red-600"
+        className="text-muted-foreground hover:text-red-600 hover:border-red-600 transition-colors"
         title={!user ? "Sign in to vote" : "Downvote this insight"}
       >
         <ThumbsDown className="h-4 w-4 mr-1" />
-        {downvotes}
+        {downvotes || 0}
       </Button>
     </div>
   );
