@@ -10,6 +10,10 @@ export type DatabaseDiscussion = {
   updated_at: string;
   parent_id: string | null;
   user_id: string | null;
+  user_profile: {
+    username: string;
+    avatar_url: string | null;
+  } | null;
   replies?: DatabaseDiscussion[];
 };
 
@@ -73,13 +77,26 @@ export const useDiscussions = (topicId: number) => {
         return;
       }
 
+      // Get user profile for immediate display
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('username, email, avatar_url')
+        .eq('id', user.id)
+        .single();
+
+      const userProfile = {
+        username: profile?.username || profile?.email || 'Anonymous',
+        avatar_url: profile?.avatar_url || null
+      };
+
       const { error } = await supabase
         .from('discussions')
         .insert({
           topic_id: topicId,
           user_id: user.id,
           content,
-          parent_id: parentId || null
+          parent_id: parentId || null,
+          user_profile: userProfile
         });
 
       if (error) throw error;

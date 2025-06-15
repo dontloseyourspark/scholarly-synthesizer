@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useDiscussions } from '@/hooks/useDiscussions';
 import { formatDistanceToNow } from 'date-fns';
 import { MessageCircle, Reply } from 'lucide-react';
+import ScholarAvatar from './ScholarAvatar';
 
 interface DiscussionTabProps {
   topicId: number;
@@ -124,14 +125,28 @@ const DiscussionTab: React.FC<DiscussionTabProps> = ({ topicId }) => {
             <Card key={discussion.id}>
               <CardContent className="pt-6">
                 <div className="space-y-4">
-                  <div>
-                    <p className="text-sm text-muted-foreground mb-2">
-                      {formatDistanceToNow(new Date(discussion.created_at), { addSuffix: true })}
-                    </p>
-                    <p className="text-foreground whitespace-pre-wrap">{discussion.content}</p>
+                  {/* User Info and Content */}
+                  <div className="flex items-start space-x-3">
+                    <ScholarAvatar 
+                      name={discussion.user_profile?.username || 'Anonymous'} 
+                      avatarUrl={discussion.user_profile?.avatar_url}
+                      size="sm"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <span className="text-sm font-medium text-foreground">
+                          {discussion.user_profile?.username || 'Anonymous'}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          {formatDistanceToNow(new Date(discussion.created_at), { addSuffix: true })}
+                        </span>
+                      </div>
+                      <p className="text-foreground whitespace-pre-wrap">{discussion.content}</p>
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
+                  {/* Actions */}
+                  <div className="flex items-center gap-2 ml-11">
                     <Button
                       variant="ghost"
                       size="sm"
@@ -144,47 +159,61 @@ const DiscussionTab: React.FC<DiscussionTabProps> = ({ topicId }) => {
 
                   {/* Reply Form */}
                   {replyingTo === discussion.id && (
-                    <form onSubmit={handleSubmitReply} className="space-y-3 ml-4 border-l-2 border-muted pl-4">
-                      <Textarea
-                        placeholder="Write a reply..."
-                        value={replyContent}
-                        onChange={(e) => setReplyContent(e.target.value)}
-                        className="min-h-[80px]"
-                        disabled={isSubmitting}
-                      />
-                      <div className="flex gap-2">
-                        <Button 
-                          type="submit" 
-                          size="sm"
-                          disabled={!replyContent.trim() || isSubmitting}
-                          className="bg-scholarly-blue hover:bg-scholarly-accent"
-                        >
-                          {isSubmitting ? 'Posting...' : 'Post Reply'}
-                        </Button>
-                        <Button 
-                          type="button" 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            setReplyingTo(null);
-                            setReplyContent('');
-                          }}
-                        >
-                          Cancel
-                        </Button>
-                      </div>
-                    </form>
+                    <div className="ml-11">
+                      <form onSubmit={handleSubmitReply} className="space-y-3 border-l-2 border-muted pl-4">
+                        <Textarea
+                          placeholder="Write a reply..."
+                          value={replyContent}
+                          onChange={(e) => setReplyContent(e.target.value)}
+                          className="min-h-[80px]"
+                          disabled={isSubmitting}
+                        />
+                        <div className="flex gap-2">
+                          <Button 
+                            type="submit" 
+                            size="sm"
+                            disabled={!replyContent.trim() || isSubmitting}
+                            className="bg-scholarly-blue hover:bg-scholarly-accent"
+                          >
+                            {isSubmitting ? 'Posting...' : 'Post Reply'}
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setReplyingTo(null);
+                              setReplyContent('');
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </form>
+                    </div>
                   )}
 
                   {/* Replies */}
                   {discussion.replies && discussion.replies.length > 0 && (
-                    <div className="ml-4 space-y-3 border-l-2 border-muted pl-4">
+                    <div className="ml-11 space-y-3 border-l-2 border-muted pl-4">
                       {discussion.replies.map((reply) => (
-                        <div key={reply.id} className="space-y-2">
-                          <p className="text-sm text-muted-foreground">
-                            {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true })}
-                          </p>
-                          <p className="text-foreground whitespace-pre-wrap">{reply.content}</p>
+                        <div key={reply.id} className="flex items-start space-x-3">
+                          <ScholarAvatar 
+                            name={reply.user_profile?.username || 'Anonymous'} 
+                            avatarUrl={reply.user_profile?.avatar_url}
+                            size="sm"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center space-x-2 mb-1">
+                              <span className="text-sm font-medium text-foreground">
+                                {reply.user_profile?.username || 'Anonymous'}
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {formatDistanceToNow(new Date(reply.created_at), { addSuffix: true })}
+                              </span>
+                            </div>
+                            <p className="text-foreground whitespace-pre-wrap">{reply.content}</p>
+                          </div>
                         </div>
                       ))}
                     </div>

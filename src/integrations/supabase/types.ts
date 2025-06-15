@@ -63,6 +63,7 @@ export type Database = {
           topic_id: number | null
           updated_at: string
           user_id: string | null
+          user_profile: Json | null
         }
         Insert: {
           content: string
@@ -72,6 +73,7 @@ export type Database = {
           topic_id?: number | null
           updated_at?: string
           user_id?: string | null
+          user_profile?: Json | null
         }
         Update: {
           content?: string
@@ -81,6 +83,7 @@ export type Database = {
           topic_id?: number | null
           updated_at?: string
           user_id?: string | null
+          user_profile?: Json | null
         }
         Relationships: [
           {
