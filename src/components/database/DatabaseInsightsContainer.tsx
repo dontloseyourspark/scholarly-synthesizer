@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useInsights } from '@/hooks/useInsights';
 import DatabaseInsightsLoadingState from './DatabaseInsightsLoadingState';
@@ -31,7 +32,7 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
     refetch 
   } = useInsights(topicId);
 
-  const { user, isScholar } = useAuth();
+  const { user, isScholar, userProfile } = useAuth();
 
   if (loading) {
     return <DatabaseInsightsLoadingState />;
@@ -41,10 +42,13 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
     return <DatabaseInsightsErrorState error={error} onRetry={() => refetch()} />;
   }
 
+  // Only show add form to verified scholars
+  const isVerifiedScholar = user && isScholar && userProfile?.verification_status === 'verified';
+
   return (
     <div>
       {/* Scholar add-insight form */}
-      {user && isScholar && (
+      {isVerifiedScholar && (
         <AddInsightForm topicId={topicId} onSubmitted={refetch} />
       )}
       <DatabaseInsightsTabs 
