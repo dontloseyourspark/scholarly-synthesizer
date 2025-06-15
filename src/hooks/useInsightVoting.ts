@@ -91,6 +91,10 @@ export const useInsightVoting = (
         });
       }
 
+      // --- Delay before refetching so that DB trigger can update counts ---
+      console.log('Waiting briefly to let DB trigger update numbers');
+      await new Promise(resolve => setTimeout(resolve, 300)); // Wait 300ms
+
       // Refresh insights to get updated vote counts from database
       console.log('Refreshing insights to get updated counts');
       await fetchInsights(); // fetchInsights handles setInsights!
@@ -107,3 +111,4 @@ export const useInsightVoting = (
 
   return { handleVote };
 };
+
