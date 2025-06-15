@@ -19,7 +19,7 @@ const InsightsModerationPanel: React.FC = () => {
       .select(`
         *, 
         scholars(id, name, title, institution, avatar_url),
-        topics!insights_topic_id_fkey(id, name)
+        topics(id, name)
       `)
       .eq("verification_status", "pending")
       .order("created_at", { ascending: true });
