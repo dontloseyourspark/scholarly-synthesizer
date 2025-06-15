@@ -12,14 +12,14 @@ const InsightsModerationPanel: React.FC = () => {
 
   const fetchPending = async () => {
     setLoading(true);
-    console.log('Fetching pending insights with explicit join...');
+    console.log('Fetching pending insights with wildcard joins...');
     
     const { data, error } = await supabase
       .from("insights")
       .select(`
         *, 
-        scholars(id, name, title, institution, avatar_url),
-        topics!insights_topic_id_fkey(id, name)
+        scholars(*),
+        topics(*)
       `)
       .eq("verification_status", "pending")
       .order("created_at", { ascending: true });
@@ -32,7 +32,7 @@ const InsightsModerationPanel: React.FC = () => {
         variant: "destructive",
       });
     } else {
-      console.log('Fetched pending insights with explicit join:', data);
+      console.log('Fetched pending insights with wildcard joins:', data);
       setPending(data || []);
     }
     setLoading(false);
