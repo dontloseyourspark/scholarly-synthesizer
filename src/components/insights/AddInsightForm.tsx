@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,10 +18,36 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
   const [content, setContent] = useState("");
   const [position, setPosition] = useState<"support" | "neutral" | "against">("support");
   const [confidence, setConfidence] = useState(80);
-
   const [submitting, setSubmitting] = useState(false);
 
+  // Source fields
+  const [sourceTitle, setSourceTitle] = useState("");
+  const [sourceAuthors, setSourceAuthors] = useState("");
+  const [sourcePublication, setSourcePublication] = useState("");
+  const [sourceYear, setSourceYear] = useState<number | "">("");
+  const [sourceUrl, setSourceUrl] = useState("");
+  const [sourceDoi, setSourceDoi] = useState("");
+
   if (!user || !isScholar) return null;
+
+  // Helper: Are any source fields filled?
+  const anySourceEntered = () =>
+    sourceTitle.trim() ||
+    sourceAuthors.trim() ||
+    sourcePublication.trim() ||
+    sourceYear ||
+    sourceUrl.trim() ||
+    sourceDoi.trim();
+
+  // Reset all source fields after submit
+  const resetSourceFields = () => {
+    setSourceTitle("");
+    setSourceAuthors("");
+    setSourcePublication("");
+    setSourceYear("");
+    setSourceUrl("");
+    setSourceDoi("");
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,22 +71,60 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
         return;
       }
 
-      const { error: insertError } = await supabase.from("insights").insert({
-        topic_id: topicId,
-        scholar_id: user.id,
-        content,
-        position,
-        confidence,
-        verification_status: "pending",
-      });
+      // Submit the insight
+      const { data: insertedInsight, error: insertError } = await supabase
+        .from("insights")
+        .insert({
+          topic_id: topicId,
+          scholar_id: user.id,
+          content,
+          position,
+          confidence,
+          verification_status: "pending",
+        })
+        .select("id") // get the new insight id
+        .maybeSingle();
 
       if (insertError) throw insertError;
 
+      // If a source is provided, add it, then link it to the insight
+      if (insertedInsight && insertedInsight.id && anySourceEntered()) {
+        // Insert into sources table (TODO: handle duplicate detection in future)
+        const { data: sourceRow, error: sourceError } = await supabase
+          .from("sources")
+          .insert({
+            title: sourceTitle || null,
+            authors: sourceAuthors || null,
+            publication: sourcePublication || null,
+            year: sourceYear ? Number(sourceYear) : null,
+            url: sourceUrl || null,
+            doi: sourceDoi || null,
+          })
+          .select("id")
+          .maybeSingle();
+
+        if (sourceError) {
+          throw sourceError;
+        }
+        if (sourceRow && sourceRow.id) {
+          // Now link in insight_sources
+          const { error: linkError } = await supabase
+            .from("insight_sources")
+            .insert({
+              insight_id: insertedInsight.id,
+              source_id: sourceRow.id,
+            });
+          if (linkError) throw linkError;
+        }
+      }
+
       toast({
         title: "Insight submitted",
-        description: "Your insight was submitted for review and vetting by the admin team.",
+        description:
+          "Your insight was submitted for review and vetting by the admin team.",
       });
       setContent("");
+      resetSourceFields();
       onSubmitted();
     } catch (err: any) {
       toast({
@@ -110,6 +175,59 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
               onChange={e => setConfidence(Number(e.target.value))}
             />
           </div>
+          
+          {/* Source submission section */}
+          <div className="pt-4 border-t mt-6">
+            <label className="block text-base font-medium mb-2">Optional: Add a Source</label>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <input
+                type="text"
+                className="w-full px-2 py-1 border rounded"
+                placeholder="Title"
+                value={sourceTitle}
+                onChange={e => setSourceTitle(e.target.value)}
+              />
+              <input
+                type="text"
+                className="w-full px-2 py-1 border rounded"
+                placeholder="Authors"
+                value={sourceAuthors}
+                onChange={e => setSourceAuthors(e.target.value)}
+              />
+              <input
+                type="text"
+                className="w-full px-2 py-1 border rounded"
+                placeholder="Publication (Journal, Book, etc)"
+                value={sourcePublication}
+                onChange={e => setSourcePublication(e.target.value)}
+              />
+              <input
+                type="number"
+                className="w-full px-2 py-1 border rounded"
+                placeholder="Year"
+                value={sourceYear}
+                onChange={e => setSourceYear(e.target.value ? Number(e.target.value) : "")}
+              />
+              <input
+                type="text"
+                className="w-full px-2 py-1 border rounded"
+                placeholder="DOI"
+                value={sourceDoi}
+                onChange={e => setSourceDoi(e.target.value)}
+              />
+              <input
+                type="text"
+                className="w-full px-2 py-1 border rounded"
+                placeholder="URL"
+                value={sourceUrl}
+                onChange={e => setSourceUrl(e.target.value)}
+              />
+            </div>
+            <div className="text-xs text-muted-foreground mt-1">
+              Provide publication details or a link to help others verify your insight. All fields are optional.
+            </div>
+          </div>
+
           <Button type="submit" disabled={submitting || !content.trim()}>
             {submitting ? "Submitting..." : "Submit Insight"}
           </Button>
