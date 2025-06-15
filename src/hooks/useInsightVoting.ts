@@ -93,7 +93,7 @@ export const useInsightVoting = (
 
       // Refresh insights to get updated vote counts from database
       console.log('Refreshing insights to get updated counts');
-      await fetchInsights();
+      await fetchInsights(); // fetchInsights handles setInsights!
 
     } catch (err: any) {
       console.error('Voting error:', err);

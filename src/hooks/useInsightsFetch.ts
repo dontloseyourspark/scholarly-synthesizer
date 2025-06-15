@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -92,7 +91,7 @@ export const useInsightsFetch = (topicId: number) => {
         })
       );
 
-      setInsights(insightsWithSources);
+      setInsights(insightsWithSources); // this ensures latest from DB always overrides state
     } catch (err: any) {
       setError(err.message);
       toast({
