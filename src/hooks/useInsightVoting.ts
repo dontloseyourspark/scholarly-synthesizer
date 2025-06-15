@@ -37,53 +37,30 @@ export const useInsightVoting = (
 
       if (voteCheckError) {
         console.error('Error checking existing vote:', voteCheckError);
-        // If votes table doesn't exist, update insight directly
-        const currentInsight = insights.find(i => i.id === insightId);
-        if (!currentInsight) return;
-
-        const updateField = voteType === 'up' ? 'upvotes' : 'downvotes';
-        const newValue = voteType === 'up' 
-          ? currentInsight.upvotes + 1 
-          : currentInsight.downvotes + 1;
-
-        const { error: updateError } = await supabase
-          .from('insights')
-          .update({ [updateField]: newValue })
-          .eq('id', insightId);
-
-        if (updateError) {
-          console.error('Error updating insight votes:', updateError);
-          throw updateError;
-        }
-
-        // Update local state
-        setInsights(prev => prev.map(insight => 
-          insight.id === insightId 
-            ? { 
-                ...insight, 
-                [updateField]: newValue
-              }
-            : insight
-        ));
-
-        toast({
-          title: `Voted ${voteType}`,
-          description: "Thank you for your feedback!",
-        });
-        return;
+        throw voteCheckError;
       }
 
       if (existingVote) {
-        // Update existing vote
-        const { error } = await supabase
-          .from('votes')
-          .update({ vote_type: voteType })
-          .eq('id', existingVote.id);
+        if (existingVote.vote_type === voteType) {
+          // User is clicking the same vote - remove the vote
+          const { error: deleteError } = await supabase
+            .from('votes')
+            .delete()
+            .eq('id', existingVote.id);
 
-        if (error) throw error;
+          if (deleteError) throw deleteError;
+        } else {
+          // User is changing their vote
+          const { error: updateError } = await supabase
+            .from('votes')
+            .update({ vote_type: voteType })
+            .eq('id', existingVote.id);
+
+          if (updateError) throw updateError;
+        }
       } else {
         // Create new vote
-        const { error } = await supabase
+        const { error: insertError } = await supabase
           .from('votes')
           .insert({
             insight_id: insightId,
@@ -91,14 +68,14 @@ export const useInsightVoting = (
             vote_type: voteType
           });
 
-        if (error) throw error;
+        if (insertError) throw insertError;
       }
 
-      // Refresh insights to get updated vote counts
+      // Refresh insights to get updated vote counts from database
       await fetchInsights();
 
       toast({
-        title: `Voted ${voteType}`,
+        title: existingVote?.vote_type === voteType ? "Vote removed" : `Voted ${voteType}`,
         description: "Thank you for your feedback!",
       });
     } catch (err: any) {
