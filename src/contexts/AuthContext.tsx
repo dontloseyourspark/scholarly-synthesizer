@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useMemo } from 'react';
 import { useAuthOperations } from '@/hooks/useAuthOperations';
 import { useAuthState } from '@/hooks/useAuthState';
@@ -37,7 +38,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     userProfile,
     updateProfile: handleUpdateProfile,
     profileLoaded,
-  }), [session, user, stateLoading, operationLoading, isAdmin, userProfile, profileLoaded]); // Only memoize essential state
+    isScholar: userProfile?.is_scholar || false // Provide isScholar
+  }), [session, user, stateLoading, operationLoading, isAdmin, userProfile, profileLoaded]);
   
   return (
     <AuthContext.Provider value={contextValue}>

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
@@ -111,8 +110,8 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
               onChange={e => setConfidence(Number(e.target.value))}
             />
           </div>
-          <Button type="submit" loading={submitting} disabled={submitting || !content.trim()}>
-            Submit Insight
+          <Button type="submit" disabled={submitting || !content.trim()}>
+            {submitting ? "Submitting..." : "Submit Insight"}
           </Button>
         </form>
       </CardContent>
@@ -121,4 +120,3 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
 };
 
 export default AddInsightForm;
-

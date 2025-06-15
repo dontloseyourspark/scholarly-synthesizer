@@ -25,4 +25,5 @@ export type AuthContextType = {
   userProfile: UserProfile | null;
   updateProfile: (profile: Partial<UserProfile>) => Promise<void>;
   profileLoaded: boolean;
+  isScholar: boolean; // Added this line
 };
