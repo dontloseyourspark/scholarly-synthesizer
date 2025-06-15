@@ -28,6 +28,7 @@ export type DatabaseInsight = {
     url: string | null;
     doi: string | null;
   }>;
+  currentUserVote?: 'up' | 'down' | null; // NEW: track the user's vote (may be null)
 };
 
 export const useInsights = (topicId: number) => {

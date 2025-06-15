@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import ScholarInfo from './ScholarInfo';
@@ -39,6 +38,7 @@ const InsightCard: React.FC<InsightCardProps> = ({ insight, onVote }) => {
             upvotes={insight.upvotes || 0}
             downvotes={insight.downvotes || 0}
             onVote={handleVote}
+            userVote={insight.currentUserVote ?? null}
           />
         </div>
       </CardContent>

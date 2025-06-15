@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { DatabaseInsight } from './useInsights';
+import { useAuth } from '@/contexts/AuthContext';
 
 export const useInsightsFetch = (topicId: number) => {
   const [insights, setInsights] = useState<DatabaseInsight[]>([]);
@@ -10,10 +11,21 @@ export const useInsightsFetch = (topicId: number) => {
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  // Import the user so we can fetch user's vote
+  let userId: string | null = null;
+  try {
+    // Will be null for non-auth users
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const { user } = useAuth();
+    userId = user?.id ?? null;
+  } catch {
+    // useAuth must be used inside a React component; we'll check below
+  }
+
   const fetchInsights = async () => {
     try {
       setLoading(true);
-      
+
       // Fetch insights with scholars
       const { data: insightsData, error: insightsError } = await supabase
         .from('insights')
@@ -32,7 +44,7 @@ export const useInsightsFetch = (topicId: number) => {
 
       if (insightsError) throw insightsError;
 
-      // Fetch sources for each insight
+      // Fetch sources and (if logged in) the current user's vote for each insight
       const insightsWithSources = await Promise.all(
         (insightsData || []).map(async (insight) => {
           const { data: sourcesData, error: sourcesError } = await supabase
@@ -50,16 +62,17 @@ export const useInsightsFetch = (topicId: number) => {
             `)
             .eq('insight_id', insight.id);
 
-          if (sourcesError) {
-            console.error('Error fetching sources:', sourcesError);
-            return {
-              ...insight,
-              scholar: insight.scholars,
-              sources: [],
-              upvotes: insight.upvotes || 0,
-              downvotes: insight.downvotes || 0,
-              position: insight.position as 'support' | 'neutral' | 'against'
-            };
+          // If logged in, fetch the current user's vote for this insight
+          let currentUserVote: 'up' | 'down' | null = null;
+          if (userId) {
+            const { data: voteRow } = await supabase
+              .from('votes')
+              .select('vote_type')
+              .eq('insight_id', insight.id)
+              .eq('user_id', userId)
+              .maybeSingle();
+
+            currentUserVote = voteRow?.vote_type ?? null;
           }
 
           return {
@@ -68,7 +81,8 @@ export const useInsightsFetch = (topicId: number) => {
             sources: sourcesData?.map(item => item.sources).filter(Boolean) || [],
             upvotes: insight.upvotes || 0,
             downvotes: insight.downvotes || 0,
-            position: insight.position as 'support' | 'neutral' | 'against'
+            position: insight.position as 'support' | 'neutral' | 'against',
+            currentUserVote, // our new field
           };
         })
       );
