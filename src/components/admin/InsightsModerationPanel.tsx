@@ -59,8 +59,11 @@ const InsightsModerationPanel: React.FC = () => {
         });
       } else {
         toast({ 
-          title: `Insight ${status}`, 
-          description: `Insight has been ${status}.` 
+          title: status === "verified" ? "Approval Successful" : "Insight Rejected", 
+          description: status === "verified" 
+            ? "Insight has been approved and verified." 
+            : "This insight has been rejected and removed from the pending list.",
+          variant: status === "verified" ? "default" : "destructive"
         });
         setPending(prev => prev.filter(item => item.id !== id));
       }
@@ -111,5 +114,4 @@ const InsightsModerationPanel: React.FC = () => {
     </Card>
   );
 };
-
 export default InsightsModerationPanel;

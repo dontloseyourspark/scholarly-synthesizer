@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -68,7 +67,8 @@ const DiscussionsModerationPanel: React.FC = () => {
     if (!error) {
       toast({ 
         title: "Discussion Removed", 
-        description: "Comment has been deleted successfully." 
+        description: "The selected comment/discussion has been deleted successfully.",
+        variant: "default"
       });
       setDiscussions(prev => prev.filter(d => d.id !== id));
     } else {
