@@ -12,12 +12,15 @@ const InsightsModerationPanel: React.FC = () => {
 
   const fetchPending = async () => {
     setLoading(true);
+    console.log('Fetching pending insights...');
+    
+    // First, let's try a simpler query to see what we get
     const { data, error } = await supabase
       .from("insights")
       .select(`
         *, 
         scholars(id, name, title, institution, avatar_url),
-        topics!inner(id, name)
+        topics(id, name)
       `)
       .eq("verification_status", "pending")
       .order("created_at", { ascending: true });
@@ -39,6 +42,7 @@ const InsightsModerationPanel: React.FC = () => {
   useEffect(() => { fetchPending(); }, []);
 
   const updateStatus = async (id: string, status: string) => {
+    console.log(`Updating insight ${id} to status: ${status}`);
     try {
       const { error } = await supabase
         .from("insights")
@@ -56,6 +60,7 @@ const InsightsModerationPanel: React.FC = () => {
           variant: "destructive" 
         });
       } else {
+        console.log(`Successfully updated insight ${id} to ${status}`);
         toast({ 
           title: `Insight ${status}`, 
           description: `Insight has been ${status}.` 
@@ -88,7 +93,7 @@ const InsightsModerationPanel: React.FC = () => {
                 <li key={item.id} className="border p-4 rounded">
                   <div className="font-semibold mb-2">{item.scholars?.name || 'Unknown Scholar'}</div>
                   <div className="text-sm text-muted-foreground mb-2">
-                    Topic: {item.topics?.name || 'Unknown Topic'}
+                    Topic: {item.topics?.name || `Topic ID: ${item.topic_id}` || 'Unknown Topic'}
                   </div>
                   <div className="mb-1 text-sm">{item.content}</div>
                   <div className="flex items-center space-x-2 pt-2">
