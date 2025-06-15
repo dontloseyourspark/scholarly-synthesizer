@@ -72,7 +72,12 @@ export const useInsightsFetch = (topicId: number) => {
               .eq('user_id', userId)
               .maybeSingle();
 
-            currentUserVote = voteRow?.vote_type ?? null;
+            // Only set if value is "up" or "down"!
+            if (voteRow?.vote_type === 'up' || voteRow?.vote_type === 'down') {
+              currentUserVote = voteRow.vote_type;
+            } else {
+              currentUserVote = null;
+            }
           }
 
           return {
