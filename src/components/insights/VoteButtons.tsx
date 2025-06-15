@@ -29,7 +29,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({ upvotes, downvotes, onVote })
         variant="outline" 
         size="sm"
         onClick={() => handleVote('up')}
-        className="text-muted-foreground hover:text-scholarly-blue"
+        className="text-muted-foreground hover:text-green-600 hover:border-green-600"
         title={!user ? "Sign in to vote" : "Upvote this insight"}
       >
         <ThumbsUp className="h-4 w-4 mr-1" />
@@ -39,7 +39,7 @@ const VoteButtons: React.FC<VoteButtonsProps> = ({ upvotes, downvotes, onVote })
         variant="outline" 
         size="sm"
         onClick={() => handleVote('down')}
-        className="text-muted-foreground hover:text-scholarly-blue"
+        className="text-muted-foreground hover:text-red-600 hover:border-red-600"
         title={!user ? "Sign in to vote" : "Downvote this insight"}
       >
         <ThumbsDown className="h-4 w-4 mr-1" />

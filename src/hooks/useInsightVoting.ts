@@ -27,7 +27,7 @@ export const useInsightVoting = (
 
       console.log('User authenticated:', user.id);
 
-      // Check if votes table exists and user has already voted
+      // Check if user has already voted
       const { data: existingVote, error: voteCheckError } = await supabase
         .from('votes')
         .select('*')
@@ -37,7 +37,7 @@ export const useInsightVoting = (
 
       if (voteCheckError) {
         console.error('Error checking existing vote:', voteCheckError);
-        // If votes table doesn't exist, let's update the insight directly
+        // If votes table doesn't exist, update insight directly
         const currentInsight = insights.find(i => i.id === insightId);
         if (!currentInsight) return;
 
