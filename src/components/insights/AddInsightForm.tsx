@@ -28,7 +28,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
   const [sourceUrl, setSourceUrl] = useState("");
   const [sourceDoi, setSourceDoi] = useState("");
 
-  // Track visible error for missing profile
+  // Track visible error for missing profile (not needed, since isScholar covers this case)
   const [profileError, setProfileError] = useState<string | null>(null);
 
   if (!user || !isScholar) return null;
@@ -59,26 +59,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
     console.log("[AddInsightForm] handleSubmit triggered");
 
     try {
-      // Find the scholar profile id for this user
-      const { data: scholar, error: scholarFetchError } = await supabase
-        .from("scholars")
-        .select("id")
-        .eq("id", user.id)
-        .maybeSingle();
-
-      console.log("[AddInsightForm] Fetched scholar:", scholar, "Error:", scholarFetchError);
-
-      if (!scholar || scholarFetchError) {
-        const errMsg = "Your scholar profile could not be found. Please contact support or ensure you are recognized as a scholar.";
-        setProfileError(errMsg);
-        toast({
-          title: "Profile issue",
-          description: errMsg,
-          variant: "destructive",
-        });
-        setSubmitting(false);
-        return;
-      }
+      // No need to look up a "scholar" record -- just submit insight for any user flagged as a scholar
 
       // Submit the insight
       const { data: insertedInsight, error: insertError } = await supabase
@@ -120,7 +101,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
           throw sourceError;
         }
         if (sourceRow && sourceRow.id) {
-          // Now link in insight_sources
+          // Link in insight_sources
           const { error: linkError } = await supabase
             .from("insight_sources")
             .insert({
@@ -157,11 +138,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
         <CardTitle>Contribute an Insight</CardTitle>
       </CardHeader>
       <CardContent>
-        {profileError && (
-          <div className="mb-4 bg-red-100 text-red-800 border border-red-300 rounded px-4 py-2 text-sm" data-testid="profile-error-msg">
-            {profileError}
-          </div>
-        )}
+        {/* No need for profileError display as eligibility is handled via isScholar */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Your Insight</label>
