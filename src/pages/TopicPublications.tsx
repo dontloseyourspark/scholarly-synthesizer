@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
@@ -16,6 +15,24 @@ import { keyPublications } from '@/data/climateChangeData';
 import { vaccinePublications } from '@/data/vaccineData';
 
 const ITEMS_PER_PAGE = 10;
+
+// Utility for CSV export of publication objects
+function publicationsToCSV(publications: any[]): string {
+  const headers = ['Title', 'Authors', 'Year', 'Publication', 'DOI', 'URL'];
+  const escape = (val: any) =>
+    typeof val === 'string'
+      ? `"${val.replace(/"/g, '""').replace(/\n/g, ' ')}"`
+      : val ?? '';
+  const rows = publications.map((pub) => [
+    escape(pub.title),
+    escape(pub.authors),
+    pub.year ?? '',
+    escape(pub.publication ?? ''),
+    escape(pub.doi ?? ''),
+    escape(pub.url)
+  ]);
+  return [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
+}
 
 const TopicPublications = () => {
   const { slug } = useParams();
@@ -162,6 +179,48 @@ const TopicPublications = () => {
     setCurrentPage(1);
   };
 
+  // For export, get the full filtered+sorted publications list for CSV (not paginated)
+  let fullSortedFilteredList: any[] = [];
+  if (useStaticData) {
+    const staticPublications = getPublicationsForTopic(topic.slug);
+    const filtered = staticPublications.filter(pub =>
+      pub.title.toLowerCase().includes(debouncedSearchTerm.toLowerCase()) ||
+      pub.authors.toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+    );
+    fullSortedFilteredList = [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case 'year-desc':
+          return b.year - a.year;
+        case 'year-asc':
+          return a.year - b.year;
+        case 'title-asc':
+          return a.title.localeCompare(b.title);
+        case 'title-desc':
+          return b.title.localeCompare(a.title);
+        default:
+          return 0;
+      }
+    });
+  } else {
+    // All possible publications fetched from DB? We only get paginated results, so disable full-list export
+    // (could prompt user to clear filters or show warning if totalCount > current page size)
+    fullSortedFilteredList = dbPublications; // Will be only current page if database
+  }
+
+  // CSV download handler
+  function handleDownloadCSV() {
+    const csvData = publicationsToCSV(fullSortedFilteredList);
+    const blob = new Blob([csvData], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const tempA = document.createElement('a');
+    tempA.href = url;
+    tempA.download = `${topic.title.replace(/\s+/g, '_')}_publications.csv`;
+    document.body.appendChild(tempA);
+    tempA.click();
+    document.body.removeChild(tempA);
+    window.URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
@@ -179,6 +238,26 @@ const TopicPublications = () => {
             <p className="text-muted-foreground">
               {loading ? 'Loading...' : `${totalCount} peer-reviewed sources supporting the scientific consensus.`}
             </p>
+            {/* Download CSV Button */}
+            <div className="mt-4">
+              <button
+                className="bg-scholarly-blue hover:bg-scholarly-accent text-white font-medium px-4 py-2 rounded shadow transition-colors mb-2"
+                onClick={handleDownloadCSV}
+                disabled={loading || totalCount === 0}
+                title={
+                  useStaticData
+                    ? "Download all results as CSV"
+                    : "Only current page of results can be downloaded from the online database (pagination in effect)"
+                }
+              >
+                Download {useStaticData ? "All as CSV" : "Current Page as CSV"}
+              </button>
+              {!useStaticData && totalCount > fullSortedFilteredList.length && (
+                <span className="text-xs text-muted-foreground ml-3">
+                  Only the current page can be downloaded when browsing online data.
+                </span>
+              )}
+            </div>
           </div>
 
           {loading ? (
