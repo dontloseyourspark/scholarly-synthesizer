@@ -43,9 +43,15 @@ export const useInsightsFetch = (topicId: number) => {
 
       if (insightsError) throw insightsError;
 
+      console.log('[INSIGHTS] Raw from DB:', insightsData);
+
       // Fetch sources and (if logged in) the current user's vote for each insight
       const insightsWithSources = await Promise.all(
         (insightsData || []).map(async (insight) => {
+          // Immediately log vote numbers from the DB
+          console.log('[INSIGHT]', insight.id, 'upvotes:', insight.upvotes, 'downvotes:', insight.downvotes);
+
+          // Fetch sources
           const { data: sourcesData, error: sourcesError } = await supabase
             .from('insight_sources')
             .select(`
@@ -90,6 +96,8 @@ export const useInsightsFetch = (topicId: number) => {
           };
         })
       );
+
+      console.log('[INSIGHTS] To be set in state:', insightsWithSources);
 
       setInsights(insightsWithSources); // this ensures latest from DB always overrides state
     } catch (err: any) {
