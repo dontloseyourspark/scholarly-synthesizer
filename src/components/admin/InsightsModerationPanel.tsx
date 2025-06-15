@@ -88,19 +88,23 @@ const InsightsModerationPanel: React.FC = () => {
             <div className="text-muted-foreground text-sm">No pending insights.</div>
           ) : (
             <ul className="space-y-4">
-              {pending.map((item) => (
-                <li key={item.id} className="border p-4 rounded">
-                  <div className="font-semibold mb-2">{item.scholars?.name || 'Unknown Scholar'}</div>
-                  <div className="text-sm text-muted-foreground mb-2">
-                    Topic: {item.topics?.name || `Topic ID: ${item.topic_id}` || 'Unknown Topic'}
-                  </div>
-                  <div className="mb-1 text-sm">{item.content}</div>
-                  <div className="flex items-center space-x-2 pt-2">
-                    <Button size="sm" onClick={() => updateStatus(item.id, "verified")}>Approve</Button>
-                    <Button size="sm" variant="destructive" onClick={() => updateStatus(item.id, "rejected")}>Reject</Button>
-                  </div>
-                </li>
-              ))}
+              {pending.map((item) => {
+                console.log('Rendering item:', item);
+                console.log('Topic data:', item.topics);
+                return (
+                  <li key={item.id} className="border p-4 rounded">
+                    <div className="font-semibold mb-2">{item.scholars?.name || 'Unknown Scholar'}</div>
+                    <div className="text-sm text-muted-foreground mb-2">
+                      Topic: {item.topics?.name || `Topic ID: ${item.topic_id}` || 'Unknown Topic'}
+                    </div>
+                    <div className="mb-1 text-sm">{item.content}</div>
+                    <div className="flex items-center space-x-2 pt-2">
+                      <Button size="sm" onClick={() => updateStatus(item.id, "verified")}>Approve</Button>
+                      <Button size="sm" variant="destructive" onClick={() => updateStatus(item.id, "rejected")}>Reject</Button>
+                    </div>
+                  </li>
+                );
+              })}
             </ul>
           )
         )}
