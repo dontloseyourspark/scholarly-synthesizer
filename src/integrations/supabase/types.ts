@@ -150,6 +150,8 @@ export type Database = {
           topic_id: number | null
           updated_at: string
           upvotes: number | null
+          verification_status: string
+          verified_at: string | null
         }
         Insert: {
           confidence?: number | null
@@ -162,6 +164,8 @@ export type Database = {
           topic_id?: number | null
           updated_at?: string
           upvotes?: number | null
+          verification_status?: string
+          verified_at?: string | null
         }
         Update: {
           confidence?: number | null
@@ -174,6 +178,8 @@ export type Database = {
           topic_id?: number | null
           updated_at?: string
           upvotes?: number | null
+          verification_status?: string
+          verified_at?: string | null
         }
         Relationships: [
           {

@@ -1,9 +1,10 @@
-
 import React from 'react';
 import { useInsights } from '@/hooks/useInsights';
 import DatabaseInsightsLoadingState from './DatabaseInsightsLoadingState';
 import DatabaseInsightsErrorState from './DatabaseInsightsErrorState';
 import DatabaseInsightsTabs from './DatabaseInsightsTabs';
+import AddInsightForm from "../insights/AddInsightForm";
+import { useAuth } from '@/contexts/AuthContext';
 
 type DatabaseInsightsContainerProps = {
   topicId: number;
@@ -30,6 +31,8 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
     refetch 
   } = useInsights(topicId);
 
+  const { user, isScholar } = useAuth();
+
   if (loading) {
     return <DatabaseInsightsLoadingState />;
   }
@@ -39,12 +42,18 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
   }
 
   return (
-    <DatabaseInsightsTabs 
-      topicId={topicId}
-      insights={insights || []} 
-      onVote={handleVote} 
-      keyPublications={keyPublications}
-    />
+    <div>
+      {/* Scholar add-insight form */}
+      {user && isScholar && (
+        <AddInsightForm topicId={topicId} onSubmitted={refetch} />
+      )}
+      <DatabaseInsightsTabs 
+        topicId={topicId}
+        insights={insights || []} 
+        onVote={handleVote} 
+        keyPublications={keyPublications}
+      />
+    </div>
   );
 };
 

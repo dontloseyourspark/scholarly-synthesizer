@@ -2,6 +2,8 @@
 import { useEffect } from 'react';
 import { useInsightsFetch } from './useInsightsFetch';
 import { useInsightVoting } from './useInsightVoting';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 export type DatabaseInsight = {
   id: string;
@@ -28,7 +30,8 @@ export type DatabaseInsight = {
     url: string | null;
     doi: string | null;
   }>;
-  currentUserVote?: 'up' | 'down' | null; // NEW: track the user's vote (may be null)
+  currentUserVote?: 'up' | 'down' | null;
+  verification_status?: string;
 };
 
 export const useInsights = (topicId: number) => {
@@ -42,6 +45,20 @@ export const useInsights = (topicId: number) => {
 
   const { handleVote } = useInsightVoting(insights, setInsights, fetchInsights);
 
+  // Extra: mutation to add a new insight
+  const addInsight = async (payload: {
+    content: string,
+    position: 'support' | 'neutral' | 'against',
+    confidence: number,
+    scholar_id: string,
+    topic_id: number,
+  }) => {
+    return await supabase.from("insights").insert({
+      ...payload,
+      verification_status: "pending"
+    });
+  };
+
   useEffect(() => {
     fetchInsights();
   }, [topicId]);
@@ -51,6 +68,8 @@ export const useInsights = (topicId: number) => {
     loading,
     error,
     handleVote,
-    refetch: fetchInsights
+    refetch: fetchInsights,
+    addInsight
   };
 };
+

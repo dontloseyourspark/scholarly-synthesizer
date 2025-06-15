@@ -25,7 +25,7 @@ export const useInsightsFetch = (topicId: number) => {
     try {
       setLoading(true);
 
-      // Fetch insights with scholars
+      // Fetch ONLY "verified" insights for regular users (admins see all in moderation panel)
       const { data: insightsData, error: insightsError } = await supabase
         .from('insights')
         .select(`
@@ -39,6 +39,7 @@ export const useInsightsFetch = (topicId: number) => {
           )
         `)
         .eq('topic_id', topicId)
+        .eq('verification_status', 'verified')
         .order('created_at', { ascending: false });
 
       if (insightsError) throw insightsError;
