@@ -40,6 +40,7 @@ const DatabaseInsightsContainer: React.FC<DatabaseInsightsContainerProps> = ({
 
   return (
     <DatabaseInsightsTabs 
+      topicId={topicId}
       insights={insights || []} 
       onVote={handleVote} 
       keyPublications={keyPublications}
