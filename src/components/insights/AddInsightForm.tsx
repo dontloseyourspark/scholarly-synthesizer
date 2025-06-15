@@ -28,6 +28,9 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
   const [sourceUrl, setSourceUrl] = useState("");
   const [sourceDoi, setSourceDoi] = useState("");
 
+  // Track visible error for missing profile
+  const [profileError, setProfileError] = useState<string | null>(null);
+
   if (!user || !isScholar) return null;
 
   // Helper: Are any source fields filled?
@@ -52,19 +55,25 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
+    setProfileError(null);
+    console.log("[AddInsightForm] handleSubmit triggered");
 
     try {
       // Find the scholar profile id for this user
-      const { data: scholar } = await supabase
+      const { data: scholar, error: scholarFetchError } = await supabase
         .from("scholars")
         .select("id")
         .eq("id", user.id)
         .maybeSingle();
 
-      if (!scholar) {
+      console.log("[AddInsightForm] Fetched scholar:", scholar, "Error:", scholarFetchError);
+
+      if (!scholar || scholarFetchError) {
+        const errMsg = "Your scholar profile could not be found. Please contact support or ensure you are recognized as a scholar.";
+        setProfileError(errMsg);
         toast({
           title: "Profile issue",
-          description: "Your scholar profile could not be found.",
+          description: errMsg,
           variant: "destructive",
         });
         setSubmitting(false);
@@ -85,6 +94,8 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
         .select("id") // get the new insight id
         .maybeSingle();
 
+      console.log("[AddInsightForm] Inserted insight:", insertedInsight, "Error:", insertError);
+
       if (insertError) throw insertError;
 
       // If a source is provided, add it, then link it to the insight
@@ -103,6 +114,8 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
           .select("id")
           .maybeSingle();
 
+        console.log("[AddInsightForm] Inserted source:", sourceRow, "Error:", sourceError);
+
         if (sourceError) {
           throw sourceError;
         }
@@ -114,6 +127,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
               insight_id: insertedInsight.id,
               source_id: sourceRow.id,
             });
+          console.log("[AddInsightForm] Linked source:", sourceRow.id, "to insight:", insertedInsight.id, "Error:", linkError);
           if (linkError) throw linkError;
         }
       }
@@ -127,6 +141,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
       resetSourceFields();
       onSubmitted();
     } catch (err: any) {
+      console.error("[AddInsightForm] Submission error", err);
       toast({
         title: "Submission error",
         description: err.message || "There was a problem submitting your insight.",
@@ -142,6 +157,11 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
         <CardTitle>Contribute an Insight</CardTitle>
       </CardHeader>
       <CardContent>
+        {profileError && (
+          <div className="mb-4 bg-red-100 text-red-800 border border-red-300 rounded px-4 py-2 text-sm" data-testid="profile-error-msg">
+            {profileError}
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium mb-1">Your Insight</label>
