@@ -1,134 +1,109 @@
+import { useState, useEffect, useCallback, useContext } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { AuthContext } from "@/contexts/AuthContext";
 
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-
-export type DatabaseDiscussion = {
+export type Discussion = {
   id: string;
   content: string;
   created_at: string;
-  updated_at: string;
-  parent_id: string | null;
   user_id: string | null;
-  user_profile: {
-    username: string;
-    avatar_url: string | null;
-  } | null;
-  replies?: DatabaseDiscussion[];
+  user_profile: any;
+  topic_id: number | null;
+  parent_id: string | null;
 };
 
-export const useDiscussions = (topicId: number) => {
-  const [discussions, setDiscussions] = useState<DatabaseDiscussion[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
+const useDiscussions = (topicId: number) => {
+  const [discussions, setDiscussions] = useState<Discussion[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { user, userProfile } = useContext(AuthContext);
 
-  const fetchDiscussions = async () => {
+  const fetchAll = useCallback(async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      
-      // Remove authentication requirement for fetching discussions
       const { data, error } = await supabase
-        .from('discussions')
-        .select('*')
-        .eq('topic_id', topicId)
-        .order('created_at', { ascending: true });
+        .from("discussions")
+        .select("*")
+        .eq("topic_id", topicId)
+        .order("created_at", { ascending: false });
 
-      if (error) throw error;
-      
-      // Organize discussions with replies
-      const topLevelDiscussions = (data || []).filter(d => !d.parent_id);
-      const repliesMap = new Map();
-      
-      (data || []).filter(d => d.parent_id).forEach(reply => {
-        if (!repliesMap.has(reply.parent_id)) {
-          repliesMap.set(reply.parent_id, []);
-        }
-        repliesMap.get(reply.parent_id).push({
-          ...reply,
-          user_profile: reply.user_profile as { username: string; avatar_url: string | null } | null
-        });
-      });
+      if (error) {
+        console.error("Error fetching discussions:", error);
+      }
 
-      const discussionsWithReplies = topLevelDiscussions.map(discussion => ({
-        ...discussion,
-        user_profile: discussion.user_profile as { username: string; avatar_url: string | null } | null,
-        replies: repliesMap.get(discussion.id) || []
-      }));
-
-      setDiscussions(discussionsWithReplies);
-    } catch (err: any) {
-      setError(err.message);
-      toast({
-        title: "Error fetching discussions",
-        description: err.message,
-        variant: "destructive",
-      });
+      setDiscussions(data || []);
     } finally {
       setLoading(false);
     }
-  };
-
-  const createDiscussion = async (content: string, parentId?: string) => {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      
-      if (!user) {
-        toast({
-          title: "Authentication required",
-          description: "Please sign in to participate in discussions.",
-          variant: "destructive",
-        });
-        return;
-      }
-
-      // Get user profile for immediate display
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('username, email, avatar_url')
-        .eq('id', user.id)
-        .single();
-
-      const userProfile = {
-        username: profile?.username || profile?.email || 'Anonymous',
-        avatar_url: profile?.avatar_url || null
-      };
-
-      const { error } = await supabase
-        .from('discussions')
-        .insert({
-          topic_id: topicId,
-          user_id: user.id,
-          content,
-          parent_id: parentId || null,
-          user_profile: userProfile
-        });
-
-      if (error) throw error;
-
-      await fetchDiscussions();
-      toast({
-        title: "Comment posted",
-        description: "Your comment has been added to the discussion.",
-      });
-    } catch (err: any) {
-      toast({
-        title: "Error posting comment",
-        description: err.message,
-        variant: "destructive",
-      });
-    }
-  };
+  }, [topicId]);
 
   useEffect(() => {
-    fetchDiscussions();
-  }, [topicId]);
+    fetchAll();
+  }, [fetchAll, topicId]);
+
+  // After adding a comment, send a notification to the recipient (parent user if it's a reply)
+  const createDiscussion = async (content: string, parentId?: string) => {
+    const { data, error } = await supabase
+      .from("discussions")
+      .insert({
+        topic_id: topicId,
+        content: content,
+        parent_id: parentId || null,
+        user_id: user?.id,
+        user_profile: {
+          username: userProfile?.username,
+        }
+      })
+      .select("*")
+      .maybeSingle();
+
+    // If reply, notify parent
+    if (!error && data && parentId) {
+      // Lookup parent discussion to get its user_id
+      const { data: parentRow } = await supabase
+        .from("discussions")
+        .select("user_id")
+        .eq("id", parentId)
+        .maybeSingle();
+
+      if (parentRow?.user_id && parentRow.user_id !== user?.id) {
+        await supabase.from("notifications").insert({
+          user_id: parentRow.user_id,
+          event_type: "reply",
+          related_id: data.id,
+          message: `${userProfile?.username || "Someone"} replied to your comment.`,
+        });
+      }
+    }
+
+    return { data, error };
+  };
+
+  const remove = async (id: string) => {
+    try {
+      const { error } = await supabase
+        .from("discussions")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        console.error("Error deleting discussion:", error);
+      } else {
+        setDiscussions((prevDiscussions) =>
+          prevDiscussions.filter((discussion) => discussion.id !== id)
+        );
+      }
+    } catch (error) {
+      console.error("Error deleting discussion:", error);
+    }
+  };
 
   return {
     discussions,
     loading,
-    error,
     createDiscussion,
-    refetch: fetchDiscussions
+    fetchAll,
+    remove,
   };
 };
+
+export { useDiscussions };

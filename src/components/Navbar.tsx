@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,6 +6,7 @@ import NavbarDesktopMenu from './navbar/NavbarDesktopMenu';
 import NavbarSearch from './navbar/NavbarSearch';
 import NavbarAuth from './navbar/NavbarAuth';
 import NavbarMobileMenu from './navbar/NavbarMobileMenu';
+import NotificationBell from './navbar/NavbarNotifications';
 
 const Navbar = () => {
   const { user, signOut, isAdmin, userProfile } = useAuth();
@@ -26,6 +26,7 @@ const Navbar = () => {
         
         <div className="hidden md:flex items-center space-x-4">
           <NavbarSearch />
+          <NotificationBell />
           <NavbarAuth 
             user={user} 
             userProfile={userProfile} 

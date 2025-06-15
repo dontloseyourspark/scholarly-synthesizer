@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -40,6 +39,22 @@ const InsightsModerationPanel: React.FC = () => {
 
   useEffect(() => { fetchPending(); }, []);
 
+  // Send notification to scholar on approval/rejection
+  const notifyScholar = async (scholarId: string, status: string) => {
+    let message = "";
+    if (status === "verified") {
+      message = "Your insight has been approved and is now publicly visible.";
+    } else if (status === "rejected") {
+      message = "Your insight submission was rejected by moderators.";
+    }
+    await supabase.from("notifications").insert({
+      user_id: scholarId,
+      event_type: status === "verified" ? "insight_approved" : "insight_rejected",
+      related_id: null,
+      message,
+    });
+  };
+
   const updateStatus = async (id: string, status: string) => {
     console.log(`Updating insight ${id} to status: ${status}`);
     try {
@@ -50,7 +65,13 @@ const InsightsModerationPanel: React.FC = () => {
           verified_at: status === "verified" ? new Date().toISOString() : null 
         })
         .eq("id", id);
-      
+
+      // Send notification to scholar (if present)
+      const insight = pending.find((item) => item.id === id);
+      if (insight?.scholar_id) {
+        await notifyScholar(insight.scholar_id, status);
+      }
+
       if (error) {
         toast({ 
           title: "Error", 
