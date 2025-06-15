@@ -6,6 +6,7 @@ import DatabaseInsightsTabs from './DatabaseInsightsTabs';
 import { DatabaseInsight } from '@/hooks/useInsights';
 
 type DatabaseInsightsSectionProps = {
+  topicId: number;
   insights: DatabaseInsight[];
   loading: boolean;
   error: string | null;
@@ -13,6 +14,7 @@ type DatabaseInsightsSectionProps = {
 }; 
 
 const DatabaseInsightsSection: React.FC<DatabaseInsightsSectionProps> = ({ 
+  topicId,
   insights, 
   loading, 
   error, 
@@ -31,7 +33,7 @@ const DatabaseInsightsSection: React.FC<DatabaseInsightsSectionProps> = ({
     );
   }
 
-  return <DatabaseInsightsTabs insights={insights} onVote={onVote} />;
+  return <DatabaseInsightsTabs topicId={topicId} insights={insights} onVote={onVote} />;
 };
 
 export default DatabaseInsightsSection;
