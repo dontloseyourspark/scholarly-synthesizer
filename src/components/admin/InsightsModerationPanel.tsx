@@ -14,13 +14,12 @@ const InsightsModerationPanel: React.FC = () => {
     setLoading(true);
     console.log('Fetching pending insights...');
     
-    // First, let's try a simpler query to see what we get
     const { data, error } = await supabase
       .from("insights")
       .select(`
         *, 
         scholars(id, name, title, institution, avatar_url),
-        topics(id, name)
+        topics!insights_topic_id_fkey(id, name)
       `)
       .eq("verification_status", "pending")
       .order("created_at", { ascending: true });
