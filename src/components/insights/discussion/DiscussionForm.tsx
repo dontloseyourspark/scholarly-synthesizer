@@ -4,6 +4,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import SimpleCaptcha from '@/components/common/SimpleCaptcha';
 
 interface DiscussionFormProps {
   onSubmit: (content: string) => Promise<void>;
@@ -12,13 +13,17 @@ interface DiscussionFormProps {
 
 const DiscussionForm: React.FC<DiscussionFormProps> = ({ onSubmit, isSubmitting }) => {
   const [newComment, setNewComment] = useState('');
+  const [isCaptchaValid, setIsCaptchaValid] = useState(false);
+  const [captchaReset, setCaptchaReset] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newComment.trim() || isSubmitting) return;
+    if (!newComment.trim() || isSubmitting || !isCaptchaValid) return;
 
     await onSubmit(newComment);
     setNewComment('');
+    setIsCaptchaValid(false);
+    setCaptchaReset(!captchaReset); // Reset captcha after successful submission
   };
 
   return (
@@ -36,9 +41,15 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({ onSubmit, isSubmitting 
               disabled={isSubmitting}
             />
           </div>
+          
+          <SimpleCaptcha 
+            onValidationChange={setIsCaptchaValid}
+            reset={captchaReset}
+          />
+          
           <Button 
             type="submit" 
-            disabled={!newComment.trim() || isSubmitting}
+            disabled={!newComment.trim() || isSubmitting || !isCaptchaValid}
             className="bg-scholarly-blue hover:bg-scholarly-accent"
           >
             {isSubmitting ? 'Posting...' : 'Post Comment'}
