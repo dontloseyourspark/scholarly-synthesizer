@@ -1,19 +1,22 @@
+
 import React, { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { UserCheck, AlertTriangle } from 'lucide-react';
+import { UserCheck, AlertTriangle, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import ScholarTable from '@/components/admin/ScholarTable';
 import TabNavigation from '@/components/admin/TabNavigation';
+import ModerationTabs from '@/components/admin/ModerationTabs';
 import { useScholars } from '@/hooks/useScholars';
 import { Button } from '@/components/ui/button';
 
 const AdminPanel = () => {
   const { user, isAdmin, loading: authLoading, profileLoaded } = useAuth();
   const [activeTab, setActiveTab] = useState<'pending' | 'verified' | 'rejected'>('pending');
+  const [mainView, setMainView] = useState<'scholars' | 'moderation'>('scholars');
   const { 
     pendingScholars, 
     verifiedScholars, 
@@ -86,40 +89,65 @@ const AdminPanel = () => {
             <CardHeader>
               <CardTitle className="font-serif text-2xl flex items-center">
                 <UserCheck className="h-6 w-6 mr-2 text-scholarly-blue" />
-                Scholar Verification Admin Panel
+                Admin Panel
               </CardTitle>
               <CardDescription>
-                Review and verify academic scholars to grant them publishing privileges
+                Manage scholar verification and moderate content
               </CardDescription>
+              
+              <div className="flex gap-4 mt-4">
+                <Button 
+                  variant={mainView === 'scholars' ? 'default' : 'outline'}
+                  onClick={() => setMainView('scholars')}
+                  className="flex items-center gap-2"
+                >
+                  <UserCheck className="h-4 w-4" />
+                  Scholar Verification
+                </Button>
+                <Button 
+                  variant={mainView === 'moderation' ? 'default' : 'outline'}
+                  onClick={() => setMainView('moderation')}
+                  className="flex items-center gap-2"
+                >
+                  <Shield className="h-4 w-4" />
+                  Content Moderation
+                </Button>
+              </div>
             </CardHeader>
             <CardContent>
-              <TabNavigation 
-                activeTab={activeTab}
-                setActiveTab={setActiveTab}
-                pendingCount={pendingScholars.length}
-                verifiedCount={verifiedScholars.length}
-                rejectedCount={rejectedScholars.length}
-              />
-              
-              {activeTab === 'pending' && (
-                <ScholarTable 
-                  scholars={pendingScholars} 
-                  loading={scholarsLoading}
-                  showActions={true}
-                  onVerify={handleVerify}
-                />
-              )}
-              {activeTab === 'verified' && (
-                <ScholarTable 
-                  scholars={verifiedScholars} 
-                  loading={scholarsLoading}
-                />
-              )}
-              {activeTab === 'rejected' && (
-                <ScholarTable 
-                  scholars={rejectedScholars} 
-                  loading={scholarsLoading}
-                />
+              {mainView === 'scholars' ? (
+                <>
+                  <TabNavigation 
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
+                    pendingCount={pendingScholars.length}
+                    verifiedCount={verifiedScholars.length}
+                    rejectedCount={rejectedScholars.length}
+                  />
+                  
+                  {activeTab === 'pending' && (
+                    <ScholarTable 
+                      scholars={pendingScholars} 
+                      loading={scholarsLoading}
+                      showActions={true}
+                      onVerify={handleVerify}
+                    />
+                  )}
+                  {activeTab === 'verified' && (
+                    <ScholarTable 
+                      scholars={verifiedScholars} 
+                      loading={scholarsLoading}
+                    />
+                  )}
+                  {activeTab === 'rejected' && (
+                    <ScholarTable 
+                      scholars={rejectedScholars} 
+                      loading={scholarsLoading}
+                    />
+                  )}
+                </>
+              ) : (
+                <ModerationTabs />
               )}
             </CardContent>
           </Card>
