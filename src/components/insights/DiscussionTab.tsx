@@ -26,6 +26,8 @@ const DiscussionTab: React.FC<DiscussionTabProps> = ({ topicId }) => {
   };
 
   const handleSubmitComment = async (content: string) => {
+    if (!user) return;
+    
     setIsSubmitting(true);
     try {
       await createDiscussion(content);
@@ -37,6 +39,8 @@ const DiscussionTab: React.FC<DiscussionTabProps> = ({ topicId }) => {
   };
 
   const handleSubmitReply = async (content: string, parentId: string) => {
+    if (!user) return;
+    
     setIsSubmitting(true);
     try {
       await createDiscussion(content, parentId);
@@ -49,16 +53,21 @@ const DiscussionTab: React.FC<DiscussionTabProps> = ({ topicId }) => {
   };
 
   const handleReply = (discussionId: string) => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
     setReplyingTo(replyingTo === discussionId ? null : discussionId);
   };
 
-  if (!user) {
-    return <SignInPrompt onSignInClick={handleSignInClick} />;
-  }
-
   return (
     <div className="space-y-6">
-      <DiscussionForm onSubmit={handleSubmitComment} isSubmitting={isSubmitting} />
+      {/* Show discussion form only to authenticated users */}
+      {user ? (
+        <DiscussionForm onSubmit={handleSubmitComment} isSubmitting={isSubmitting} />
+      ) : (
+        <SignInPrompt onSignInClick={handleSignInClick} />
+      )}
 
       {loading ? (
         <Card>
@@ -77,9 +86,10 @@ const DiscussionTab: React.FC<DiscussionTabProps> = ({ topicId }) => {
                   discussion={discussion}
                   onReply={handleReply}
                   isReplying={replyingTo === discussion.id}
+                  showReplyButton={true} // Always show reply button, authentication handled in onReply
                 />
 
-                {replyingTo === discussion.id && (
+                {replyingTo === discussion.id && user && (
                   <ReplyForm
                     onSubmit={handleSubmitReply}
                     onCancel={() => setReplyingTo(null)}

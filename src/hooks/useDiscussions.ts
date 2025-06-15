@@ -27,6 +27,7 @@ export const useDiscussions = (topicId: number) => {
     try {
       setLoading(true);
       
+      // Remove authentication requirement for fetching discussions
       const { data, error } = await supabase
         .from('discussions')
         .select('*')

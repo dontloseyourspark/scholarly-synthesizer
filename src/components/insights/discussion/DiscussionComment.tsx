@@ -10,12 +10,14 @@ interface DiscussionCommentProps {
   discussion: DatabaseDiscussion;
   onReply: (discussionId: string) => void;
   isReplying: boolean;
+  showReplyButton?: boolean;
 }
 
 const DiscussionComment: React.FC<DiscussionCommentProps> = ({ 
   discussion, 
   onReply, 
-  isReplying 
+  isReplying,
+  showReplyButton = true
 }) => {
   return (
     <div className="space-y-4">
@@ -40,16 +42,18 @@ const DiscussionComment: React.FC<DiscussionCommentProps> = ({
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-2 ml-11">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => onReply(discussion.id)}
-        >
-          <Reply className="h-4 w-4 mr-1" />
-          Reply
-        </Button>
-      </div>
+      {showReplyButton && (
+        <div className="flex items-center gap-2 ml-11">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => onReply(discussion.id)}
+          >
+            <Reply className="h-4 w-4 mr-1" />
+            Reply
+          </Button>
+        </div>
+      )}
 
       {/* Replies */}
       {discussion.replies && discussion.replies.length > 0 && (
