@@ -21,22 +21,55 @@ const InsightsModerationPanel: React.FC = () => {
       `)
       .eq("verification_status", "pending")
       .order("created_at", { ascending: true });
-    if (!error) { setPending(data || []); }
+    
+    if (error) {
+      console.error('Error fetching pending insights:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load pending insights",
+        variant: "destructive",
+      });
+    } else {
+      console.log('Fetched pending insights:', data);
+      setPending(data || []);
+    }
     setLoading(false);
   };
 
   useEffect(() => { fetchPending(); }, []);
 
   const updateStatus = async (id: string, status: string) => {
-    const { error } = await supabase
-      .from("insights")
-      .update({ verification_status: status, verified_at: status === "verified" ? new Date().toISOString() : null })
-      .eq("id", id);
-    if (!error) {
-      toast({ title: `Insight ${status}`, description: `Insight marked as ${status}.` });
-      setPending(x => x.filter(i => i.id !== id));
-    } else {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
+    try {
+      const { error } = await supabase
+        .from("insights")
+        .update({ 
+          verification_status: status, 
+          verified_at: status === "verified" ? new Date().toISOString() : null 
+        })
+        .eq("id", id);
+      
+      if (error) {
+        console.error('Error updating insight status:', error);
+        toast({ 
+          title: "Error", 
+          description: error.message, 
+          variant: "destructive" 
+        });
+      } else {
+        toast({ 
+          title: `Insight ${status}`, 
+          description: `Insight has been ${status}.` 
+        });
+        // Remove the item from pending list
+        setPending(prev => prev.filter(item => item.id !== id));
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      toast({ 
+        title: "Error", 
+        description: "An unexpected error occurred", 
+        variant: "destructive" 
+      });
     }
   };
 
@@ -53,7 +86,7 @@ const InsightsModerationPanel: React.FC = () => {
             <ul className="space-y-4">
               {pending.map((item) => (
                 <li key={item.id} className="border p-4 rounded">
-                  <div className="font-semibold mb-2">{item.scholars?.name}</div>
+                  <div className="font-semibold mb-2">{item.scholars?.name || 'Unknown Scholar'}</div>
                   <div className="text-sm text-muted-foreground mb-2">
                     Topic: {item.topics?.name || 'Unknown Topic'}
                   </div>
@@ -71,4 +104,5 @@ const InsightsModerationPanel: React.FC = () => {
     </Card>
   );
 };
+
 export default InsightsModerationPanel;
