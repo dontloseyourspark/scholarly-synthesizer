@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+
+import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { AuthContext } from "@/contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 export type Discussion = {
   id: string;
@@ -10,12 +11,16 @@ export type Discussion = {
   user_profile: any;
   topic_id: number | null;
   parent_id: string | null;
+  replies?: Discussion[];
 };
+
+// Export alias for backward compatibility
+export type DatabaseDiscussion = Discussion;
 
 const useDiscussions = (topicId: number) => {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [loading, setLoading] = useState(false);
-  const { user, userProfile } = useContext(AuthContext);
+  const { user, userProfile } = useAuth();
 
   const fetchAll = useCallback(async () => {
     setLoading(true);
@@ -30,7 +35,27 @@ const useDiscussions = (topicId: number) => {
         console.error("Error fetching discussions:", error);
       }
 
-      setDiscussions(data || []);
+      // Group discussions by parent/child relationship
+      const discussionsMap = new Map<string, Discussion>();
+      const rootDiscussions: Discussion[] = [];
+
+      // First pass: create map of all discussions
+      (data || []).forEach((d) => {
+        discussionsMap.set(d.id, { ...d, replies: [] });
+      });
+
+      // Second pass: organize into parent-child structure
+      (data || []).forEach((d) => {
+        const discussion = discussionsMap.get(d.id)!;
+        if (d.parent_id && discussionsMap.has(d.parent_id)) {
+          const parent = discussionsMap.get(d.parent_id)!;
+          parent.replies!.push(discussion);
+        } else {
+          rootDiscussions.push(discussion);
+        }
+      });
+
+      setDiscussions(rootDiscussions);
     } finally {
       setLoading(false);
     }
@@ -75,6 +100,8 @@ const useDiscussions = (topicId: number) => {
       }
     }
 
+    // Refresh discussions after creating
+    await fetchAll();
     return { data, error };
   };
 
@@ -88,9 +115,7 @@ const useDiscussions = (topicId: number) => {
       if (error) {
         console.error("Error deleting discussion:", error);
       } else {
-        setDiscussions((prevDiscussions) =>
-          prevDiscussions.filter((discussion) => discussion.id !== id)
-        );
+        await fetchAll();
       }
     } catch (error) {
       console.error("Error deleting discussion:", error);
