@@ -114,6 +114,8 @@ export const useInsights = (topicId: number) => {
 
   const handleVote = async (insightId: string, voteType: 'up' | 'down') => {
     try {
+      console.log('Attempting to vote:', { insightId, voteType });
+      
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -125,13 +127,53 @@ export const useInsights = (topicId: number) => {
         return;
       }
 
-      // Check if user has already voted
-      const { data: existingVote } = await supabase
+      console.log('User authenticated:', user.id);
+
+      // Check if votes table exists and user has already voted
+      const { data: existingVote, error: voteCheckError } = await supabase
         .from('votes')
         .select('*')
         .eq('insight_id', insightId)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
+
+      if (voteCheckError) {
+        console.error('Error checking existing vote:', voteCheckError);
+        // If votes table doesn't exist, let's update the insight directly
+        const currentInsight = insights.find(i => i.id === insightId);
+        if (!currentInsight) return;
+
+        const updateField = voteType === 'up' ? 'upvotes' : 'downvotes';
+        const newValue = voteType === 'up' 
+          ? currentInsight.upvotes + 1 
+          : currentInsight.downvotes + 1;
+
+        const { error: updateError } = await supabase
+          .from('insights')
+          .update({ [updateField]: newValue })
+          .eq('id', insightId);
+
+        if (updateError) {
+          console.error('Error updating insight votes:', updateError);
+          throw updateError;
+        }
+
+        // Update local state
+        setInsights(prev => prev.map(insight => 
+          insight.id === insightId 
+            ? { 
+                ...insight, 
+                [updateField]: newValue
+              }
+            : insight
+        ));
+
+        toast({
+          title: `Voted ${voteType}`,
+          description: "Thank you for your feedback!",
+        });
+        return;
+      }
 
       if (existingVote) {
         // Update existing vote
@@ -162,6 +204,7 @@ export const useInsights = (topicId: number) => {
         description: "Thank you for your feedback!",
       });
     } catch (err: any) {
+      console.error('Voting error:', err);
       toast({
         title: "Error voting",
         description: err.message,
