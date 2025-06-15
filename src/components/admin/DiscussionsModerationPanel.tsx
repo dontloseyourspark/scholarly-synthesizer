@@ -19,8 +19,22 @@ type Discussion = {
 const DiscussionsModerationPanel: React.FC = () => {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
   const [loading, setLoading] = useState(true);
+  const [topicsById, setTopicsById] = useState<Record<number, string>>({});
   const { toast } = useToast();
 
+  // Fetch all topics (id -> name mapping)
+  const fetchTopics = async () => {
+    const { data, error } = await supabase
+      .from("topics")
+      .select("id, name");
+    if (!error && data) {
+      const map: Record<number, string> = {};
+      data.forEach((t: any) => { if (t.id) map[t.id] = t.name; });
+      setTopicsById(map);
+    }
+  };
+
+  // Fetch all discussions for moderation
   const fetchDiscussions = async () => {
     setLoading(true);
     const { data, error } = await supabase
@@ -41,6 +55,7 @@ const DiscussionsModerationPanel: React.FC = () => {
   };
 
   useEffect(() => {
+    fetchTopics();
     fetchDiscussions();
   }, []);
 
@@ -91,7 +106,7 @@ const DiscussionsModerationPanel: React.FC = () => {
               <TableRow>
                 <TableHead>User</TableHead>
                 <TableHead>Content</TableHead>
-                <TableHead>Topic ID</TableHead>
+                <TableHead>Topic</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Actions</TableHead>
@@ -110,7 +125,11 @@ const DiscussionsModerationPanel: React.FC = () => {
                       {discussion.content}
                     </div>
                   </TableCell>
-                  <TableCell>{discussion.topic_id}</TableCell>
+                  <TableCell>
+                    {discussion.topic_id && topicsById[discussion.topic_id]
+                      ? topicsById[discussion.topic_id] 
+                      : 'Unknown Topic'}
+                  </TableCell>
                   <TableCell>
                     <Badge variant={discussion.parent_id ? "secondary" : "default"}>
                       {discussion.parent_id ? "Reply" : "Comment"}

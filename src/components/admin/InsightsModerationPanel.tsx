@@ -10,20 +10,20 @@ const InsightsModerationPanel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
+  // Load pending insights with topic + scholar details
   const fetchPending = async () => {
     setLoading(true);
-    console.log('Fetching pending insights with wildcard joins...');
-    
+    console.log('Fetching pending insights...');
     const { data, error } = await supabase
       .from("insights")
       .select(`
-        *, 
+        *,
         scholars(*),
         topics(*)
       `)
       .eq("verification_status", "pending")
       .order("created_at", { ascending: true });
-    
+
     if (error) {
       console.error('Error fetching pending insights:', error);
       toast({
@@ -31,8 +31,8 @@ const InsightsModerationPanel: React.FC = () => {
         description: "Failed to load pending insights",
         variant: "destructive",
       });
+      setPending([]);
     } else {
-      console.log('Fetched pending insights with wildcard joins:', data);
       setPending(data || []);
     }
     setLoading(false);
@@ -52,23 +52,19 @@ const InsightsModerationPanel: React.FC = () => {
         .eq("id", id);
       
       if (error) {
-        console.error('Error updating insight status:', error);
         toast({ 
           title: "Error", 
           description: error.message, 
           variant: "destructive" 
         });
       } else {
-        console.log(`Successfully updated insight ${id} to ${status}`);
         toast({ 
           title: `Insight ${status}`, 
           description: `Insight has been ${status}.` 
         });
-        // Remove the item from pending list
         setPending(prev => prev.filter(item => item.id !== id));
       }
     } catch (err) {
-      console.error('Unexpected error:', err);
       toast({ 
         title: "Error", 
         description: "An unexpected error occurred", 
@@ -89,13 +85,16 @@ const InsightsModerationPanel: React.FC = () => {
           ) : (
             <ul className="space-y-4">
               {pending.map((item) => {
-                console.log('Rendering item:', item);
-                console.log('Topic data:', item.topics);
+                const topicName =
+                  item.topics?.name ??
+                  (Array.isArray(item.topics) && item.topics.length && item.topics[0]?.name)
+                    ? (Array.isArray(item.topics) && item.topics[0]?.name)
+                    : undefined;
                 return (
                   <li key={item.id} className="border p-4 rounded">
                     <div className="font-semibold mb-2">{item.scholars?.name || 'Unknown Scholar'}</div>
                     <div className="text-sm text-muted-foreground mb-2">
-                      Topic: {item.topics?.name || `Topic ID: ${item.topic_id}` || 'Unknown Topic'}
+                      Topic: {topicName || "Unknown Topic"}
                     </div>
                     <div className="mb-1 text-sm">{item.content}</div>
                     <div className="flex items-center space-x-2 pt-2">
