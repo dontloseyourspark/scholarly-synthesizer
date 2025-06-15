@@ -43,11 +43,15 @@ export const useDiscussions = (topicId: number) => {
         if (!repliesMap.has(reply.parent_id)) {
           repliesMap.set(reply.parent_id, []);
         }
-        repliesMap.get(reply.parent_id).push(reply);
+        repliesMap.get(reply.parent_id).push({
+          ...reply,
+          user_profile: reply.user_profile as { username: string; avatar_url: string | null } | null
+        });
       });
 
       const discussionsWithReplies = topLevelDiscussions.map(discussion => ({
         ...discussion,
+        user_profile: discussion.user_profile as { username: string; avatar_url: string | null } | null,
         replies: repliesMap.get(discussion.id) || []
       }));
 
