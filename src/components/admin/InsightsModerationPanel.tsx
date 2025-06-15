@@ -14,7 +14,11 @@ const InsightsModerationPanel: React.FC = () => {
     setLoading(true);
     const { data, error } = await supabase
       .from("insights")
-      .select("*, scholars(id, name, title, institution, avatar_url)")
+      .select(`
+        *, 
+        scholars(id, name, title, institution, avatar_url),
+        topics(id, name)
+      `)
       .eq("verification_status", "pending")
       .order("created_at", { ascending: true });
     if (!error) { setPending(data || []); }
@@ -50,6 +54,9 @@ const InsightsModerationPanel: React.FC = () => {
               {pending.map((item) => (
                 <li key={item.id} className="border p-4 rounded">
                   <div className="font-semibold mb-2">{item.scholars?.name}</div>
+                  <div className="text-sm text-muted-foreground mb-2">
+                    Topic: {item.topics?.name || 'Unknown Topic'}
+                  </div>
                   <div className="mb-1 text-sm">{item.content}</div>
                   <div className="flex items-center space-x-2 pt-2">
                     <Button size="sm" onClick={() => updateStatus(item.id, "verified")}>Approve</Button>
