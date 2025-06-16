@@ -9,25 +9,37 @@ export const useInsightVoting = (
 ) => {
   const { toast } = useToast();
 
+  const queueToast = (title: string, description?: string, variant?: 'default' | 'destructive') => {
+    requestAnimationFrame(() => {
+      setTimeout(() => {
+        toast({
+          title,
+          description,
+          variant,
+        });
+      }, 100); // short delay for safety
+    });
+  };
+
   const handleVote = async (insightId: string, voteType: 'up' | 'down') => {
     try {
-      console.log('Attempting to vote:', { insightId, voteType });
+      console.log('[VOTE] Attempting:', { insightId, voteType });
 
       const { data: userData, error: userError } = await supabase.auth.getUser();
       const user = userData?.user;
 
       if (userError || !user) {
-        toast({
-          title: 'Authentication required',
-          description: 'Please sign in to vote on insights.',
-          variant: 'destructive',
-        });
+        console.warn('[VOTE] No authenticated user');
+        queueToast(
+          'Authentication required',
+          'Please sign in to vote on insights.',
+          'destructive'
+        );
         return;
       }
 
-      console.log('User authenticated:', user.id);
+      console.log('[VOTE] User authenticated:', user.id);
 
-      // Check if user has already voted on this insight
       const { data: existingVote, error: voteCheckError } = await supabase
         .from('votes')
         .select('*')
@@ -35,74 +47,45 @@ export const useInsightVoting = (
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (voteCheckError) {
-        console.error('Error checking existing vote:', voteCheckError);
-        throw voteCheckError;
-      }
+      if (voteCheckError) throw voteCheckError;
 
       if (existingVote) {
         if (existingVote.vote_type === voteType) {
-          // Same vote clicked again — remove the vote
-          console.log('Removing vote');
+          console.log('[VOTE] Removing existing vote');
           const { error: deleteError } = await supabase
             .from('votes')
             .delete()
             .eq('id', existingVote.id);
-
           if (deleteError) throw deleteError;
-
-          toast({
-            title: 'Vote removed',
-            description: 'Your vote has been removed.',
-          });
+          queueToast('Vote removed', 'Your vote has been removed.');
         } else {
-          // Change vote type
-          console.log(`Changing vote from ${existingVote.vote_type} to ${voteType}`);
+          console.log(`[VOTE] Changing vote to: ${voteType}`);
           const { error: updateError } = await supabase
             .from('votes')
             .update({ vote_type: voteType })
             .eq('id', existingVote.id);
-
           if (updateError) throw updateError;
-
-          toast({
-            title: `Changed to ${voteType === 'up' ? 'Upvote' : 'Downvote'}`,
-            description: 'Your vote has been updated.',
-          });
+          queueToast(`Changed to ${voteType === 'up' ? 'Upvote' : 'Downvote'}`, 'Your vote has been updated.');
         }
       } else {
-        // No existing vote — insert new
-        console.log('Creating new vote');
-        const { error: insertError } = await supabase
-          .from('votes')
-          .insert({
-            insight_id: insightId,
-            user_id: user.id,
-            vote_type: voteType,
-          });
-
-        if (insertError) throw insertError;
-
-        toast({
-          title: voteType === 'up' ? 'Upvoted' : 'Downvoted',
-          description: 'Thank you for your feedback!',
+        console.log('[VOTE] Creating new vote');
+        const { error: insertError } = await supabase.from('votes').insert({
+          insight_id: insightId,
+          user_id: user.id,
+          vote_type: voteType,
         });
+        if (insertError) throw insertError;
+        queueToast(voteType === 'up' ? 'Upvoted' : 'Downvoted', 'Thanks for your feedback!');
       }
 
-      // Give trigger time to update insights table
-      console.log('Waiting briefly to let DB trigger update vote counts');
+      // Wait a bit before refreshing
       await new Promise((resolve) => setTimeout(resolve, 300));
-
-      console.log('Refreshing insights to get updated counts');
-      await fetchInsights(); // Will update the UI with latest vote counts
+      console.log('[VOTE] Fetching updated insights...');
+      await fetchInsights();
 
     } catch (err: any) {
-      console.error('Voting error:', err);
-      toast({
-        title: 'Error voting',
-        description: err.message || 'Failed to process your vote. Please try again.',
-        variant: 'destructive',
-      });
+      console.error('[VOTE ERROR]', err);
+      queueToast('Error voting', err.message || 'Something went wrong.', 'destructive');
     }
   };
 

@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Toaster } from 'sonner';
 import Index from '@/pages/Index';
 import Auth from '@/pages/Auth';
 import Topics from '@/pages/Topics';
@@ -23,9 +22,11 @@ import EffectivenessPsychotherapy from '@/pages/EffectivenessPsychotherapy';
 import TermsOfService from '@/pages/TermsOfService';
 import PrivacyPolicy from '@/pages/PrivacyPolicy';
 import CookiePolicy from '@/pages/CookiePolicy';
+import { Toaster } from '@/components/ui/toaster';
 
 function App() {
   return (
+    
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Index />} />

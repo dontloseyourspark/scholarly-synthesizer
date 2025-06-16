@@ -5,16 +5,30 @@ import PositionBadge from './PositionBadge';
 import SourcesList from './SourcesList';
 import VoteButtons from './VoteButtons';
 import { DatabaseInsight } from '@/hooks/useInsights';
+import { toast, useToast } from '@/hooks/use-toast';
+import { useEffect } from 'react';
 
 type InsightCardProps = {
   insight: DatabaseInsight;
   onVote: (insightId: string, voteType: 'up' | 'down') => void;
 };
 
+
 const InsightCard: React.FC<InsightCardProps> = ({ insight, onVote }) => {
+  const { toast } = useToast(); // <== Make sure this is here!
+  //const handleVote = (voteType: 'up' | 'down') => {
+  //  console.log('InsightCard handleVote called:', { insightId: insight.id, voteType });
+  //  onVote(insight.id, voteType);
+  // };
+
   const handleVote = (voteType: 'up' | 'down') => {
-    console.log('InsightCard handleVote called:', { insightId: insight.id, voteType });
-    onVote(insight.id, voteType);
+    console.log('INSIGHTCARD: handleVote called');
+    toast({
+      title: 'Component Toast',
+      description: `Vote type: ${voteType}`,
+    });
+
+    onVote(insight.id, voteType); // still call parent handler
   };
 
   return (
@@ -34,6 +48,7 @@ const InsightCard: React.FC<InsightCardProps> = ({ insight, onVote }) => {
           <div className="text-sm text-muted-foreground">
             Contributed on {new Date(insight.created_at).toLocaleDateString()}
           </div>
+         
           <VoteButtons 
             upvotes={insight.upvotes || 0}
             downvotes={insight.downvotes || 0}
