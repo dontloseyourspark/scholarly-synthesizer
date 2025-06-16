@@ -1,4 +1,3 @@
-
 import React from 'react';
 import InsightCard from './InsightCard';
 import EmptyState from '../common/EmptyState';
@@ -26,7 +25,7 @@ const InsightsList: React.FC<InsightsListProps> = ({ insights, onVote }) => {
         <InsightCard 
           key={insight.id} 
           insight={insight} 
-          onVote={onVote} 
+          onVote={onVote} // ✅ This is the correct prop usage
         />
       ))}
     </div>
