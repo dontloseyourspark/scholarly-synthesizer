@@ -49,19 +49,21 @@ const InsightsSection = ({ insights, onVote }: InsightsSectionProps) => {
               <div className="bg-scholarly-lightGray p-4 rounded-md">
                 <h4 className="font-medium mb-2">Sources:</h4>
                 <ul className="space-y-1">
-                  {insight.sources.map((source) => (
-                    <li key={source.id}>
-                      <a 
-                        href={source.url} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-scholarly-blue hover:underline flex items-center"
-                      >
-                        <ExternalLink className="h-3.5 w-3.5 mr-1.5 inline" />
-                        {source.title} ({source.year})
+                {insight?.sources?.map((source, index) => {
+                  const url = source?.url;
+                  const title = source?.title;
+
+                  return url ? (
+                    <li key={index}>
+                      <a>
+                      <ExternalLink className="h-3.5 w-3.5 mr-1.5 inline" />
+                      {source.title} ({source.year})
                       </a>
                     </li>
-                  ))}
+                  ) : null;
+                  })
+                }
+                      
                 </ul>
               </div>
               
