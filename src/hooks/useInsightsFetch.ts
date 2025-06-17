@@ -17,38 +17,32 @@ export const useInsightsFetch = (topicId: number) => {
     setLoading(true);
     setError(null);
 
-    useEffect(() => {
-      if (!topicId) return;
-    
-      fetchInsights();
-    }, [topicId]);
-
     const { data, error } = await supabase
-    .from('insights')
-    .select(`
-      *,
-      scholar:scholar_id (id, name, title, institution, avatar_url),
-      insight_sources (
-        id,
-        insight_id,
-        source_id,
-        created_at,
-        source: sources (
+      .from('insights')
+      .select(`
+        *,
+        scholar:scholar_id (id, name, title, institution, avatar_url),
+        insight_sources (
           id,
-          title,
-          authors,
-          publication,
-          year,
-          url,
-          doi
+          insight_id,
+          source_id,
+          created_at,
+          source: sources (
+            id,
+            title,
+            authors,
+            publication,
+            year,
+            url,
+            doi
+          )
+        ), 
+        votes:votes!votes_insight_id_fkey (
+          user_id,
+          vote_type
         )
-      ), 
-      votes:votes!votes_insight_id_fkey (
-        user_id,
-        vote_type
-      )
-    `)
-    .eq('topic_id', topicId);
+      `)
+      .eq('topic_id', topicId);
 
     if (error) {
       setError('Error loading insights: ' + error.message);
@@ -58,12 +52,11 @@ export const useInsightsFetch = (topicId: number) => {
 
     const mappedInsights = (data || []).map((insight): DatabaseInsight => {
       const votes = insight.votes || [];
-      
+
       const upvotes = votes.filter(v => v.vote_type === 'up').length;
       const downvotes = votes.filter(v => v.vote_type === 'down').length;
-      const userVote = insight.votes?.find((vote) => vote.user_id === user.id);
-    
-      // Ensure position is one of the allowed values
+      const userVote = votes.find(v => v.user_id === user?.id);
+
       const validPositions = ['support', 'neutral', 'against'] as const;
       type Position = typeof validPositions[number];
 
@@ -71,8 +64,6 @@ export const useInsightsFetch = (topicId: number) => {
         ? (insight.position as Position)
         : 'neutral';
 
-        
-    
       return {
         id: insight.id,
         content: insight.content,
@@ -85,21 +76,26 @@ export const useInsightsFetch = (topicId: number) => {
         downvotes,
         currentUserVote: isValidVoteType(userVote?.vote_type) ? userVote.vote_type : undefined,
         sources: insight.insight_sources.map(insightSource => insightSource.source),
-        verification_status: insight.verification_status
+        verification_status: insight.verification_status,
       };
-    
-    
     });
 
     setInsights(mappedInsights);
     setLoading(false);
   };
 
+  // ✅ useEffect correctly placed here
+  useEffect(() => {
+    if (topicId) {
+      fetchInsights();
+    }
+  }, [topicId]);
+
   return {
     insights,
     setInsights,
     loading,
     error,
-    fetchInsights
+    fetchInsights,
   };
 };

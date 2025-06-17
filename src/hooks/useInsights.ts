@@ -39,9 +39,9 @@ export const useInsights = (topicId: number) => {
     loading,
     error,
     fetchInsights
-  } = useInsightsFetch();
+  } = useInsightsFetch(topicId);
 
-  const { handleVote } = useInsightVoting(insights, setInsights, () => fetchInsights(topicId));
+  const { handleVote } = useInsightVoting(insights, setInsights, () => fetchInsights());
 
   const addInsight = async (payload: {
     content: string,
@@ -57,7 +57,7 @@ export const useInsights = (topicId: number) => {
   };
 
   useEffect(() => {
-    if (topicId) fetchInsights(topicId);
+    if (topicId) fetchInsights();
   }, [topicId]);
 
   return {
@@ -65,7 +65,7 @@ export const useInsights = (topicId: number) => {
     loading,
     error,
     handleVote,
-    refetch: () => fetchInsights(topicId),
+    refetch: () => fetchInsights(),
     addInsight
   };
 };
