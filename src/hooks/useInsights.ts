@@ -1,9 +1,7 @@
-
 import { useEffect } from 'react';
 import { useInsightsFetch } from './useInsightsFetch';
 import { useInsightVoting } from './useInsightVoting';
 import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
 
 export type DatabaseInsight = {
   id: string;
@@ -41,11 +39,10 @@ export const useInsights = (topicId: number) => {
     loading,
     error,
     fetchInsights
-  } = useInsightsFetch(topicId);
+  } = useInsightsFetch();
 
-  const { handleVote } = useInsightVoting(insights, setInsights, fetchInsights);
+  const { handleVote } = useInsightVoting(insights, setInsights, () => fetchInsights(topicId));
 
-  // Extra: mutation to add a new insight
   const addInsight = async (payload: {
     content: string,
     position: 'support' | 'neutral' | 'against',
@@ -60,7 +57,7 @@ export const useInsights = (topicId: number) => {
   };
 
   useEffect(() => {
-    fetchInsights();
+    if (topicId) fetchInsights(topicId);
   }, [topicId]);
 
   return {
@@ -68,8 +65,7 @@ export const useInsights = (topicId: number) => {
     loading,
     error,
     handleVote,
-    refetch: fetchInsights,
+    refetch: () => fetchInsights(topicId),
     addInsight
   };
 };
-

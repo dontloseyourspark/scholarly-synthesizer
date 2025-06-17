@@ -1,5 +1,5 @@
 import React from 'react';
-import InsightCard from './InsightCard';
+import InsightCard from '@/components/insights/InsightCard';
 import EmptyState from '../common/EmptyState';
 import { DatabaseInsight } from '@/hooks/useInsights';
 

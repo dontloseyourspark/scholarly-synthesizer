@@ -4,28 +4,20 @@ import { useToast } from '@/hooks/use-toast';
 import { DatabaseInsight } from './useInsights';
 import { useAuth } from '@/contexts/AuthContext';
 
-export const useInsightsFetch = (topicId: number) => {
+export const useInsightsFetch = () => {
   const [insights, setInsights] = useState<DatabaseInsight[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
+  const { user } = useAuth(); // ✅ Move hook call here — outside any function body
 
-  // Import the user so we can fetch user's vote
-  let userId: string | null = null;
-  try {
-    // Will be null for non-auth users
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const { user } = useAuth();
-    userId = user?.id ?? null;
-  } catch {
-    // useAuth must be used inside a React component; we'll check below
-  }
-
-  const fetchInsights = async () => {
+  const fetchInsights = async (topicId: number) => {
     try {
       setLoading(true);
+      setError(null);
 
-      // Fetch ONLY "verified" insights for regular users (admins see all in moderation panel)
+      const userId = user?.id ?? null;
+
       const { data: insightsData, error: insightsError } = await supabase
         .from('insights')
         .select(`
@@ -44,16 +36,9 @@ export const useInsightsFetch = (topicId: number) => {
 
       if (insightsError) throw insightsError;
 
-      console.log('[INSIGHTS] Raw from DB:', insightsData);
-
-      // Fetch sources and (if logged in) the current user's vote for each insight
-      const insightsWithSources = await Promise.all(
+      const insightsWithDetails = await Promise.all(
         (insightsData || []).map(async (insight) => {
-          // Immediately log vote numbers from the DB
-          console.log('[INSIGHT]', insight.id, 'upvotes:', insight.upvotes, 'downvotes:', insight.downvotes);
-
-          // Fetch sources
-          const { data: sourcesData, error: sourcesError } = await supabase
+          const { data: sourcesData } = await supabase
             .from('insight_sources')
             .select(`
               sources (
@@ -68,7 +53,6 @@ export const useInsightsFetch = (topicId: number) => {
             `)
             .eq('insight_id', insight.id);
 
-          // If logged in, fetch the current user's vote for this insight
           let currentUserVote: 'up' | 'down' | null = null;
           if (userId) {
             const { data: voteRow } = await supabase
@@ -78,11 +62,8 @@ export const useInsightsFetch = (topicId: number) => {
               .eq('user_id', userId)
               .maybeSingle();
 
-            // Only set if value is "up" or "down"!
             if (voteRow?.vote_type === 'up' || voteRow?.vote_type === 'down') {
               currentUserVote = voteRow.vote_type;
-            } else {
-              currentUserVote = null;
             }
           }
 
@@ -93,14 +74,12 @@ export const useInsightsFetch = (topicId: number) => {
             upvotes: insight.upvotes || 0,
             downvotes: insight.downvotes || 0,
             position: insight.position as 'support' | 'neutral' | 'against',
-            currentUserVote, // our new field
+            currentUserVote,
           };
         })
       );
 
-      console.log('[INSIGHTS] To be set in state:', insightsWithSources);
-
-      setInsights(insightsWithSources); // this ensures latest from DB always overrides state
+      setInsights(insightsWithDetails);
     } catch (err: any) {
       setError(err.message);
       toast({
@@ -118,6 +97,6 @@ export const useInsightsFetch = (topicId: number) => {
     setInsights,
     loading,
     error,
-    fetchInsights
+    fetchInsights,
   };
 };

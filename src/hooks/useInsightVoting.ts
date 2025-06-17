@@ -12,13 +12,42 @@ export const useInsightVoting = (
   const queueToast = (title: string, description?: string, variant?: 'default' | 'destructive') => {
     requestAnimationFrame(() => {
       setTimeout(() => {
-        toast({
-          title,
-          description,
-          variant,
-        });
-      }, 100); // short delay for safety
+        toast({ title, description, variant });
+      }, 100);
     });
+  };
+
+  const syncInsightVoteCounts = async (insightId: string) => {
+    const { count: upvoteCount, error: upvoteError } = await supabase
+      .from('votes')
+      .select('*', { count: 'exact', head: true })
+      .eq('insight_id', insightId)
+      .eq('vote_type', 'up');
+
+    const { count: downvoteCount, error: downvoteError } = await supabase
+      .from('votes')
+      .select('*', { count: 'exact', head: true })
+      .eq('insight_id', insightId)
+      .eq('vote_type', 'down');
+
+    if (upvoteError || downvoteError) {
+      console.error('[SYNC] Error counting votes:', upvoteError?.message, downvoteError?.message);
+      return;
+    }
+
+    const { error: updateError } = await supabase
+      .from('insights')
+      .update({
+        upvotes: upvoteCount,
+        downvotes: downvoteCount,
+      })
+      .eq('id', insightId);
+
+    if (updateError) {
+      console.error('[SYNC] Error updating insight:', updateError.message, updateError.details);
+    } else {
+      console.log('[SYNC] Insight vote counts updated:', { upvoteCount, downvoteCount });
+    }
   };
 
   const handleVote = async (insightId: string, voteType: 'up' | 'down') => {
@@ -38,8 +67,6 @@ export const useInsightVoting = (
         return;
       }
 
-      console.log('[VOTE] User authenticated:', user.id);
-
       const { data: existingVote, error: voteCheckError } = await supabase
         .from('votes')
         .select('*')
@@ -47,7 +74,10 @@ export const useInsightVoting = (
         .eq('user_id', user.id)
         .maybeSingle();
 
-      if (voteCheckError) throw voteCheckError;
+      if (voteCheckError) {
+        console.error('[VOTE] Error checking for existing vote:', voteCheckError.message);
+        return;
+      }
 
       if (existingVote) {
         if (existingVote.vote_type === voteType) {
@@ -56,16 +86,21 @@ export const useInsightVoting = (
             .from('votes')
             .delete()
             .eq('id', existingVote.id);
-          if (deleteError) throw deleteError;
+          if (deleteError) {
+            console.error('[VOTE] Error deleting vote:', deleteError.message);
+            return;
+          }
           queueToast('Vote removed', 'Your vote has been removed.');
         } else {
-          console.log(`[VOTE] Changing vote to: ${voteType}`);
+          console.log('[VOTE] Updating vote type');
           const { error: updateError } = await supabase
             .from('votes')
             .update({ vote_type: voteType })
             .eq('id', existingVote.id);
-          if (updateError) throw updateError;
-          queueToast(`Changed to ${voteType === 'up' ? 'Upvote' : 'Downvote'}`, 'Your vote has been updated.');
+          if (updateError) {
+            console.error('[VOTE] Error updating vote:', updateError.message);
+            return;
+          }
         }
       } else {
         console.log('[VOTE] Creating new vote');
@@ -74,11 +109,16 @@ export const useInsightVoting = (
           user_id: user.id,
           vote_type: voteType,
         });
-        if (insertError) throw insertError;
+        if (insertError) {
+          console.error('[VOTE] Error inserting vote:', insertError.message);
+          return;
+        }
         queueToast(voteType === 'up' ? 'Upvoted' : 'Downvoted', 'Thanks for your feedback!');
       }
 
-      // Wait a bit before refreshing
+      // Manually sync the insight vote count since RLS blocks DB triggers
+      await syncInsightVoteCounts(insightId);
+
       await new Promise((resolve) => setTimeout(resolve, 300));
       console.log('[VOTE] Fetching updated insights...');
       await fetchInsights();
