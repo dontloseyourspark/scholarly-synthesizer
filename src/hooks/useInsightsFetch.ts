@@ -1,95 +1,98 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { DatabaseInsight } from './useInsights';
 import { useAuth } from '@/contexts/AuthContext';
+import { DatabaseInsight } from './useInsights';
 
-export const useInsightsFetch = () => {
+function isValidVoteType(value: string): value is 'up' | 'down' {
+  return value === 'up' || value === 'down';
+}
+
+export const useInsightsFetch = (topicId: number) => {
   const [insights, setInsights] = useState<DatabaseInsight[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { toast } = useToast();
-  const { user } = useAuth(); // ✅ Move hook call here — outside any function body
+  const { user } = useAuth();
 
-  const fetchInsights = async (topicId: number) => {
-    try {
-      setLoading(true);
-      setError(null);
+  const fetchInsights = async () => {
+    setLoading(true);
+    setError(null);
 
-      const userId = user?.id ?? null;
+    useEffect(() => {
+      if (!topicId) return;
+    
+      fetchInsights();
+    }, [topicId]);
 
-      const { data: insightsData, error: insightsError } = await supabase
-        .from('insights')
-        .select(`
-          *,
-          scholars (
-            id,
-            name,
-            title,
-            institution,
-            avatar_url
-          )
-        `)
-        .eq('topic_id', topicId)
-        .eq('verification_status', 'verified')
-        .order('created_at', { ascending: false });
+    const { data, error } = await supabase
+    .from('insights')
+    .select(`
+      *,
+      scholar:scholar_id (id, name, title, institution, avatar_url),
+      insight_sources (
+        id,
+        insight_id,
+        source_id,
+        created_at,
+        source: sources (
+          id,
+          title,
+          authors,
+          publication,
+          year,
+          url,
+          doi
+        )
+      ), 
+      votes:votes!votes_insight_id_fkey (
+        user_id,
+        vote_type
+      )
+    `)
+    .eq('topic_id', topicId);
 
-      if (insightsError) throw insightsError;
-
-      const insightsWithDetails = await Promise.all(
-        (insightsData || []).map(async (insight) => {
-          const { data: sourcesData } = await supabase
-            .from('insight_sources')
-            .select(`
-              sources (
-                id,
-                title,
-                authors,
-                publication,
-                year,
-                url,
-                doi
-              )
-            `)
-            .eq('insight_id', insight.id);
-
-          let currentUserVote: 'up' | 'down' | null = null;
-          if (userId) {
-            const { data: voteRow } = await supabase
-              .from('votes')
-              .select('vote_type')
-              .eq('insight_id', insight.id)
-              .eq('user_id', userId)
-              .maybeSingle();
-
-            if (voteRow?.vote_type === 'up' || voteRow?.vote_type === 'down') {
-              currentUserVote = voteRow.vote_type;
-            }
-          }
-
-          return {
-            ...insight,
-            scholar: insight.scholars,
-            sources: sourcesData?.map(item => item.sources).filter(Boolean) || [],
-            upvotes: insight.upvotes || 0,
-            downvotes: insight.downvotes || 0,
-            position: insight.position as 'support' | 'neutral' | 'against',
-            currentUserVote,
-          };
-        })
-      );
-
-      setInsights(insightsWithDetails);
-    } catch (err: any) {
-      setError(err.message);
-      toast({
-        title: "Error fetching insights",
-        description: err.message,
-        variant: "destructive",
-      });
-    } finally {
+    if (error) {
+      setError('Error loading insights: ' + error.message);
       setLoading(false);
+      return;
     }
+
+    const mappedInsights = (data || []).map((insight): DatabaseInsight => {
+      const votes = insight.votes || [];
+      
+      const upvotes = votes.filter(v => v.vote_type === 'up').length;
+      const downvotes = votes.filter(v => v.vote_type === 'down').length;
+      const userVote = insight.votes?.find((vote) => vote.user_id === user.id);
+    
+      // Ensure position is one of the allowed values
+      const validPositions = ['support', 'neutral', 'against'] as const;
+      type Position = typeof validPositions[number];
+
+      const safePosition: Position = validPositions.includes(insight.position as Position)
+        ? (insight.position as Position)
+        : 'neutral';
+
+        
+    
+      return {
+        id: insight.id,
+        content: insight.content,
+        position: safePosition,
+        confidence: insight.confidence,
+        created_at: insight.created_at,
+        updated_at: insight.updated_at,
+        scholar: insight.scholar,
+        upvotes,
+        downvotes,
+        currentUserVote: isValidVoteType(userVote?.vote_type) ? userVote.vote_type : undefined,
+        sources: insight.insight_sources.map(insightSource => insightSource.source),
+        verification_status: insight.verification_status
+      };
+    
+    
+    });
+
+    setInsights(mappedInsights);
+    setLoading(false);
   };
 
   return {
@@ -97,6 +100,6 @@ export const useInsightsFetch = () => {
     setInsights,
     loading,
     error,
-    fetchInsights,
+    fetchInsights
   };
 };
