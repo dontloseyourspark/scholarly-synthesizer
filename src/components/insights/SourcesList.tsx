@@ -76,18 +76,22 @@ const SourcesList: React.FC<SourcesListProps> = ({ sources, variant = 'compact' 
                   </a>
                 )}
               </div>
-              {source.url && (
-                <a
-                  href={source.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Open source: ${source.title || 'Untitled'}`}
-                  className="text-scholarly-blue hover:underline text-sm flex items-center"
-                >
-                  <ExternalLink className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
-                  View Source
-                </a>
-              )}
+              {sources
+                .filter(source => source?.url)  // Filter out null/undefined or sources without url
+                .map(source => (
+                  <a
+                    key={source.url} // Add a key if inside map
+                    href={source.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`Open source: ${source.title || 'Untitled'}`}
+                    className="text-scholarly-blue hover:underline text-sm flex items-center"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5 mr-1.5" aria-hidden="true" />
+                    View Source
+                  </a>
+              ))}
+
             </div>
           </div>
         );

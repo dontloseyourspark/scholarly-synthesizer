@@ -13,11 +13,13 @@ interface InsightsSectionProps {
 }
 
 const InsightsSection = ({ insights, onVote }: InsightsSectionProps) => {
+  const approvedInsights = insights.filter(insight => insight.verification_status === 'verified');
+
   return (
     <section className="container mx-auto px-4 py-6">
       <h2 className="text-2xl md:text-3xl font-serif font-bold mb-8">Expert Insights on Human Evolution</h2>
       <div className="space-y-6">
-        {insights.map((insight) => (
+        {approvedInsights.map((insight) => (
           <Card key={insight.id} className="overflow-hidden">
             <CardHeader className="pb-4">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -93,7 +95,7 @@ const InsightsSection = ({ insights, onVote }: InsightsSectionProps) => {
                 </div>
               </div>
             </CardContent>
-          </Card>
+            </Card>
         ))}
       </div>
     </section>

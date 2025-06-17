@@ -9,6 +9,7 @@ export type Scholar = {
 };
 
 export type Insight = {
+  verification_status: string;
   id: string;
   topicId: string;
   scholarId: string;
@@ -73,6 +74,7 @@ export const insights: Insight[] = [
     upvotes: 243,
     downvotes: 12,
     votes: 231,
+    verification_status: 'verified',
     createdAt: '2023-07-12T08:30:00Z'
   }
 ];
