@@ -57,11 +57,9 @@ const SourcesList: React.FC<SourcesListProps> = ({ sources, variant = 'compact' 
 
   return (
     <div className="space-y-4">
-      {safeSources.map((source, index) => {
-        if (!source) return null;
-
+      {safeSources?.filter(Boolean).map((source, index) => {
         return (
-          <div key={`${source.id}-${index}`} className="border p-4 rounded-md">
+          <div key={`${source.id ?? 'unknown'}-${index}`} className="border p-4 rounded-md">
             <h4 className="font-medium mb-1">{source.title || 'Untitled'}</h4>
             <p className="text-sm text-muted-foreground mb-2">{source.authors || 'Unknown authors'}</p>
             <div className="flex justify-between items-center">
@@ -96,6 +94,7 @@ const SourcesList: React.FC<SourcesListProps> = ({ sources, variant = 'compact' 
       })}
     </div>
   );
+  
 };
 
 export default SourcesList;
