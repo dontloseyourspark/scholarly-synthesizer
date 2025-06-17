@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -13,7 +12,21 @@ interface InsightsSectionProps {
 }
 
 const InsightsSection = ({ insights, onVote }: InsightsSectionProps) => {
+  if (insights.length === 0) {
+      return (
+        <Card>
+          <CardContent className="pt-6 text-center">
+            <p>No insights have been contributed for this topic yet.</p>
+            <Button className="mt-4 bg-scholarly-blue hover:bg-scholarly-accent">
+              Be the first to contribute
+            </Button>
+          </CardContent>
+        </Card>
+      );
+    }
+  console.log('All insights:', insights); // Debugging log
   const approvedInsights = insights.filter(insight => insight.verification_status === 'verified');
+  console.log('Approved insights:', approvedInsights); // Debugging log
 
   return (
     <section className="container mx-auto px-4 py-6">

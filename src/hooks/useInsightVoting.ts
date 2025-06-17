@@ -24,7 +24,7 @@ export const useInsightVoting = (
 
       // Remove vote if same as existing (toggle)
       if (existingVote === voteType) {
-        console.log('[VOTE] Removing existing vote');
+        //console.log('[VOTE] Removing existing vote');
         await supabase
           .from('votes')
           .delete()
@@ -32,7 +32,7 @@ export const useInsightVoting = (
           .eq('user_id', user.id);
       } else {
         if (existingVote) {
-          console.log('[VOTE] Changing vote');
+          //console.log('[VOTE] Changing vote');
           await supabase
             .from('votes')
             .delete()
@@ -40,7 +40,7 @@ export const useInsightVoting = (
             .eq('user_id', user.id);
         }
 
-        console.log('[VOTE] Creating new vote');
+        //console.log('[VOTE] Creating new vote');
         await supabase.from('votes').insert({
           user_id: user.id,
           insight_id: insightId,
@@ -48,7 +48,7 @@ export const useInsightVoting = (
         });
       }
 
-      console.log('[VOTE] Refetching updated insights...');
+      //console.log('[VOTE] Refetching updated insights...');
       refetch(); // Re-fetch to update the vote counts and currentUserVote
     },
     [insights, user, refetch]

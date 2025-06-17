@@ -8,7 +8,10 @@ type InsightsListProps = {
   onVote: (insightId: string, voteType: 'up' | 'down') => void;
 };
 
+
+
 const InsightsList: React.FC<InsightsListProps> = ({ insights, onVote }) => {
+  const approvedInsights = insights.filter(insight => insight.verification_status === 'verified');
   if (insights.length === 0) {
     return (
       <EmptyState 
@@ -21,7 +24,8 @@ const InsightsList: React.FC<InsightsListProps> = ({ insights, onVote }) => {
 
   return (
     <div className="space-y-6">
-      {insights.map((insight) => (
+      
+      {approvedInsights.map((insight) => (
         <InsightCard 
           key={insight.id} 
           insight={insight} 

@@ -16,7 +16,7 @@ const InsightCard: React.FC<InsightCardProps> = ({ insight, onVote }) => {
   const { toast } = useToast();
 
   const handleVote = (voteType: 'up' | 'down') => {
-    console.log('INSIGHTCARD: handleVote called');
+    //console.log('INSIGHTCARD: handleVote called');
     toast({
       title: 'Vote Registered',
       description: `You voted ${voteType}`,
@@ -26,13 +26,13 @@ const InsightCard: React.FC<InsightCardProps> = ({ insight, onVote }) => {
   };
 
   // ✅ Log re-renders for debugging
-  useEffect(() => {
+ /* useEffect(() => {
     console.log('[RENDER] InsightCard updated:', insight.id, {
       upvotes: insight.upvotes,
       downvotes: insight.downvotes,
       userVote: insight.currentUserVote
     });
-  }, [insight]);
+  }, [insight]); */
 
   return (
     <Card className="overflow-hidden">

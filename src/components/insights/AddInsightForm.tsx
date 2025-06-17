@@ -56,7 +56,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
     e.preventDefault();
     setSubmitting(true);
     setProfileError(null);
-    console.log("[AddInsightForm] handleSubmit triggered");
+    //console.log("[AddInsightForm] handleSubmit triggered");
 
     try {
       // No need to look up a "scholar" record -- just submit insight for any user flagged as a scholar
@@ -75,7 +75,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
         .select("id") // get the new insight id
         .maybeSingle();
 
-      console.log("[AddInsightForm] Inserted insight:", insertedInsight, "Error:", insertError);
+      //console.log("[AddInsightForm] Inserted insight:", insertedInsight, "Error:", insertError);
 
       if (insertError) throw insertError;
 
@@ -95,7 +95,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
           .select("id")
           .maybeSingle();
 
-        console.log("[AddInsightForm] Inserted source:", sourceRow, "Error:", sourceError);
+        //console.log("[AddInsightForm] Inserted source:", sourceRow, "Error:", sourceError);
 
         if (sourceError) {
           throw sourceError;
@@ -108,7 +108,7 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
               insight_id: insertedInsight.id,
               source_id: sourceRow.id,
             });
-          console.log("[AddInsightForm] Linked source:", sourceRow.id, "to insight:", insertedInsight.id, "Error:", linkError);
+          //console.log("[AddInsightForm] Linked source:", sourceRow.id, "to insight:", insertedInsight.id, "Error:", linkError);
           if (linkError) throw linkError;
         }
       }
