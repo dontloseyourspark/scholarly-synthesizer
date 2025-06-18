@@ -1,10 +1,19 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link, useLocation } from 'react-router-dom';
 import SourcesList from './SourcesList';
 import { DatabaseInsight } from '@/hooks/useInsights';
+
+type Source = {
+  id: number;
+  title: string;
+  authors: string;
+  publication: string | null;
+  year: number;
+  url: string;
+  doi: string | null;
+};
 
 type SourcesTabProps = {
   insights: DatabaseInsight[];
@@ -17,20 +26,31 @@ type SourcesTabProps = {
     doi?: string;
     publication?: string;
   }>;
+  totalCount: number; // <-- Added totalCount prop here
 };
 
-const SourcesTab: React.FC<SourcesTabProps> = ({ insights, keyPublications }) => {
+const SourcesTab: React.FC<SourcesTabProps> = ({ insights, keyPublications, totalCount }) => {
   const location = useLocation();
-  
-  // Get unique sources from all insights
-  const insightSources = Array.from(
-    new Set(insights.flatMap(insight => insight.sources))
-  );
 
-  // Use keyPublications if provided, otherwise fall back to insight sources
-  const allSources = keyPublications && keyPublications.length > 0 
+  const rawInsightSources = insights
+    .flatMap(insight => insight.sources)
+    .filter((source): source is NonNullable<typeof source> => source !== null && source !== undefined);
+
+  const insightSources: Source[] = rawInsightSources.map((source, index) => ({
+    id: source.id ?? index,
+    title: source.title ?? 'Untitled',
+    authors: source.authors ?? 'Unknown',
+    publication: source.publication ?? null,
+    year: source.year ?? 0,
+    url: source.url ?? '',
+    doi: source.doi ?? null,
+  }));
+
+  const totalLength = keyPublications.length;
+
+  const allSources: Source[] = keyPublications && keyPublications.length > 0
     ? keyPublications.map(pub => ({
-        id: parseInt(pub.id),
+        id: parseInt(pub.id, 10),
         title: pub.title,
         authors: pub.authors,
         publication: pub.publication || null,
@@ -40,11 +60,9 @@ const SourcesTab: React.FC<SourcesTabProps> = ({ insights, keyPublications }) =>
       }))
     : insightSources;
 
-  // Limit to first 3 sources
   const limitedSources = allSources.slice(0, 3);
-  const hasMoreSources = allSources.length > 3;
+  const hasMoreSources = totalCount > 3;
 
-  // Determine the publications page route based on current path
   const getPublicationsRoute = () => {
     const pathSegments = location.pathname.split('/');
     if (pathSegments.length >= 2) {
@@ -62,7 +80,7 @@ const SourcesTab: React.FC<SourcesTabProps> = ({ insights, keyPublications }) =>
           {hasMoreSources && (
             <Button variant="outline" asChild>
               <Link to={getPublicationsRoute()}>
-                View all ({allSources.length})
+                View all ({totalLength})
               </Link>
             </Button>
           )}

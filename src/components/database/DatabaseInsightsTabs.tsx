@@ -21,12 +21,14 @@ type DatabaseInsightsTabsProps = {
   }>;
 };
 
+
+
 const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({ 
   topicId, 
   insights, 
   onVote, 
   keyPublications 
-}) => {
+}) => { const totalLength = keyPublications.length;
   return (
     <div className="container mx-auto px-4 mt-8">
       <Tabs defaultValue="insights" className="w-full">
@@ -41,7 +43,11 @@ const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({
         </TabsContent>
         
         <TabsContent value="sources">
-          <SourcesTab insights={insights} keyPublications={keyPublications} />
+        <SourcesTab
+          insights={insights}
+          keyPublications={keyPublications}
+          totalCount={totalLength}  // total count from wherever you get it
+        />
         </TabsContent>
         
         <TabsContent value="discussion">
