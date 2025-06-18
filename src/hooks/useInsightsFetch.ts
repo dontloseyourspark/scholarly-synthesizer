@@ -17,6 +17,7 @@ export const useInsightsFetch = (topicId: number) => {
     setLoading(true);
     setError(null);
 
+    // Step 1: Fetch public-safe data (no user_id in votes)
     const { data, error } = await supabase
       .from('insights')
       .select(`
@@ -36,9 +37,8 @@ export const useInsightsFetch = (topicId: number) => {
             url,
             doi
           )
-        ), 
+        ),
         votes:votes!votes_insight_id_fkey (
-          user_id,
           vote_type
         )
       `)
@@ -50,12 +50,11 @@ export const useInsightsFetch = (topicId: number) => {
       return;
     }
 
-    const mappedInsights = (data || []).map((insight): DatabaseInsight => {
+    // Step 2: Prepare mapped insights with vote counts only
+    const mappedInsights: DatabaseInsight[] = (data || []).map((insight) => {
       const votes = insight.votes || [];
-
       const upvotes = votes.filter(v => v.vote_type === 'up').length;
       const downvotes = votes.filter(v => v.vote_type === 'down').length;
-      const userVote = votes.find(v => v.user_id === user?.id);
 
       const validPositions = ['support', 'neutral', 'against'] as const;
       type Position = typeof validPositions[number];
@@ -74,17 +73,37 @@ export const useInsightsFetch = (topicId: number) => {
         scholar: insight.scholar,
         upvotes,
         downvotes,
-        currentUserVote: isValidVoteType(userVote?.vote_type) ? userVote.vote_type : undefined,
-        sources: insight.insight_sources.map(insightSource => insightSource.source),
+        currentUserVote: undefined, // temporary, filled in below if user is logged in
+        sources: insight.insight_sources.map((insightSource: any) => insightSource.source),
         verification_status: insight.verification_status,
       };
     });
+
+    // Step 3: Optionally fetch user votes if user is logged in
+    if (user) {
+      const { data: userVotes, error: voteError } = await supabase
+        .from('votes')
+        .select('insight_id, vote_type')
+        .eq('user_id', user.id)
+        .in('insight_id', mappedInsights.map(insight => insight.id));
+
+      if (!voteError && userVotes) {
+        const voteMap = new Map(userVotes.map(v => [v.insight_id, v.vote_type]));
+
+        // Inject user's vote into insights
+        mappedInsights.forEach(insight => {
+          const vote = voteMap.get(insight.id);
+          if (isValidVoteType(vote)) {
+            insight.currentUserVote = vote;
+          }
+        });
+      }
+    }
 
     setInsights(mappedInsights);
     setLoading(false);
   };
 
-  // ✅ useEffect correctly placed here
   useEffect(() => {
     if (topicId) {
       fetchInsights();
