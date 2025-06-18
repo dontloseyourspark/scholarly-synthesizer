@@ -10,9 +10,43 @@ type Discussion = {
   id: string;
   content: string;
   created_at: string;
-  user_profile: any;
   topic_id: number;
+  user_id: number; // <-- changed to number because DB probably returns number
   parent_id: string | null;
+  user_profile: {
+    username?: string;
+  } | null;
+};
+
+
+// Utility to notify users of moderation actions
+const notifyUser = async (
+  userId: string,
+  type: "comment_approved" | "comment_rejected" | "discussion_removed",
+  context?: string
+) => {
+  let message = "";
+
+  switch (type) {
+    case "comment_approved":
+      message = "Your comment or discussion has been approved and is now publicly visible.";
+      break;
+    case "comment_rejected":
+      message = "Your comment or discussion submission was rejected by moderators.";
+      break;
+    case "discussion_removed":
+      message = `A comment or discussion you posted has been removed by moderators.${context ? ` Reason: ${context}` : ""}`;
+      break;
+    default:
+      return;
+  }
+
+  await supabase.from("notifications").insert({
+    user_id: userId,
+    event_type: type,
+    related_id: null,
+    message,
+  });
 };
 
 const DiscussionsModerationPanel: React.FC = () => {
@@ -36,22 +70,33 @@ const DiscussionsModerationPanel: React.FC = () => {
   // Fetch all discussions for moderation
   const fetchDiscussions = async () => {
     setLoading(true);
+  
     const { data, error } = await supabase
       .from("discussions")
-      .select("*")
+      .select(`
+        id,
+        content,
+        created_at,
+        parent_id,
+        topic_id,
+        user_id,
+        user_profile
+      `)
       .order("created_at", { ascending: false });
-    
-    if (!error) {
-      setDiscussions(data || []);
+  
+    if (!error && data) {
+      setDiscussions(data as unknown[] as Discussion[]);
     } else {
-      toast({ 
-        title: "Error", 
-        description: "Failed to load discussions", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to load discussions",
+        variant: "destructive"
       });
     }
+  
     setLoading(false);
   };
+  
 
   useEffect(() => {
     fetchTopics();
@@ -59,26 +104,39 @@ const DiscussionsModerationPanel: React.FC = () => {
   }, []);
 
   const removeDiscussion = async (id: string) => {
+    const discussion = discussions.find((d) => d.id === id);
+    const userId = discussion?.user_id;
+  
     const { error } = await supabase
       .from("discussions")
       .delete()
       .eq("id", id);
-    
+  
     if (!error) {
-      toast({ 
-        title: "Discussion Removed", 
+      if (userId !== undefined && userId !== null) {
+        await notifyUser(
+          userId.toString(), // <-- convert number to string here
+          "discussion_removed",
+          "It may have violated our community guidelines."
+        );
+      }
+  
+      toast({
+        title: "Discussion Removed",
         description: "The selected comment/discussion has been deleted successfully.",
         variant: "default"
       });
+  
       setDiscussions(prev => prev.filter(d => d.id !== id));
     } else {
-      toast({ 
-        title: "Error", 
-        description: error.message, 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive"
       });
     }
   };
+  
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -127,7 +185,7 @@ const DiscussionsModerationPanel: React.FC = () => {
                   </TableCell>
                   <TableCell>
                     {discussion.topic_id && topicsById[discussion.topic_id]
-                      ? topicsById[discussion.topic_id] 
+                      ? topicsById[discussion.topic_id]
                       : 'Unknown Topic'}
                   </TableCell>
                   <TableCell>
@@ -139,9 +197,9 @@ const DiscussionsModerationPanel: React.FC = () => {
                     {formatDate(discussion.created_at)}
                   </TableCell>
                   <TableCell>
-                    <Button 
-                      size="sm" 
-                      variant="destructive" 
+                    <Button
+                      size="sm"
+                      variant="destructive"
                       onClick={() => removeDiscussion(discussion.id)}
                     >
                       Remove

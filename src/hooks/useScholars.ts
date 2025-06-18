@@ -52,7 +52,7 @@ export const useScholars = () => {
       .select('*')
       .eq('is_scholar', true); // Ensure we only fetch scholars with is_scholar = true
     
-    console.log('Supabase query:', query.toString()); // Debug log for query
+    //console.log('Supabase query:', query.toString()); // Debug log for query
 
     // Apply filter if there’s any search term
     if (filterValue) {
@@ -75,7 +75,7 @@ export const useScholars = () => {
     }
     
     // Debugging: Log raw fetched data
-    console.log('Raw fetched data:', data);
+    //console.log('Raw fetched data:', data);
     
     // Ensure only scholar users are included
 const scholarUsers: ScholarUserData[] = data
@@ -93,7 +93,7 @@ const scholarUsers: ScholarUserData[] = data
   }));
 
 // Debugging: Check filtered scholars
-console.log('Processed scholars:', scholarUsers);
+//console.log('Processed scholars:', scholarUsers);
 
     // Categorize scholars by verification status
     setPendingScholars(scholarUsers.filter(scholar => scholar.verification_status === 'pending'));

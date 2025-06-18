@@ -12,7 +12,6 @@ const InsightsModerationPanel: React.FC = () => {
   // Load pending insights with topic + scholar details
   const fetchPending = async () => {
     setLoading(true);
-    console.log('Fetching pending insights...');
     const { data, error } = await supabase
       .from("insights")
       .select(`
@@ -24,7 +23,6 @@ const InsightsModerationPanel: React.FC = () => {
       .order("created_at", { ascending: true });
 
     if (error) {
-      console.error('Error fetching pending insights:', error);
       toast({
         title: "Error",
         description: "Failed to load pending insights",
@@ -37,9 +35,10 @@ const InsightsModerationPanel: React.FC = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchPending(); }, []);
+  useEffect(() => {
+    fetchPending();
+  }, []);
 
-  // Send notification to scholar on approval/rejection
   const notifyScholar = async (scholarId: string, status: string) => {
     let message = "";
     if (status === "verified") {
@@ -56,43 +55,42 @@ const InsightsModerationPanel: React.FC = () => {
   };
 
   const updateStatus = async (id: string, status: string) => {
-    console.log(`Updating insight ${id} to status: ${status}`);
     try {
       const { error } = await supabase
         .from("insights")
-        .update({ 
-          verification_status: status, 
-          verified_at: status === "verified" ? new Date().toISOString() : null 
+        .update({
+          verification_status: status,
+          verified_at: status === "verified" ? new Date().toISOString() : null,
         })
         .eq("id", id);
 
-      // Send notification to scholar (if present)
       const insight = pending.find((item) => item.id === id);
       if (insight?.scholar_id) {
         await notifyScholar(insight.scholar_id, status);
       }
 
       if (error) {
-        toast({ 
-          title: "Error", 
-          description: error.message, 
-          variant: "destructive" 
+        toast({
+          title: "Error",
+          description: error.message,
+          variant: "destructive",
         });
       } else {
-        toast({ 
-          title: status === "verified" ? "Approval Successful" : "Insight Rejected", 
-          description: status === "verified" 
-            ? "Insight has been approved and verified." 
-            : "This insight has been rejected and removed from the pending list.",
-          variant: status === "verified" ? "default" : "destructive"
+        toast({
+          title: status === "verified" ? "Approval Successful" : "Insight Rejected",
+          description:
+            status === "verified"
+              ? "Insight has been approved and verified."
+              : "This insight has been rejected and removed from the pending list.",
+          variant: status === "verified" ? "default" : "destructive",
         });
-        setPending(prev => prev.filter(item => item.id !== id));
+        setPending((prev) => prev.filter((item) => item.id !== id));
       }
     } catch (err) {
-      toast({ 
-        title: "Error", 
-        description: "An unexpected error occurred", 
-        variant: "destructive" 
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred",
+        variant: "destructive",
       });
     }
   };
@@ -103,36 +101,49 @@ const InsightsModerationPanel: React.FC = () => {
         <CardTitle>Pending Insights for Vetting</CardTitle>
       </CardHeader>
       <CardContent>
-        {loading ? <div>Loading...</div> : (
-          pending.length === 0 ? (
-            <div className="text-muted-foreground text-sm">No pending insights.</div>
-          ) : (
-            <ul className="space-y-4">
-              {pending.map((item) => {
-                const topicName =
-                  item.topics?.name ??
-                  (Array.isArray(item.topics) && item.topics.length && item.topics[0]?.name)
-                    ? (Array.isArray(item.topics) && item.topics[0]?.name)
-                    : undefined;
-                return (
-                  <li key={item.id} className="border p-4 rounded">
-                    <div className="font-semibold mb-2">{item.scholars?.name || 'Unknown Scholar'}</div>
-                    <div className="text-sm text-muted-foreground mb-2">
-                      Topic: {topicName || "Unknown Topic"}
-                    </div>
-                    <div className="mb-1 text-sm">{item.content}</div>
-                    <div className="flex items-center space-x-2 pt-2">
-                      <Button size="sm" onClick={() => updateStatus(item.id, "verified")}>Approve</Button>
-                      <Button size="sm" variant="destructive" onClick={() => updateStatus(item.id, "rejected")}>Reject</Button>
-                    </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )
+        {loading ? (
+          <div>Loading...</div>
+        ) : pending.length === 0 ? (
+          <div className="text-muted-foreground text-sm">No pending insights.</div>
+        ) : (
+          <ul className="space-y-4">
+            {pending.map((item) => {
+              const topicName =
+                typeof item.topics?.name === "string"
+                  ? item.topics.name
+                  : Array.isArray(item.topics) && item.topics[0]?.name
+                  ? item.topics[0].name
+                  : undefined;
+
+              return (
+                <li key={item.id} className="border p-4 rounded">
+                  <div className="font-semibold mb-2">
+                    {item.scholars?.name || "Unknown Scholar"}
+                  </div>
+                  <div className="text-sm text-muted-foreground mb-2">
+                    Topic: {topicName || "Unknown Topic"}
+                  </div>
+                  <div className="mb-1 text-sm">{item.content}</div>
+                  <div className="flex items-center space-x-2 pt-2">
+                    <Button size="sm" onClick={() => updateStatus(item.id, "verified")}>
+                      Approve
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => updateStatus(item.id, "rejected")}
+                    >
+                      Reject
+                    </Button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
         )}
       </CardContent>
     </Card>
   );
 };
+
 export default InsightsModerationPanel;
