@@ -51,7 +51,7 @@ function App() {
         <Route path="/cookies" element={<CookiePolicy />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <Toaster position="top-right" closeButton />
+      <Toaster />
     </BrowserRouter>
   )
 }

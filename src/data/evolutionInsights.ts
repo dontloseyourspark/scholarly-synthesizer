@@ -57,6 +57,7 @@ export const evolutionInsights: Insight[] = [
     upvotes: 187,
     downvotes: 8,
     votes: 179,
+    verification_status: 'verified',
     createdAt: '2023-08-15T10:20:00Z'
   },
   {
@@ -71,6 +72,7 @@ export const evolutionInsights: Insight[] = [
     upvotes: 156,
     downvotes: 5,
     votes: 151,
+    verification_status: 'verified',
     createdAt: '2023-09-02T14:45:00Z'
   }
 ];

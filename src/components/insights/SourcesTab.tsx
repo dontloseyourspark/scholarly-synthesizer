@@ -46,7 +46,7 @@ const SourcesTab: React.FC<SourcesTabProps> = ({ insights, keyPublications, tota
     doi: source.doi ?? null,
   }));
 
-  const totalLength = keyPublications.length;
+  // Removed: using totalCount prop for accurate count
 
   const allSources: Source[] = keyPublications && keyPublications.length > 0
     ? keyPublications.map(pub => ({
@@ -80,7 +80,7 @@ const SourcesTab: React.FC<SourcesTabProps> = ({ insights, keyPublications, tota
           {hasMoreSources && (
             <Button variant="outline" asChild>
               <Link to={getPublicationsRoute()}>
-                View all ({totalLength})
+                View all ({totalCount})
               </Link>
             </Button>
           )}

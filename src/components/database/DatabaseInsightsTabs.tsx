@@ -5,6 +5,7 @@ import InsightsTab from '../insights/InsightsTab';
 import SourcesTab from '../insights/SourcesTab';
 import DiscussionTab from '../insights/DiscussionTab';
 import { DatabaseInsight } from '@/hooks/useInsights';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
 
 type DatabaseInsightsTabsProps = {
   topicId: number;
@@ -28,7 +29,8 @@ const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({
   insights, 
   onVote, 
   keyPublications 
-}) => { const totalLength = keyPublications.length;
+}) => {
+  const { totalCount: publicationsCount } = useTopicPublications(topicId, { page: 1, itemsPerPage: 1 });
   return (
     <div className="container mx-auto px-4 mt-8">
       <Tabs defaultValue="insights" className="w-full">
@@ -46,7 +48,7 @@ const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({
         <SourcesTab
           insights={insights}
           keyPublications={keyPublications}
-          totalCount={totalLength}  // total count from wherever you get it
+          totalCount={publicationsCount}
         />
         </TabsContent>
         
