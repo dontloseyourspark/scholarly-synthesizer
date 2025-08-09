@@ -70,7 +70,9 @@ const ConsensusChart = ({ title, data, description, source }: ConsensusChartProp
           </div>
         </div>
         {source && (
-          <p className="text-sm text-gray-600 mt-4">Source: {source}</p>
+          <p className="text-sm text-gray-600 mt-4">
+            Source: <span dangerouslySetInnerHTML={{ __html: source }} />
+          </p>
         )}
       </CardContent>
     </Card>
