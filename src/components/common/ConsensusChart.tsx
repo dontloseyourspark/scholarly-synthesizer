@@ -25,11 +25,27 @@ const ConsensusChart = ({ title, data, description, source }: ConsensusChartProp
       <CardContent className="px-6 pb-6">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <div>
-            {description.map((paragraph, index) => (
-              <p key={index} className={index === description.length - 1 ? "" : "mb-6"}>
-                {paragraph}
-              </p>
-            ))}
+            {description.map((paragraph, index) => {
+              const phrase = "strong consensus";
+              const lower = paragraph.toLowerCase();
+              const pos = lower.indexOf(phrase);
+              if (pos !== -1) {
+                const before = paragraph.slice(0, pos + phrase.length);
+                const after = paragraph.slice(pos + phrase.length);
+                return (
+                  <p key={index} className={index === description.length - 1 ? "" : "mb-6"}>
+                    {before}
+                    <br />
+                    {after}
+                  </p>
+                );
+              }
+              return (
+                <p key={index} className={index === description.length - 1 ? "" : "mb-6"}>
+                  {paragraph}
+                </p>
+              );
+            })}
           </div>
           <div className="h-72">
             <ResponsiveContainer width="100%" height="100%">
