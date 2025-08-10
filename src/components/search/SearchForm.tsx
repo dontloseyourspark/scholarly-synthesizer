@@ -30,7 +30,7 @@ const SearchForm = ({
         onClear={onClear}
         placeholder={placeholder}
       />
-      <Button type="submit" className="bg-scholarly-blue hover:bg-scholarly-accent">
+      <Button type="submit" className="bg-scholarly-blue hover:bg-scholarly-accent border border-scholarly-white">
         {buttonText}
       </Button>
     </form>
