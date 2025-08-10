@@ -7,6 +7,8 @@ import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
 import ConsensusIndicator from '@/components/ConsensusIndicator';
 import { Topic } from '@/components/TopicCard';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
+import { getTopicIdFromSlug } from '@/utils/topicMapping';
 
 interface TopicHeroSectionProps {
   topic: Topic;
@@ -31,6 +33,12 @@ const TopicHeroSection = ({
   categoryLabel, 
   keyPublications 
 }: TopicHeroSectionProps) => {
+  const databaseTopicId = getTopicIdFromSlug(topic.slug);
+  const { totalCount: publicationsCount, loading: pubsLoading } = useTopicPublications(databaseTopicId ?? -1, { page: 1, itemsPerPage: 1 });
+  const hasDbId = databaseTopicId !== null;
+  const displayedSources = hasDbId ? (pubsLoading ? '...' : (publicationsCount || topic.sourcesCount)) : topic.sourcesCount;
+  const linkSourcesCount = hasDbId ? (pubsLoading ? (topic.sourcesCount ?? 0) : (publicationsCount || topic.sourcesCount)) : topic.sourcesCount;
+
   return (
     <section className="bg-scholarly-blue py-12">
       <div className="container mx-auto px-4">
@@ -66,7 +74,7 @@ const TopicHeroSection = ({
                     <HoverCardTrigger asChild>
                       <div className="flex items-center hover:text-scholarly-blue transition-colors cursor-pointer">
                         <BookOpen className="h-4 w-4 mr-2" />
-                        <span>{topic.sourcesCount} peer-reviewed sources</span>
+                        <span>{displayedSources} peer-reviewed sources</span>
                       </div>
                     </HoverCardTrigger>
                     <HoverCardContent className="w-80 p-0 overflow-hidden">
@@ -98,7 +106,7 @@ const TopicHeroSection = ({
                             to={`/topics/${topic.slug}/publications`}
                             className="text-xs text-scholarly-blue hover:underline"
                           >
-                            View all {topic.sourcesCount} sources
+                            View all {linkSourcesCount} sources
                           </Link>
                         </div>
                       </div>
