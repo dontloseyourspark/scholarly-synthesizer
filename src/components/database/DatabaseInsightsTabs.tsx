@@ -22,8 +22,6 @@ type DatabaseInsightsTabsProps = {
   }>;
 };
 
-
-
 const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({ 
   topicId, 
   insights, 
@@ -35,7 +33,8 @@ const DatabaseInsightsTabs: React.FC<DatabaseInsightsTabsProps> = ({
     <div className="container mx-auto px-4 mt-8">
       <Tabs defaultValue="insights" className="w-full">
         <TabsList className="mb-8">
-          <TabsTrigger value="insights">Scholar Insights</TabsTrigger>
+ 
+
           <TabsTrigger value="sources">Key Sources</TabsTrigger>
           <TabsTrigger value="discussion">Discussion</TabsTrigger>
         </TabsList>

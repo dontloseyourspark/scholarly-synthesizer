@@ -16,9 +16,13 @@ const About = () => {
               About ScholarSphere
             </h1>
             <p className="text-lg text-scholarly-lightGray mb-6">
-              We're building a platform to help people understand the state of scholarly 
-              consensus across important topics, combating misinformation and bridging 
-              the gap between academic research and public knowledge.
+            What is Scholarly Consensus?
+
+            In science, we learn about things mainly by watching, experimenting, and repeating our tests to see if we get the same results.
+
+            Scholarly consensus means that experts and researchers generally agree on a particular idea or explanation after carefully examining all the evidence and studies related to it. It shows the most trustworthy understanding we have at the moment, based on thorough research and careful review by other scientists.
+
+            Although new discoveries can sometimes change or improve this shared understanding, it remains an important foundation. It helps guide decisions in science, government policies, and everyday life.
             </p>
           </div>
         </div>
