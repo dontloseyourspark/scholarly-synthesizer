@@ -60,7 +60,7 @@ const ConsensusIndicator = ({ level, percentage, sampleSize, className }: Consen
               <TooltipContent className="max-w-xs">
                 <p>
                   This indicator shows the level of consensus among scholars on this topic.
-                  {sampleSize && ` Based on ${sampleSize} peer-reviewed sources.`}
+                  {typeof sampleSize === 'number' ? ` Based on ${sampleSize} peer-reviewed ${sampleSize === 1 ? 'source' : 'sources'}.` : ''}
                 </p>
               </TooltipContent>
             </Tooltip>
