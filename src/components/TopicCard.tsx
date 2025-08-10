@@ -69,7 +69,7 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
   const topicRoute = getTopicRoute(topic.slug);
   
   return (
-    <Card className="h-full flex flex-col transition-all hover:shadow-md">
+    <Card className="h-full flex flex-col transition-all hover:shadow-md hover:scale-105 hover:border-scholarly-blue">
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">
           <Link to={topicRoute} className="hover:text-scholarly-blue transition-colors">
