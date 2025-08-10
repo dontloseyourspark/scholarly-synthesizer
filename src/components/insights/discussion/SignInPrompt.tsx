@@ -14,7 +14,7 @@ const SignInPrompt: React.FC<SignInPromptProps> = ({ onSignInClick }) => {
         <h3 className="text-xl font-medium mb-4">Discussion</h3>
         <p className="text-muted-foreground mb-6">Join the conversation about this topic.</p>
         <Button 
-          className="bg-scholarly-blue hover:bg-scholarly-accent"
+          className="bg-scholarly-blue hover:bg-scholarly-accent border border-transparent hover:border-scholarly-blue dark:hover:border-scholarly-white transition-colors"
           onClick={onSignInClick}
         >
           Sign In to Participate
