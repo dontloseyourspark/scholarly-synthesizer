@@ -20,7 +20,7 @@ const NavbarAuth = ({ user, userProfile, isAdmin, handleSignOut }: NavbarAuthPro
       <Button 
         variant="default" 
         size="sm" 
-        className="bg-scholarly-blue hover:bg-scholarly-accent"
+        className="bg-scholarly-blue hover:bg-scholarly-accent border border-transparent hover:border-scholarly-blue dark:hover:border-scholarly-white transition-colors"
         onClick={() => navigate('/auth')}
       >
         <User className="h-4 w-4 mr-2" />
