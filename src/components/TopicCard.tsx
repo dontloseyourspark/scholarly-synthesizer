@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Users, BookOpen, Calendar } from 'lucide-react';
@@ -24,6 +24,7 @@ export type Topic = {
 };
 
 const TopicCard = ({ topic }: { topic: Topic }) => {
+  const navigate = useNavigate();
   // Get the database topic ID for this topic
   const databaseTopicId = getTopicIdFromSlug(topic.slug);
   
@@ -68,8 +69,22 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
 
   const topicRoute = getTopicRoute(topic.slug);
   
+  const handleCardClick = (e: React.MouseEvent | React.KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+    if (target.closest('a, button, input, textarea, [role="button"], [data-prevent-card-nav]')) return;
+    navigate(topicRoute);
+  };
+  
   return (
-    <Card className="h-full flex flex-col transition-all hover:shadow-md hover:scale-105 hover:border-scholarly-blue">
+    <Card
+      className="h-full flex flex-col transition-all hover:shadow-md hover:scale-105 hover:border-scholarly-blue cursor-pointer"
+      role="link"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') handleCardClick(e);
+      }}
+    >
       <CardHeader className="pb-2">
         <CardTitle className="text-xl">
           <Link to={topicRoute} className="hover:text-scholarly-blue transition-colors">
