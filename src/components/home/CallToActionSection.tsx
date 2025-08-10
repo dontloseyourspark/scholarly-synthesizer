@@ -15,7 +15,7 @@ const CallToActionSection = () => {
           <Button className="bg-white text-scholarly-blue hover:bg-scholarly-lightGray">
             Learn About Contributing
           </Button>
-          <Button variant="outline" className="border-white text-white hover:bg-scholarly-accent">
+          <Button variant="outline" className="bg-transparent border border-white text-white hover:bg-white hover:text-scholarly-blue hover:border-white transition-colors">
             Sign In as Scholar
           </Button>
         </div>
