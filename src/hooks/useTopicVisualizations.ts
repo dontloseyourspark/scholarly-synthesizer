@@ -15,6 +15,7 @@ export type TopicVisualization = {
   content_description: string | null;
   source_citation: string | null;
   sort_order: number;
+  image_url: string | null;
 };
 
 export const useTopicVisualizations = (topicId: number) => {

@@ -56,10 +56,21 @@ const DynamicVisualizationsSection: React.FC<DynamicVisualizationsSectionProps> 
               <CardHeader>
                 <CardTitle>{viz.content_title}</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground">
-                  {viz.content_description}
-                </p>
+              <CardContent className="space-y-4">
+                {viz.image_url && (
+                  <div className="w-full">
+                    <img 
+                      src={viz.image_url} 
+                      alt={viz.content_title || 'Visualization'} 
+                      className="w-full rounded-lg shadow-md"
+                    />
+                  </div>
+                )}
+                {viz.content_description && (
+                  <p className="text-muted-foreground">
+                    {viz.content_description}
+                  </p>
+                )}
               </CardContent>
             </Card>
           )}

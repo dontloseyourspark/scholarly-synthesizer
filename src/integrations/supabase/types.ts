@@ -518,6 +518,7 @@ export type Database = {
           content_title: string | null
           created_at: string
           id: string
+          image_url: string | null
           sort_order: number | null
           source_citation: string | null
           tab_key: string
@@ -533,6 +534,7 @@ export type Database = {
           content_title?: string | null
           created_at?: string
           id?: string
+          image_url?: string | null
           sort_order?: number | null
           source_citation?: string | null
           tab_key: string
@@ -548,6 +550,7 @@ export type Database = {
           content_title?: string | null
           created_at?: string
           id?: string
+          image_url?: string | null
           sort_order?: number | null
           source_citation?: string | null
           tab_key?: string
