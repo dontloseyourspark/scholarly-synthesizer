@@ -72,6 +72,11 @@ const DynamicVisualizationsSection: React.FC<DynamicVisualizationsSectionProps> 
                     />
                   </div>
                 )}
+                {viz.source_citation && (
+                  <p className="text-sm text-gray-600 mt-4">
+                    Source: <span dangerouslySetInnerHTML={{ __html: viz.source_citation }} />
+                  </p>
+                )}
               </CardContent>
             </Card>
           )}
