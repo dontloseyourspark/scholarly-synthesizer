@@ -57,19 +57,20 @@ const DynamicVisualizationsSection: React.FC<DynamicVisualizationsSectionProps> 
                 <CardTitle>{viz.content_title}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {viz.image_url && (
-                  <div className="w-full">
-                    <img 
-                      src={viz.image_url} 
-                      alt={viz.content_title || 'Visualization'} 
-                      className="w-full rounded-lg shadow-md"
-                    />
-                  </div>
-                )}
                 {viz.content_description && (
                   <p className="text-muted-foreground">
                     {viz.content_description}
                   </p>
+                )}
+                {viz.image_url && (
+                  <div className="w-full flex justify-center">
+                    <img 
+                      src={viz.image_url} 
+                      alt={viz.content_title || 'Visualization'} 
+                      className="rounded-lg shadow-md"
+                      style={{ maxWidth: '730px', width: '100%' }}
+                    />
+                  </div>
                 )}
               </CardContent>
             </Card>
