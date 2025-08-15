@@ -33,7 +33,7 @@ export const topics: Topic[] = [
     slug: 'artificial-intelligence-safety',
     description: 'The emerging consensus on AI safety, risks of advanced artificial intelligence, and regulatory approaches.',
     consensusLevel: 'medium',
-    consensusPercentage: 68,
+    consensusPercentage: 78,
     contributorsCount: 0,
     sourcesCount: 615,
     updatedAt: '2025-06-14T16:45:10Z',
