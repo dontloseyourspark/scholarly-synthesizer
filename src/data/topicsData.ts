@@ -44,7 +44,7 @@ export const topics: Topic[] = [
     title: 'Nutrition Science',
     slug: 'nutrition-science',
     description: 'Scientific consensus on fundamental nutrition principles, dietary recommendations, and their evidence base.',
-    consensusLevel: 'medium',
+    consensusLevel: 'high',
     consensusPercentage: 90,
     contributorsCount: 0,
     sourcesCount: 721,
