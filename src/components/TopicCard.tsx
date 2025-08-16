@@ -6,9 +6,9 @@ import { Badge } from '@/components/ui/badge';
 import { Users, BookOpen, Calendar } from 'lucide-react';
 import { HoverCard, HoverCardTrigger, HoverCardContent } from '@/components/ui/hover-card';
 import ConsensusIndicator, { ConsensusLevel } from './ConsensusIndicator';
-import { getInsightsForTopic } from '@/data/insightsData';
 import { getTopicIdFromSlug } from '@/utils/topicMapping';
 import { useTopicStats } from '@/hooks/useTopicStats';
+import { useTopicPublications } from '@/hooks/useTopicPublications';
 
 export type Topic = {
   id: string;
@@ -35,13 +35,11 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
   const contributorsCount = stats?.contributorsCount ?? topic.contributorsCount;
   const sourcesCount = stats?.sourcesCount ?? topic.sourcesCount;
   
-  // Get insights for this topic to access sources
-  const topicInsights = getInsightsForTopic(topic.id);
+  // Get database publications for preview (use the same hook as used for count)
+  const { keyPublications } = useTopicPublications(databaseTopicId, { page: 1, itemsPerPage: 3 });
   
-  // Extract unique sources from all insights
-  const sources = Array.from(
-    new Set(topicInsights.flatMap(insight => insight.sources))
-  ).slice(0, 3); // Limit to 3 sources for preview
+  // Use key publications as sources for preview
+  const sources = keyPublications?.slice(0, 3) || [];
   
   // Determine the correct route for this topic
   const getTopicRoute = (slug: string) => {
@@ -171,7 +169,7 @@ const TopicCard = ({ topic }: { topic: Topic }) => {
               ) : (
                 <p className="text-sm text-muted-foreground">No sources available for preview</p>
               )}
-              {topicInsights.length > 0 && sources.length > 0 && (
+              {sources.length > 0 && sourcesCount > sources.length && (
                 <div className="pt-2 text-center">
                   <Link 
                     to={topicRoute} 
