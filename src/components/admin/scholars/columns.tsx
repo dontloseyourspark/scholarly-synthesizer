@@ -11,11 +11,11 @@ export const getColumns = (
 ): ColumnDef<ScholarUserData>[] => {
   const baseColumns: ColumnDef<ScholarUserData>[] = [
     {
-      accessorKey: 'email',
-      header: 'Email',
+      accessorKey: 'username',
+      header: 'Username',
       cell: ({ row }) => {
-        const email = (row.getValue('email') as string) || 'No email';
-        return <div>{email}</div>;
+        const username = (row.getValue('username') as string) || 'No username';
+        return <div>{username}</div>;
       }
     },
     {

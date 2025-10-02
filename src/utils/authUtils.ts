@@ -29,7 +29,6 @@ export const fetchUserProfile = async (userId: string, userEmail: string | null)
       // Map the database profile to our UserProfile type
       const profile: UserProfile = {
         id: data.id,
-        email: userEmail,
         username: data.username,
         avatar_url: data.avatar_url,
         academic_title: data.academic_title,
@@ -55,7 +54,6 @@ export const createUserProfile = async (userId: string, email: string | undefine
     await supabase.from('profiles').insert({
       id: userId,
       username: metadata?.username || email?.split('@')[0],
-      email: email,
       is_scholar: metadata?.is_scholar || false,
       academic_title: metadata?.academic_title || null,
       institution: metadata?.institution || null,

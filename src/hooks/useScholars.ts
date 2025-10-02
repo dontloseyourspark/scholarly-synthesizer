@@ -6,7 +6,6 @@ import { useAuth } from '@/contexts/AuthContext';
 
 export type ScholarUserData = {
   id: string;
-  email: string;
   username: string | null;
   academic_title: string | null;
   institution: string | null;
@@ -16,7 +15,7 @@ export type ScholarUserData = {
   is_scholar: boolean | false;
 };
 
-export type SortField = 'email' | 'username' | 'academic_title' | 'institution' | 'field_of_study' | 'created_at';
+export type SortField = 'username' | 'academic_title' | 'institution' | 'field_of_study' | 'created_at';
 export type SortDirection = 'asc' | 'desc';
 
 export const useScholars = () => {
@@ -55,9 +54,10 @@ export const useScholars = () => {
     //console.log('Supabase query:', query.toString()); // Debug log for query
 
     // Apply filter if there’s any search term
+    // Apply filter if there's any search term
     if (filterValue) {
       const lowercaseFilter = filterValue.toLowerCase();
-      query = query.or(`email.ilike.%${lowercaseFilter}%,username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
+      query = query.or(`username.ilike.%${lowercaseFilter}%,academic_title.ilike.%${lowercaseFilter}%,institution.ilike.%${lowercaseFilter}%,field_of_study.ilike.%${lowercaseFilter}%`);
     }
     
     query = query.order(sortBy, { ascending: sortDir === 'asc' });
@@ -82,7 +82,6 @@ const scholarUsers: ScholarUserData[] = data
   .filter(profile => profile.is_scholar) // Filter scholars
   .map(profile => ({
     id: profile.id,
-    email: profile.email || '',
     username: profile.username || '',
     academic_title: profile.academic_title || '',
     institution: profile.institution || '',

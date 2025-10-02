@@ -82,7 +82,8 @@ export const useAuthOperations = () => {
       if (error) throw error;
       
       toast.success('Profile updated successfully');
-      return await fetchUserProfile(userId, profileData.email);
+      // Fetch updated profile without passing email (it's stored in auth.users, not profiles)
+      return await fetchUserProfile(userId, null);
     } catch (error: any) {
       console.error('Error updating profile:', error);
       toast.error(error.message || 'Error updating profile');
