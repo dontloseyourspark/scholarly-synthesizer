@@ -3,13 +3,26 @@ import { User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { UserProfile } from '@/types/auth';
 
-// Define admin email
-export const ADMIN_EMAIL = 'dontloseyourspark8@gmail.com';
-
-export const checkAdminStatus = (user: User): boolean => {
-  // Only the specified email is admin
-  const userEmail = user.email?.toLowerCase() || '';
-  return userEmail === ADMIN_EMAIL;
+// Check admin status using database roles (secure server-side validation)
+export const checkAdminStatus = async (userId: string): Promise<boolean> => {
+  try {
+    const { data, error } = await supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', userId)
+      .eq('role', 'admin')
+      .maybeSingle();
+    
+    if (error) {
+      console.error('Error checking admin status:', error);
+      return false;
+    }
+    
+    return !!data;
+  } catch (error) {
+    console.error('Error in checkAdminStatus:', error);
+    return false;
+  }
 };
 
 export const fetchUserProfile = async (userId: string, userEmail: string | null): Promise<UserProfile | null> => {
@@ -51,9 +64,18 @@ export const fetchUserProfile = async (userId: string, userEmail: string | null)
 
 export const createUserProfile = async (userId: string, email: string | undefined, metadata: any): Promise<void> => {
   try {
+    // Generate a safe username that doesn't expose email
+    let username = metadata?.username;
+    if (!username && email) {
+      // Use only the local part before @ and add random suffix for uniqueness
+      const localPart = email.split('@')[0];
+      const randomSuffix = Math.floor(Math.random() * 10000);
+      username = `${localPart}_${randomSuffix}`;
+    }
+    
     await supabase.from('profiles').insert({
       id: userId,
-      username: metadata?.username || email?.split('@')[0],
+      username: username || 'user_' + userId.substring(0, 8),
       is_scholar: metadata?.is_scholar || false,
       academic_title: metadata?.academic_title || null,
       institution: metadata?.institution || null,

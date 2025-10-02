@@ -7,7 +7,7 @@ export type Discussion = {
   id: string;
   content: string;
   created_at: string;
-  user_id: string | null;
+  user_id?: string | null; // Optional - only available to authenticated users for their own discussions
   user_profile: any;
   topic_id: number | null;
   parent_id: string | null;
@@ -25,9 +25,18 @@ const useDiscussions = (topicId: number) => {
   const fetchAll = useCallback(async () => {
     setLoading(true);
     try {
+      // Don't select user_id to protect user privacy (prevents tracking/profiling)
+      // Only select fields needed for display
       const { data, error } = await supabase
         .from("discussions")
-        .select("*")
+        .select(`
+          id,
+          content,
+          created_at,
+          topic_id,
+          parent_id,
+          user_profile
+        `)
         .eq("topic_id", topicId)
         .order("created_at", { ascending: false });
 
@@ -78,12 +87,19 @@ const useDiscussions = (topicId: number) => {
           username: userProfile?.username,
         }
       })
-      .select("*")
+      .select(`
+        id,
+        content,
+        created_at,
+        topic_id,
+        parent_id,
+        user_profile
+      `)
       .maybeSingle();
 
     // If reply, notify parent
     if (!error && data && parentId) {
-      // Lookup parent discussion to get its user_id
+      // Lookup parent discussion to get its user_id (we can query it but not expose it publicly)
       const { data: parentRow } = await supabase
         .from("discussions")
         .select("user_id")

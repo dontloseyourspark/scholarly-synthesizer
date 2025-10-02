@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import SimpleCaptcha from '@/components/common/SimpleCaptcha';
+import { discussionSchema, sanitizeHtml } from '@/lib/validation/schemas';
+import { toast } from 'sonner';
 
 interface DiscussionFormProps {
   onSubmit: (content: string) => Promise<void>;
@@ -20,10 +22,19 @@ const DiscussionForm: React.FC<DiscussionFormProps> = ({ onSubmit, isSubmitting 
     e.preventDefault();
     if (!newComment.trim() || isSubmitting || !isCaptchaValid) return;
 
-    await onSubmit(newComment);
-    setNewComment('');
-    setIsCaptchaValid(false);
-    setCaptchaReset(!captchaReset); // Reset captcha after successful submission
+    try {
+      // Validate comment
+      const validated = discussionSchema.parse({ content: newComment });
+      const sanitized = sanitizeHtml(validated.content);
+      
+      await onSubmit(sanitized);
+      setNewComment('');
+      setIsCaptchaValid(false);
+      setCaptchaReset(!captchaReset);
+    } catch (err: any) {
+      const errorMessage = err.errors ? err.errors.map((e: any) => e.message).join(', ') : err.message;
+      toast.error(errorMessage || 'Invalid comment');
+    }
   };
 
   return (

@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddInsightSourceFields from "./AddInsightSourceFields";
+import { insightSchema, sourceSchema, sanitizeHtml } from "@/lib/validation/schemas";
 
 type AddInsightFormProps = {
   topicId: number;
@@ -56,10 +57,17 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
     e.preventDefault();
     setSubmitting(true);
     setProfileError(null);
-    //console.log("[AddInsightForm] handleSubmit triggered");
 
     try {
-      // No need to look up a "scholar" record -- just submit insight for any user flagged as a scholar
+      // Validate insight data
+      const validatedInsight = insightSchema.parse({
+        content,
+        position,
+        confidence,
+      });
+
+      // Sanitize content to prevent XSS
+      const sanitizedContent = sanitizeHtml(validatedInsight.content);
 
       // Submit the insight
       const { data: insertedInsight, error: insertError } = await supabase
@@ -67,9 +75,9 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
         .insert({
           topic_id: topicId,
           scholar_id: user.id,
-          content,
-          position,
-          confidence,
+          content: sanitizedContent,
+          position: validatedInsight.position,
+          confidence: validatedInsight.confidence,
           verification_status: "pending",
         })
         .select("id") // get the new insight id
@@ -79,19 +87,21 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
 
       if (insertError) throw insertError;
 
-      // If a source is provided, add it, then link it to the insight
+      // If a source is provided, validate and add it
       if (insertedInsight && insertedInsight.id && anySourceEntered()) {
-        // Insert into sources table (TODO: handle duplicate detection in future)
+        // Validate source data
+        const validatedSource = sourceSchema.parse({
+          title: sourceTitle || null,
+          authors: sourceAuthors || null,
+          publication: sourcePublication || null,
+          year: sourceYear ? Number(sourceYear) : null,
+          url: sourceUrl || null,
+          doi: sourceDoi || null,
+        });
+
         const { data: sourceRow, error: sourceError } = await supabase
           .from("sources")
-          .insert({
-            title: sourceTitle || null,
-            authors: sourceAuthors || null,
-            publication: sourcePublication || null,
-            year: sourceYear ? Number(sourceYear) : null,
-            url: sourceUrl || null,
-            doi: sourceDoi || null,
-          })
+          .insert(validatedSource)
           .select("id")
           .maybeSingle();
 
@@ -123,9 +133,10 @@ const AddInsightForm: React.FC<AddInsightFormProps> = ({ topicId, onSubmitted })
       onSubmitted();
     } catch (err: any) {
       console.error("[AddInsightForm] Submission error", err);
+      const errorMessage = err.errors ? err.errors.map((e: any) => e.message).join(', ') : err.message;
       toast({
-        title: "Submission error",
-        description: err.message || "There was a problem submitting your insight.",
+        title: "Validation error",
+        description: errorMessage || "Please check your input and try again.",
         variant: "destructive",
       });
     }

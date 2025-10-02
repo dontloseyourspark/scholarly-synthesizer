@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { UserProfile } from '@/types/auth';
 import { useAuth } from '@/contexts/AuthContext';
+import { profileSchema } from '@/lib/validation/schemas';
+import { toast } from 'sonner';
 
 export const useProfileForm = () => {
   const { user, userProfile, updateProfile } = useAuth();
@@ -53,9 +55,12 @@ export const useProfileForm = () => {
     setLoading(true);
 
     try {
+      // Validate profile data before submitting
+      profileSchema.parse(formData);
       await updateProfile(formData);
-    } catch (error) {
-      console.error('Error updating profile:', error);
+    } catch (err: any) {
+      const errorMessage = err.errors ? err.errors.map((e: any) => e.message).join(', ') : err.message;
+      toast.error(errorMessage || 'Invalid profile data');
     } finally {
       setLoading(false);
     }

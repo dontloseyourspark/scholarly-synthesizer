@@ -7,6 +7,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { UserProfile } from '@/types/auth';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 
 interface ProfileFormProps {
   formData: Partial<UserProfile>;
@@ -32,6 +34,12 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
         </CardDescription>
       </CardHeader>
       <CardContent>
+        <Alert className="mb-4">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription>
+            Username can only contain letters, numbers, underscores, and hyphens (2-100 characters). Bio max 1000 characters.
+          </AlertDescription>
+        </Alert>
         <form onSubmit={onSubmit} className="space-y-6">
           <div className="space-y-4">
             <div className="space-y-2">
@@ -42,6 +50,9 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
                 value={formData.username || ''}
                 onChange={onChange}
                 placeholder="Your display name"
+                maxLength={100}
+                pattern="[a-zA-Z0-9_-]+"
+                title="Only letters, numbers, underscores, and hyphens allowed"
               />
             </div>
             
@@ -54,7 +65,11 @@ const ProfileForm: React.FC<ProfileFormProps> = ({
                 onChange={onChange}
                 placeholder="Tell us about yourself"
                 rows={4}
+                maxLength={1000}
               />
+              <p className="text-xs text-muted-foreground">
+                {(formData.bio || '').length}/1000 characters
+              </p>
             </div>
             
             {userProfile?.is_scholar && (

@@ -55,12 +55,12 @@ export const useAuthState = () => {
         
         // Check if user is an admin
         if (session?.user) {
-          const isUserAdmin = checkAdminStatus(session.user);
-          setIsAdmin(isUserAdmin);
-          
-          // Use a timeout to avoid potential blocking of the auth state change handler
+          // Use setTimeout to avoid blocking the auth state change handler
           setTimeout(async () => {
             try {
+              const isUserAdmin = await checkAdminStatus(session.user.id);
+              setIsAdmin(isUserAdmin);
+              
               // If we have a user session, fetch their profile
               const profile = await fetchUserProfile(session.user.id, session.user.email);
               setUserProfile(profile);
@@ -96,10 +96,10 @@ export const useAuthState = () => {
       setUser(session?.user ?? null);
       
       if (session?.user) {
-        const isUserAdmin = checkAdminStatus(session.user);
-        setIsAdmin(isUserAdmin);
-        
         try {
+          const isUserAdmin = await checkAdminStatus(session.user.id);
+          setIsAdmin(isUserAdmin);
+          
           const profile = await fetchUserProfile(session.user.id, session.user.email);
           setUserProfile(profile);
         } catch (error) {

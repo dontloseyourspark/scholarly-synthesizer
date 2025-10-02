@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import SimpleCaptcha from '@/components/common/SimpleCaptcha';
+import { discussionSchema, sanitizeHtml } from '@/lib/validation/schemas';
+import { toast } from 'sonner';
 
 interface ReplyFormProps {
   onSubmit: (content: string, parentId: string) => Promise<void>;
@@ -20,10 +22,19 @@ const ReplyForm: React.FC<ReplyFormProps> = ({ onSubmit, onCancel, parentId, isS
     e.preventDefault();
     if (!replyContent.trim() || isSubmitting || !isCaptchaValid) return;
 
-    await onSubmit(replyContent, parentId);
-    setReplyContent('');
-    setIsCaptchaValid(false);
-    setCaptchaReset(!captchaReset); // Reset captcha after successful submission
+    try {
+      // Validate reply
+      const validated = discussionSchema.parse({ content: replyContent });
+      const sanitized = sanitizeHtml(validated.content);
+      
+      await onSubmit(sanitized, parentId);
+      setReplyContent('');
+      setIsCaptchaValid(false);
+      setCaptchaReset(!captchaReset);
+    } catch (err: any) {
+      const errorMessage = err.errors ? err.errors.map((e: any) => e.message).join(', ') : err.message;
+      toast.error(errorMessage || 'Invalid reply');
+    }
   };
 
   const handleCancel = () => {
