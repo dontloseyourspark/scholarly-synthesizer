@@ -81,7 +81,7 @@ export const topics: Topic[] = [
     slug: 'economic-impacts-immigration',
     description: 'Scholarly consensus on the economic impacts of immigration on host countries and regions.',
     consensusLevel: 'medium',
-    consensusPercentage: 65,
+    consensusPercentage: 75,
     contributorsCount: 0,
     sourcesCount: 519,
     updatedAt: '2025-06-14T15:45:22Z',
