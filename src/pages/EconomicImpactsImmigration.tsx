@@ -76,7 +76,7 @@ const EconomicImpactsImmigration = () => {
             slug: 'economic-impacts-immigration',
             description: heroSection.description || '',
             consensusLevel: 'medium' as const,
-            consensusPercentage: 78,
+            consensusPercentage: 75,
             contributorsCount: 195,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),
