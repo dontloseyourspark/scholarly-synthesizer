@@ -76,7 +76,7 @@ const NutritionScience = () => {
             slug: 'nutrition-science',
             description: heroSection.description || '',
             consensusLevel: 'high' as const,
-            consensusPercentage: 88,
+            consensusPercentage: 85,
             contributorsCount: 210,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),
