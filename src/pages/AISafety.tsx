@@ -76,7 +76,7 @@ const AISafety = () => {
             slug: 'artificial-intelligence-safety',
             description: heroSection.description || '',
             consensusLevel: 'medium' as const,
-            consensusPercentage: 78,
+            consensusPercentage: 75,
             contributorsCount: 180,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),

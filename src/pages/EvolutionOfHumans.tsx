@@ -76,7 +76,7 @@ const EvolutionOfHumans = () => {
             slug: 'evolution-of-humans',
             description: heroSection.description || '',
             consensusLevel: 'high' as const,
-            consensusPercentage: 99,
+            consensusPercentage: 75,
             contributorsCount: 320,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),

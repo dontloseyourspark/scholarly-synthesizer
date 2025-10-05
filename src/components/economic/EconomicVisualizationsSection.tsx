@@ -6,8 +6,8 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, Responsive
 import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Support', value: 75, color: '#4CAF50' },
-  { name: 'Against', value: 25, color: '#F44336' }
+  { name: 'Promising', value: 75, color: '#4CAF50' },
+  { name: 'Uncertain', value: 25, color: '#FFA726' }
 ];
 
 const consensusDescription = [
