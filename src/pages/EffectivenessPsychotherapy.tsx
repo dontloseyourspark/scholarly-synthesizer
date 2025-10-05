@@ -77,7 +77,7 @@ const EffectivenessPsychotherapy = () => {
             slug: 'effectiveness-psychotherapy',
             description: heroSection.description || '',
             consensusLevel: 'high' as const,
-            consensusPercentage: 75,
+            consensusPercentage: 92.5,
             contributorsCount: 160,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),

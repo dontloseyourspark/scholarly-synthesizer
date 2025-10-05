@@ -3,8 +3,8 @@ import React from 'react';
 import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Promising', value: 75, color: '#4CAF50' },
-  { name: 'Uncertain', value: 25, color: '#FFA726' }
+  { name: 'Support', value: 97, color: '#4CAF50' },
+  { name: 'Against', value: 3, color: '#F44336' }
 ];
 
 const description = [

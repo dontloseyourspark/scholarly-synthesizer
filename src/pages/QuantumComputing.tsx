@@ -76,7 +76,7 @@ const QuantumComputing = () => {
             slug: 'quantum-computing',
             description: heroSection.description || '',
             consensusLevel: 'medium' as const,
-            consensusPercentage: 75,
+            consensusPercentage: 82,
             contributorsCount: 150,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),

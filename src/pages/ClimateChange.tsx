@@ -76,7 +76,7 @@ const ClimateChange = () => {
             slug: 'climate-change',
             description: heroSection.description || '',
             consensusLevel: 'high' as const,
-            consensusPercentage: 75,
+            consensusPercentage: 97,
             contributorsCount: 240,
             sourcesCount: keyPublications.length,
             updatedAt: new Date().toISOString(),

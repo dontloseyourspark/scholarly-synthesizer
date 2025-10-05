@@ -2,8 +2,8 @@
 // Climate change specific data for visualizations and content
 
 export const consensusData = [
-  { name: 'Promising', value: 75 },
-  { name: 'Uncertain', value: 25 }
+  { name: 'Support', value: 97 },
+  { name: 'Against', value: 3 }
 ];
 
 export const impactData = [
