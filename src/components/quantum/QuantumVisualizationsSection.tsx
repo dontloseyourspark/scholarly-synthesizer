@@ -10,8 +10,8 @@ const consensusData = [
 ];
 
 const consensusDescription = [
-  "Quantum physicists and computer scientists widely agree that quantum computing represents a revolutionary approach to computation with the potential to solve certain problems exponentially faster than classical computers.",
-  "While challenges remain in building practical quantum computers, the scientific community has strong consensus on the theoretical foundations and potential applications of quantum computing."
+  "75% of quantum physicists and computer scientists view quantum computing as promising, representing a revolutionary approach to computation with the potential to solve certain problems exponentially faster than classical computers.",
+  "However, 25% remain uncertain about the timeline and practical viability of quantum computing applications, citing significant technical challenges that remain to be overcome."
 ];
 
 const QuantumVisualizationsSection = () => {
