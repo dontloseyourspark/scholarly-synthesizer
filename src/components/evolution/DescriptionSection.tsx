@@ -6,9 +6,9 @@ const DescriptionSection = ({ description }: { description: string }) => {
   return (
     <section className="py-16 px-4 bg-white">
       <div className="container mx-auto max-w-4xl">
-        <h2 className="text-3xl font-serif font-bold mb-6">Understanding Human Evolution</h2>
+        {/* <h2 className="text-3xl font-serif font-bold mb-6">Understanding Human Evolution</h2>
         
-        <p className="text-lg mb-8">{description}</p>
+        <p className="text-lg mb-8">{description}</p> */}
         
         <div className="bg-scholarly-lightGray p-6 rounded-lg">
           <div className="flex items-center mb-4">

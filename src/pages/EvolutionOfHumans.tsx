@@ -14,6 +14,9 @@ import LoadingSpinner from '@/components/common/LoadingSpinner';
 import { useTopicSections } from '@/hooks/useTopicSections';
 import { useTopicPublications } from '@/hooks/useTopicPublications';
 import { useTopicContentCards } from '@/hooks/useTopicContentCards';
+import { Description } from '@radix-ui/react-toast';
+import DescriptionSection from '@/components/evolution/DescriptionSection';
+import VisualizationsSection from '@/components/evolution/VisualizationsSection';
 
 const EvolutionOfHumans = () => {
   const topicId = getTopicIdFromSlug('evolution-of-humans');
@@ -108,6 +111,9 @@ const EvolutionOfHumans = () => {
           ) : undefined}
         />
       )}
+
+      <DescriptionSection description={descriptionSection?.description || ''} />
+
       
       {contentSection && evolutionCards.length > 0 && (
         <TopicContentSection 
@@ -117,10 +123,13 @@ const EvolutionOfHumans = () => {
           cards={evolutionCards}
         />
       )}
+
+      <VisualizationsSection>
+        </VisualizationsSection>
       
-      <TopicVisualizationsSection>
+     {/*  <TopicVisualizationsSection>
         <DynamicVisualizationsSection topicId={topicId} />
-      </TopicVisualizationsSection>
+      </TopicVisualizationsSection> */}
       
       <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
         id: pub.id,
