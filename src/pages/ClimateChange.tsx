@@ -8,6 +8,7 @@ import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection
 import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
+import VisualizationsSection from '@/components/climate/VisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -121,6 +122,8 @@ const ClimateChange = () => {
       <TopicVisualizationsSection>
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
+      
+      <VisualizationsSection />
       
       <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
         id: pub.id,
