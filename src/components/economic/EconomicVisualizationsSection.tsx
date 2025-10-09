@@ -30,6 +30,29 @@ const fiscalImpactData = [
   { timeframe: 'Lifetime total', impact: 3.6 }
 ];
 
+const gdpContributionData = [
+  { year: '2010', contribution: 11.2 },
+  { year: '2012', contribution: 11.8 },
+  { year: '2014', contribution: 12.3 },
+  { year: '2016', contribution: 12.9 },
+  { year: '2018', contribution: 13.4 },
+  { year: '2020', contribution: 13.8 }
+];
+
+const innovationData = [
+  { year: '2010', patents: 24.2, startups: 18.5 },
+  { year: '2012', patents: 26.1, startups: 20.3 },
+  { year: '2014', patents: 27.8, startups: 22.1 },
+  { year: '2016', patents: 29.4, startups: 24.7 },
+  { year: '2018', patents: 30.8, startups: 27.2 },
+  { year: '2020', patents: 31.5, startups: 28.9 }
+];
+
+const entrepreneurshipData = [
+  { category: 'Native-born', rate: 0.31 },
+  { category: 'Immigrants', rate: 0.42 }
+];
+
 const EconomicVisualizationsSection = () => {
   return (
     <section className="container mx-auto px-4 py-10">
@@ -38,6 +61,9 @@ const EconomicVisualizationsSection = () => {
           <TabsTrigger value="consensus">Economic Consensus</TabsTrigger>
           <TabsTrigger value="impacts">Fiscal Impact</TabsTrigger>
           <TabsTrigger value="data">Labor Market Data</TabsTrigger>
+          <TabsTrigger value="gdp">GDP Contribution</TabsTrigger>
+          <TabsTrigger value="innovation">Innovation & Patents</TabsTrigger>
+          <TabsTrigger value="entrepreneurship">Entrepreneurship</TabsTrigger>
         </TabsList>
         
         <TabsContent value="consensus">
@@ -101,6 +127,91 @@ const EconomicVisualizationsSection = () => {
                 </ResponsiveContainer>
               </div>
               <p className="text-sm text-gray-600 mt-4">Source: Bureau of Labor Statistics and economic research studies</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="gdp">
+          <Card className="border-none shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl">Immigrant Contribution to GDP</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <p className="mb-4">
+                  Immigrants contribute significantly to the U.S. economy, with their share of GDP growing steadily. 
+                  This reflects their increasing workforce participation and economic productivity.
+                </p>
+              </div>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={gdpContributionData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="year" />
+                    <YAxis label={{ value: 'GDP Contribution (%)', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip formatter={(value) => [`${value}%`, 'GDP Contribution']} />
+                    <Line type="monotone" dataKey="contribution" stroke="#0A2463" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="text-sm text-gray-600 mt-4">Source: Bureau of Economic Analysis</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="innovation">
+          <Card className="border-none shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl">Innovation & Entrepreneurship Contributions</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <p className="mb-4">
+                  Immigrants play a disproportionate role in innovation and entrepreneurship, contributing to 
+                  patents and founding startups at rates exceeding their population share.
+                </p>
+              </div>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={innovationData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="year" />
+                    <YAxis label={{ value: 'Percentage (%)', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip formatter={(value) => [`${value}%`, '']} />
+                    <Line type="monotone" dataKey="patents" stroke="#0A2463" strokeWidth={2} name="Patent Share" />
+                    <Line type="monotone" dataKey="startups" stroke="#4CAF50" strokeWidth={2} name="Startup Founders" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="text-sm text-gray-600 mt-4">Source: U.S. Patent Office and Kauffman Foundation</p>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="entrepreneurship">
+          <Card className="border-none shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl">Entrepreneurship Rates Comparison</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="mb-6">
+                <p className="mb-4">
+                  Immigrants demonstrate higher entrepreneurship rates compared to native-born Americans, 
+                  starting new businesses at significantly higher rates per capita.
+                </p>
+              </div>
+              <div className="h-80">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={entrepreneurshipData} margin={{ top: 20, right: 30, left: 20, bottom: 50 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="category" />
+                    <YAxis label={{ value: 'Monthly Entrepreneurship Rate', angle: -90, position: 'insideLeft' }} />
+                    <Tooltip formatter={(value) => [`${value}%`, 'Rate']} />
+                    <Bar dataKey="rate" fill="#0A2463" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <p className="text-sm text-gray-600 mt-4">Source: Kauffman Index of Startup Activity</p>
             </CardContent>
           </Card>
         </TabsContent>

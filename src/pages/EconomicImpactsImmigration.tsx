@@ -8,6 +8,7 @@ import TopicDescriptionSection from '@/components/topics/TopicDescriptionSection
 import TopicContentSection from '@/components/topics/TopicContentSection';
 import TopicVisualizationsSection from '@/components/topics/TopicVisualizationsSection';
 import DynamicVisualizationsSection from '@/components/topics/DynamicVisualizationsSection';
+import EconomicVisualizationsSection from '@/components/economic/EconomicVisualizationsSection';
 import TopicCallToActionSection from '@/components/topics/TopicCallToActionSection';
 import DatabaseInsightsContainer from '@/components/database/DatabaseInsightsContainer';
 import LoadingSpinner from '@/components/common/LoadingSpinner';
@@ -121,6 +122,8 @@ const EconomicImpactsImmigration = () => {
       <TopicVisualizationsSection>
         <DynamicVisualizationsSection topicId={topicId} />
       </TopicVisualizationsSection>
+      
+      <EconomicVisualizationsSection />
       
       <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({
         id: pub.id,
