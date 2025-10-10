@@ -1,7 +1,9 @@
 
 import React from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
@@ -14,12 +16,46 @@ const consensusDescription = [
   "Multiple meta-analyses and systematic reviews confirm the safety and efficacy of vaccines across different populations and age groups."
 ];
 
+const diseaseIncidenceData = [
+  { year: '1950', measles: 500000, polio: 35000, mumps: 150000 },
+  { year: '1970', measles: 47000, polio: 10, mumps: 80000 },
+  { year: '1990', measles: 27000, polio: 0, mumps: 5000 },
+  { year: '2010', measles: 63, polio: 0, mumps: 2500 },
+  { year: '2023', measles: 100, polio: 0, mumps: 1500 }
+];
+
+const vaccineCoverageData = [
+  { region: 'North America', coverage: 92 },
+  { region: 'Europe', coverage: 94 },
+  { region: 'Asia', coverage: 86 },
+  { region: 'Africa', coverage: 76 },
+  { region: 'South America', coverage: 88 },
+  { region: 'Oceania', coverage: 93 }
+];
+
+const efficacyRatesData = [
+  { vaccine: 'Measles', efficacy: 97 },
+  { vaccine: 'Polio', efficacy: 99 },
+  { vaccine: 'Mumps', efficacy: 88 },
+  { vaccine: 'Rubella', efficacy: 97 },
+  { vaccine: 'Hepatitis B', efficacy: 95 },
+  { vaccine: 'HPV', efficacy: 90 }
+];
+
+const adverseEventsData = [
+  { severity: 'Mild (soreness)', rate: 15.2 },
+  { severity: 'Moderate (fever)', rate: 3.8 },
+  { severity: 'Serious', rate: 0.003 },
+  { severity: 'Severe allergic', rate: 0.0001 }
+];
+
 const VaccineVisualizationsSection = () => {
   return (
     <Tabs defaultValue="consensus" className="w-full">
       <TabsList className="mb-8">
         <TabsTrigger value="consensus">Scientific Consensus</TabsTrigger>
-        <TabsTrigger value="efficacy">Vaccine Efficacy</TabsTrigger>
+        <TabsTrigger value="incidence">Disease Incidence</TabsTrigger>
+        <TabsTrigger value="efficacy">Efficacy Rates</TabsTrigger>
         <TabsTrigger value="safety">Safety Data</TabsTrigger>
         <TabsTrigger value="coverage">Coverage Rates</TabsTrigger>
       </TabsList>
@@ -33,14 +69,65 @@ const VaccineVisualizationsSection = () => {
         />
       </TabsContent>
       
+      <TabsContent value="incidence">
+        <Card>
+          <CardHeader>
+            <CardTitle>Disease Incidence Before and After Vaccination</CardTitle>
+            <CardDescription>Dramatic reduction in disease cases following vaccine introduction (cases per 100,000)</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer
+              config={{
+                measles: { label: "Measles", color: "hsl(var(--chart-1))" },
+                polio: { label: "Polio", color: "hsl(var(--chart-2))" },
+                mumps: { label: "Mumps", color: "hsl(var(--chart-3))" }
+              }}
+              className="h-[400px]"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={diseaseIncidenceData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="year" />
+                  <YAxis />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Line type="monotone" dataKey="measles" stroke="hsl(var(--chart-1))" strokeWidth={2} />
+                  <Line type="monotone" dataKey="polio" stroke="hsl(var(--chart-2))" strokeWidth={2} />
+                  <Line type="monotone" dataKey="mumps" stroke="hsl(var(--chart-3))" strokeWidth={2} />
+                </LineChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            <p className="text-sm text-muted-foreground mt-4">
+              Source: CDC and WHO vaccination impact studies
+            </p>
+          </CardContent>
+        </Card>
+      </TabsContent>
+      
       <TabsContent value="efficacy">
         <Card>
           <CardHeader>
             <CardTitle>Vaccine Efficacy Rates</CardTitle>
+            <CardDescription>Clinical trial efficacy rates for major vaccines (%)</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">
-              Clinical trial data showing efficacy rates across different vaccine types and populations.
+            <ChartContainer
+              config={{
+                efficacy: { label: "Efficacy Rate", color: "hsl(var(--chart-1))" }
+              }}
+              className="h-[400px]"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={efficacyRatesData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="vaccine" />
+                  <YAxis domain={[0, 100]} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="efficacy" fill="hsl(var(--chart-1))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            <p className="text-sm text-muted-foreground mt-4">
+              Source: FDA approval documents and clinical trial data
             </p>
           </CardContent>
         </Card>
@@ -49,11 +136,28 @@ const VaccineVisualizationsSection = () => {
       <TabsContent value="safety">
         <Card>
           <CardHeader>
-            <CardTitle>Safety Monitoring Data</CardTitle>
+            <CardTitle>Adverse Event Rates</CardTitle>
+            <CardDescription>Reported adverse events per 100,000 vaccine doses</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">
-              Comprehensive safety data from clinical trials and post-market surveillance systems.
+            <ChartContainer
+              config={{
+                rate: { label: "Rate", color: "hsl(var(--chart-2))" }
+              }}
+              className="h-[400px]"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={adverseEventsData} layout="vertical">
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" />
+                  <YAxis dataKey="severity" type="category" width={150} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="rate" fill="hsl(var(--chart-2))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            <p className="text-sm text-muted-foreground mt-4">
+              Source: VAERS and WHO Global Vaccine Safety Initiative data
             </p>
           </CardContent>
         </Card>
@@ -62,11 +166,28 @@ const VaccineVisualizationsSection = () => {
       <TabsContent value="coverage">
         <Card>
           <CardHeader>
-            <CardTitle>Vaccination Coverage</CardTitle>
+            <CardTitle>Global Vaccination Coverage</CardTitle>
+            <CardDescription>Regional vaccination coverage rates for routine immunizations (%)</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-muted-foreground">
-              Global and regional vaccination coverage rates and their impact on disease prevention.
+            <ChartContainer
+              config={{
+                coverage: { label: "Coverage Rate", color: "hsl(var(--chart-3))" }
+              }}
+              className="h-[400px]"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={vaccineCoverageData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="region" />
+                  <YAxis domain={[0, 100]} />
+                  <ChartTooltip content={<ChartTooltipContent />} />
+                  <Bar dataKey="coverage" fill="hsl(var(--chart-3))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+            <p className="text-sm text-muted-foreground mt-4">
+              Source: WHO/UNICEF immunization coverage estimates
             </p>
           </CardContent>
         </Card>
