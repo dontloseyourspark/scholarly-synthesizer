@@ -11,6 +11,12 @@ const consensusData = [
   { name: 'Against', value: 5, color: '#F44336' }
 ];
 
+const colours = [
+  {name: 'hsl(var(--chart-1))', value: '#2463eb'},
+  {name: 'hsl(var(--chart-2))', value: '#21c45d'},
+  {name: 'hsl(var(--chart-3))', value: '#ef4343'}
+];
+
 const consensusDescription = [
   "Extensive research and clinical trials consistently demonstrate that vaccines are highly effective at preventing infectious diseases. The scientific consensus is overwhelming, with studies showing vaccines have prevented millions of deaths and cases of serious illness.",
   "Multiple meta-analyses and systematic reviews confirm the safety and efficacy of vaccines across different populations and age groups."
@@ -78,9 +84,9 @@ const VaccineVisualizationsSection = () => {
           <CardContent>
             <ChartContainer
               config={{
-                measles: { label: "Measles", color: "hsl(var(--chart-1))" },
-                polio: { label: "Polio", color: "hsl(var(--chart-2))" },
-                mumps: { label: "Mumps", color: "hsl(var(--chart-3))" }
+                measles: { label: "Measles", color: colours[0].value },
+                polio: { label: "Polio", color: colours[1].value },
+                mumps: { label: "Mumps", color: colours[2].value }
               }}
               className="h-[400px]"
             >
@@ -90,9 +96,9 @@ const VaccineVisualizationsSection = () => {
                   <XAxis dataKey="year" />
                   <YAxis />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Line type="monotone" dataKey="measles" stroke="hsl(var(--chart-1))" strokeWidth={2} />
-                  <Line type="monotone" dataKey="polio" stroke="hsl(var(--chart-2))" strokeWidth={2} />
-                  <Line type="monotone" dataKey="mumps" stroke="hsl(var(--chart-3))" strokeWidth={2} />
+                  <Line type="monotone" dataKey="measles" stroke={colours[0].value} strokeWidth={2} />
+                  <Line type="monotone" dataKey="polio" stroke={colours[1].value} strokeWidth={2} />
+                  <Line type="monotone" dataKey="mumps" stroke={colours[2].value} strokeWidth={2} />
                 </LineChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -112,7 +118,7 @@ const VaccineVisualizationsSection = () => {
           <CardContent>
             <ChartContainer
               config={{
-                efficacy: { label: "Efficacy Rate", color: "hsl(var(--chart-1))" }
+                efficacy: { label: "Efficacy Rate", color: colours[0].value }
               }}
               className="h-[400px]"
             >
@@ -122,7 +128,7 @@ const VaccineVisualizationsSection = () => {
                   <XAxis dataKey="vaccine" />
                   <YAxis domain={[0, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="efficacy" fill="hsl(var(--chart-1))" />
+                  <Bar dataKey="efficacy" fill={colours[0].value} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -142,7 +148,7 @@ const VaccineVisualizationsSection = () => {
           <CardContent>
             <ChartContainer
               config={{
-                rate: { label: "Rate", color: "hsl(var(--chart-2))" }
+                rate: { label: "Rate", color: colours[1].value }
               }}
               className="h-[400px]"
             >
@@ -152,7 +158,7 @@ const VaccineVisualizationsSection = () => {
                   <XAxis type="number" />
                   <YAxis dataKey="severity" type="category" width={150} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="rate" fill="hsl(var(--chart-2))" />
+                  <Bar dataKey="rate" fill={colours[1].value} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
@@ -172,7 +178,7 @@ const VaccineVisualizationsSection = () => {
           <CardContent>
             <ChartContainer
               config={{
-                coverage: { label: "Coverage Rate", color: "hsl(var(--chart-3))" }
+                coverage: { label: "Coverage Rate", color: colours[2].value }
               }}
               className="h-[400px]"
             >
@@ -182,7 +188,7 @@ const VaccineVisualizationsSection = () => {
                   <XAxis dataKey="region" />
                   <YAxis domain={[0, 100]} />
                   <ChartTooltip content={<ChartTooltipContent />} />
-                  <Bar dataKey="coverage" fill="hsl(var(--chart-3))" />
+                  <Bar dataKey="coverage" fill={colours[2].value} />
                 </BarChart>
               </ResponsiveContainer>
             </ChartContainer>
