@@ -60,7 +60,7 @@ const VisualizationsSection = () => {
           <TabsTrigger value="sealevel">Sea Level Rise</TabsTrigger>
           <TabsTrigger value="arcticice">Arctic Ice Extent</TabsTrigger>
           <TabsTrigger value="impacts">Climate Impacts</TabsTrigger>
-          <TabsTrigger value="publications">Key Publications</TabsTrigger>
+          {/* <TabsTrigger value="publications">Key Publications</TabsTrigger> */}
         </TabsList>
         
         <TabsContent value="consensus">

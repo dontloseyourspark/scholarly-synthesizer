@@ -119,9 +119,9 @@ const ClimateChange = () => {
         />
       )}
       
-      <TopicVisualizationsSection>
+      {/* <TopicVisualizationsSection>
         <DynamicVisualizationsSection topicId={topicId} />
-      </TopicVisualizationsSection>
+      </TopicVisualizationsSection> */}
       
       <VisualizationsSection />
       

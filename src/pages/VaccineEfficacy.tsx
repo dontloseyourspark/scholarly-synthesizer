@@ -121,7 +121,7 @@ const VaccineEfficacy = () => {
       
       <TopicVisualizationsSection>
         <VaccineVisualizationsSection />
-        <DynamicVisualizationsSection topicId={topicId} />
+        {/* <DynamicVisualizationsSection topicId={topicId} /> */}
       </TopicVisualizationsSection>
       
       <DatabaseInsightsContainer topicId={topicId} keyPublications={keyPublications.map(pub => ({

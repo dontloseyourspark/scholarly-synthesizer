@@ -120,7 +120,7 @@ const AISafety = () => {
       )}
       
       <TopicVisualizationsSection>
-        <DynamicVisualizationsSection topicId={topicId} />
+        {/* <DynamicVisualizationsSection topicId={topicId} /> */}
         <AISafetyVisualizationsSection />
       </TopicVisualizationsSection>
       

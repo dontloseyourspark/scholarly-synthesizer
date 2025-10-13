@@ -5,7 +5,7 @@ import ConsensusChart from '@/components/common/ConsensusChart';
 import { BarChart, Bar, LineChart, Line, PieChart, Pie, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
 
 const consensusData = [
-  { name: 'Concerned', value: 78, color: '#F44336' },
+  { name: 'Concerned', value: 78, color: '#FF9800' },
   { name: 'Not concerned', value: 22, color: '#4CAF50' }
 ];
 

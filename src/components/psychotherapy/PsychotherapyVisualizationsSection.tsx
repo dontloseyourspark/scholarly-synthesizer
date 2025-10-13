@@ -7,7 +7,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, L
 
 const consensusData = [
   { name: 'Effective', value: 92.5, color: '#4CAF50' },
-  { name: 'Not Effective', value: 7.5, color: '#F44336' }
+  { name: 'Limited Evidence', value: 7.5, color: '#FF9800' }
 ];
 
 const consensusDescription = [

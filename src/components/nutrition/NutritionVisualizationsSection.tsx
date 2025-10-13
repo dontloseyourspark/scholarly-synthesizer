@@ -7,8 +7,8 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import ConsensusChart from '@/components/common/ConsensusChart';
 
 const consensusData = [
-  { name: 'Support', value: 92, color: '#4CAF50' },
-  { name: 'Against', value: 8, color: '#F44336' }
+  { name: 'Support', value: 85, color: '#4CAF50' },
+  { name: 'Limited Evidence', value: 15, color: '#FF9800' }
 ];
 
 const consensusDescription = [

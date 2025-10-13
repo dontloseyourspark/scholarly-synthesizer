@@ -119,9 +119,9 @@ const EconomicImpactsImmigration = () => {
         />
       )}
       
-      <TopicVisualizationsSection>
+      {/* <TopicVisualizationsSection>
         <DynamicVisualizationsSection topicId={topicId} />
-      </TopicVisualizationsSection>
+      </TopicVisualizationsSection> */}
       
       <EconomicVisualizationsSection />
       

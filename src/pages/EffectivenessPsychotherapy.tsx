@@ -121,7 +121,7 @@ const EffectivenessPsychotherapy = () => {
       )}
       
 <TopicVisualizationsSection>
-        <DynamicVisualizationsSection topicId={topicId} />
+        {/* <DynamicVisualizationsSection topicId={topicId} /> */}
         <PsychotherapyVisualizationsSection />
       </TopicVisualizationsSection>
       
