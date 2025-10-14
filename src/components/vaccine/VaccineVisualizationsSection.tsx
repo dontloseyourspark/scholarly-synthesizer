@@ -103,7 +103,9 @@ const VaccineVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: CDC and WHO vaccination impact studies
+              Source: CDC and WHO vaccination impact studies &nbsp;
+               <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://www.who.int/health-topics/vaccines-and-immunization#tab=tab_1" data-discover="true">Read more here</a>
             </p>
           </CardContent>
         </Card>
@@ -133,7 +135,11 @@ const VaccineVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: FDA approval documents and clinical trial data
+              Source: FDA approval documents and clinical trial data &nbsp;
+              <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://www.who.int/news-room/feature-stories/detail/vaccine-efficacy-effectiveness-and-protection" data-discover="true">Read more here</a> and 
+                 <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80" 
+                  href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7656319/" data-discover="true"> here</a>
             </p>
           </CardContent>
         </Card>
@@ -163,7 +169,13 @@ const VaccineVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: VAERS and WHO Global Vaccine Safety Initiative data
+              Source: VAERS and WHO Global Vaccine Safety Initiative data &nbsp;
+              <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://www.who.int/initiatives/the-global-vaccine-safety-initiative" data-discover="true">Read more here,</a> 
+                 <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80" 
+                  href="https://vaers.hhs.gov/about.html" data-discover="true"> here</a> and 
+                  <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80" 
+                  href="https://www.publichealthontario.ca/-/media/documents/ncov/epi/covid-19-aefi-report.pdf" data-discover="true"> here</a>
             </p>
           </CardContent>
         </Card>
@@ -193,7 +205,9 @@ const VaccineVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: WHO/UNICEF immunization coverage estimates
+              Source: WHO/UNICEF immunization coverage estimates &nbsp;
+              <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://worldhealthorg.shinyapps.io/wuenic-trends/" data-discover="true">Read more here</a>
             </p>
           </CardContent>
         </Card>
