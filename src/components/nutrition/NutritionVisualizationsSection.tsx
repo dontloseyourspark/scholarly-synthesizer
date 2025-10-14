@@ -95,7 +95,9 @@ const NutritionVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: Global Burden of Disease Study, Harvard T.H. Chan School of Public Health
+              Source: Global Burden of Disease Study, Harvard T.H. Chan School of Public Health &nbsp;
+               <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://www.healthdata.org/research-analysis/gbd" data-discover="true">Read more here</a> 
             </p>
           </CardContent>
         </Card>
@@ -122,7 +124,9 @@ const NutritionVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: WHO Global Nutrition Report 2023
+              Source: WHO Global Nutrition Report 2023 &nbsp;
+              <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://globalnutritionreport.org/" data-discover="true">Read more here</a> 
             </p>
           </CardContent>
         </Card>
@@ -149,7 +153,9 @@ const NutritionVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: BMJ Open, PLOS Medicine - Meta-analysis of dietary surveys
+              Source: BMJ Open, PLOS Medicine - Meta-analysis of dietary surveys &nbsp;
+                <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://bmjopen.bmj.com/content/3/12/e004277" data-discover="true">Read more here</a>
             </p>
           </CardContent>
         </Card>
@@ -176,7 +182,9 @@ const NutritionVisualizationsSection = () => {
               </ResponsiveContainer>
             </ChartContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: WHO Obesity Atlas 2023
+              Source: WHO Obesity Atlas 2023 &nbsp;
+               <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://s3-eu-west-1.amazonaws.com/wof-files/World_Obesity_Atlas_2023_Report.pdf" data-discover="true">Read more here</a> 
             </p>
           </CardContent>
         </Card>
