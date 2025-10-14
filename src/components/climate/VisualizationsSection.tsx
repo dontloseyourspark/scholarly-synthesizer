@@ -6,6 +6,7 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Cart
 import ConsensusTab from './ConsensusTab';
 import ImpactsTab from './ImpactsTab';
 import PublicationsTab from './PublicationsTab';
+import { Anchor } from 'lucide-react';
 
 // Temperature anomaly data (relative to 1951-1980 average)
 const temperatureData = [
@@ -91,7 +92,9 @@ const VisualizationsSection = () => {
                 </ResponsiveContainer>
               </div>
               <p className="text-sm text-muted-foreground mt-4">
-                Source: NASA Goddard Institute for Space Studies (GISS)
+                Source: NASA Goddard Institute for Space Studies (GISS) &nbsp;
+                <a data-lov-name="Link"  data-component-name="Link" class="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://data.giss.nasa.gov/gistemp/graphs_v4/" data-discover="true">Read more here</a>
               </p>
             </CardContent>
           </Card>
@@ -130,7 +133,9 @@ const VisualizationsSection = () => {
                 </ResponsiveContainer>
               </div>
               <p className="text-sm text-muted-foreground mt-4">
-                Source: Intergovernmental Panel on Climate Change (IPCC)
+                Source: Intergovernmental Panel on Climate Change (IPCC) &nbsp;
+                <a data-lov-name="Link"  data-component-name="Link" class="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://ourworldindata.org/ghg-emissions-by-sector#:~:text=Sector%20by%20sector:%20where%20do%20global%20greenhouse,*%20Agriculture%2C%20Forestry%2C%20and%20Land%20Use:%2018.4%25" data-discover="true">Read more here</a>
               </p>
             </CardContent>
           </Card>
@@ -159,7 +164,9 @@ const VisualizationsSection = () => {
                 </ResponsiveContainer>
               </div>
               <p className="text-sm text-muted-foreground mt-4">
-                Source: NASA Sea Level Change Portal
+                Source: NASA Sea Level Change Portal &nbsp;
+                <a data-lov-name="Link"  data-component-name="Link" class="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://sealevel.nasa.gov/" data-discover="true">Read more here</a>
               </p>
             </CardContent>
           </Card>
@@ -189,7 +196,9 @@ const VisualizationsSection = () => {
                 </ResponsiveContainer>
               </div>
               <p className="text-sm text-muted-foreground mt-4">
-                Source: National Snow and Ice Data Center (NSIDC)
+                Source: National Snow and Ice Data Center (NSIDC) &nbsp;
+                <a data-lov-name="Link"  data-component-name="Link" class="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://nsidc.org/sea-ice-today" data-discover="true">Read more here</a>
               </p>
             </CardContent>
           </Card>
