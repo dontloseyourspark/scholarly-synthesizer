@@ -76,7 +76,9 @@ const AISafetyVisualizationsSection = () => {
               </BarChart>
             </ResponsiveContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: AI Impacts Survey, FLI Surveys (2015-2023)
+              Source: AI Impacts Survey, FLI Surveys (2015-2023) &nbsp;
+              <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://arxiv.org/pdf/2401.02843" data-discover="true">Read more here</a> 
             </p>
           </CardContent>
         </Card>
@@ -100,7 +102,9 @@ const AISafetyVisualizationsSection = () => {
               </LineChart>
             </ResponsiveContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: AI Safety research publications and funding databases
+              Source: AI Safety research publications and funding databases &nbsp;
+              <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://safe.ai/" data-discover="true">Read more here</a> 
             </p>
           </CardContent>
         </Card>
@@ -133,7 +137,11 @@ const AISafetyVisualizationsSection = () => {
               </PieChart>
             </ResponsiveContainer>
             <p className="text-sm text-muted-foreground mt-4">
-              Source: Analysis of AI safety research papers and grant allocations (2020-2023)
+              Source: Analysis of AI safety research papers and grant allocations (2020-2023) &nbsp;
+               <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://arxiv.org/html/2505.00174v2#:~:text=Abstract,-Report%20issue%20for&text=Drawing%20on%201%2C178%20safety%20and,of%20in%2Dmarket%20AI%20behaviors.&text=Keywords:%20AI%20research;%20alignment;,;%20cloud%20providers;%20model%20developers." data-discover="true">Read more here</a> and &nbsp;
+                 <a data-lov-name="Link"  data-component-name="Link" className="text-scholarly-blue transition-colors underline hover:text-scholarly-blue/80"
+                 href="https://forum.effectivealtruism.org/posts/XdhwXppfqrpPL2YDX/an-overview-of-the-ai-safety-funding-situation#:~:text=The%20FTX%20Future%20Fund%20was,Prizes%20at%20ECCV%2C%20$30k" data-discover="true">here</a> 
             </p>
           </CardContent>
         </Card>
